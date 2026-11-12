@@ -388,15 +388,17 @@
                 return;
             }
 
-            const { data, error } = await supabaseClient
+            // Шукаємо юзера в базі
+            let { data, error } = await supabaseClient
                 .from('user_spins')
                 .select('spins')
                 .eq('telegram_id', telegramId)
-                .single();
+                .maybeSingle();
 
             if (data) {
                 userSpins = data.spins;
             } else {
+                // Якщо юзера ще немає — автоматично створюємо рядок із 0 спроб
                 await supabaseClient.from('user_spins').insert([{ telegram_id: telegramId, spins: 0 }]);
                 userSpins = 0;
             }
@@ -547,6 +549,7 @@
 
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('icon') || el.classList.remove('active')); // safe clean
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
