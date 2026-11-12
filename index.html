@@ -105,6 +105,39 @@
             box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
         }
 
+        /* Блок активації промокоду для гравців */
+        .promo-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .promo-box input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn-promo {
+            background: var(--gold);
+            color: #0b0d14;
+            border: none;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+
         .wheel-wrapper {
             position: relative;
             width: 310px;
@@ -303,6 +336,13 @@
             <button class="btn-pay-spin" onclick="requestSpin()">Купити прокрут</button>
         </div>
 
+        <!-- Поле введення секретного коду активації для покупця -->
+        <div class="promo-box">
+            <b style="font-size: 13px; color: var(--gold);">🎟️ Маєш код активації?</b>
+            <input type="text" id="promoInput" placeholder="Введи секретний код тут">
+            <button class="btn-promo" onclick="activatePromo()">Активувати спроби</button>
+        </div>
+
         <div class="wheel-wrapper">
             <div class="pointer"></div>
             <div class="wheel-outer-ring">
@@ -357,15 +397,13 @@
     <!-- АДМІН-ПАНЕЛЬ -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Генерація бонусних посилань для гравців</div>
+        <div class="subtitle">Створення одноразових кодів активації</div>
         
         <div class="add-user-box">
-            <b style="font-size: 14px; color: var(--gold);">⚡ Видати спроби клієнту:</b>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 10px 0;">Введи ID і кількість — система створить персональне посилання для нарахування.</p>
-            <input type="text" id="targetId" placeholder="Telegram ID клієнта (напр: 789864522)">
-            <input type="number" id="targetSpins" value="1" min="1" max="50">
-            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="generateBonusLink()">Згенерувати посилання</button>
-            <div id="linkOutput" style="margin-top: 12px; word-break: break-all; font-size: 13px; color: var(--gold);"></div>
+            <b style="font-size: 14px; color: var(--gold);">⚡ Згенерувати код для клієнта:</b>
+            <input type="number" id="codeSpinsCount" value="1" min="1" max="50" placeholder="Кількість спроб">
+            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="createPromoCode()">Створити одноразовий код</button>
+            <div id="codeOutput" style="margin-top: 14px; font-size: 15px; color: var(--gold); font-weight: bold; word-break: break-all;"></div>
         </div>
     </div>
 
@@ -397,10 +435,6 @@
 
         let userSpins = 0;
 
-        // Перевіряємо посилання на наявність бонусних спроб
-        const urlParams = new URLSearchParams(window.location.search);
-        const bonusSpins = parseInt(urlParams.get('spins')) || 0;
-
         function initApp() {
             if (!telegramId) {
                 document.getElementById('userSpins').innerText = "0";
@@ -408,19 +442,8 @@
                 return;
             }
 
-            // Кожен юзер працює зі своєю хмарою, але якщо є параметр у посиланні — додаємо їх на його баланс!
             tg.CloudStorage.getItem("user_balance", (err, res) => {
-                let currentSpins = !err && res ? parseInt(res) : 0;
-
-                if (bonusSpins > 0) {
-                    currentSpins += bonusSpins;
-                    tg.CloudStorage.setItem("user_balance", String(currentSpins), () => {
-                        // Очищаємо URL, щоб бонус не нараховувався двічі при перезаході
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    });
-                }
-
-                userSpins = currentSpins;
+                userSpins = !err && res ? parseInt(res) : 0;
                 updateSpinsDisplay();
             });
 
@@ -443,16 +466,64 @@
             }
         }
 
-        function generateBonusLink() {
-            const tId = document.getElementById('targetId').value.trim();
-            const count = document.getElementById('targetSpins').value;
-            if (!tId) {
-                alert("Введи Telegram ID клієнта!");
+        // Адмін створює одноразовий код і зберігає його в загальну хмару
+        function createPromoCode() {
+            const count = parseInt(document.getElementById('codeSpinsCount').value) || 1;
+            const randomCode = "VAPE-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "-" + count;
+
+            tg.CloudStorage.getItem("active_promo_codes", (err, res) => {
+                let codes = {};
+                if (!err && res) {
+                    try { codes = JSON.parse(res); } catch(e) { codes = {}; }
+                }
+
+                codes[randomCode] = count; // Зберігаємо код і скільки він дає спроб
+
+                tg.CloudStorage.setItem("active_promo_codes", JSON.stringify(codes), (err2) => {
+                    if (!err2) {
+                        document.getElementById('codeOutput').innerHTML = `Готовий код для клієнта:<br><span style="background:#0b0d14; padding:8px 12px; display:inline-block; margin-top:6px; border-radius:8px; border:1px solid var(--gold);">${randomCode}</span>`;
+                    } else {
+                        alert("Помилка збереження коду!");
+                    }
+                });
+            });
+        }
+
+        // Гравець вводить код і активує його
+        function activatePromo() {
+            const inputCode = document.getElementById('promoInput').value.trim().toUpperCase();
+            if (!inputCode) {
+                alert("Введи код активації!");
                 return;
             }
-            const cleanUrl = window.location.href.split('?')[0];
-            const finalLink = `${cleanUrl}?spins=${count}`;
-            document.getElementById('linkOutput').innerHTML = `<b>Надішли це посилання клієнту:</b><br><a href="${finalLink}" target="_blank" style="color: #00e5ff; text-decoration: underline;">${finalLink}</a>`;
+
+            tg.CloudStorage.getItem("active_promo_codes", (err, res) => {
+                if (err || !res) {
+                    alert("Невірний або вже використаний код!");
+                    return;
+                }
+
+                let codes = {};
+                try { codes = JSON.parse(res); } catch(e) { codes = {}; }
+
+                if (codes[inputCode]) {
+                    const addedSpins = codes[inputCode];
+                    userSpins += addedSpins;
+                    
+                    // Видаляємо код, щоб він став одноразовим і згорів
+                    delete codes[inputCode];
+
+                    tg.CloudStorage.setItem("active_promo_codes", JSON.stringify(codes), () => {
+                        tg.CloudStorage.setItem("user_balance", String(userSpins), () => {
+                            updateSpinsDisplay();
+                            document.getElementById('promoInput').value = "";
+                            alert(`Успішно! Нараховано ${addedSpins} спроб.`);
+                        });
+                    });
+                } else {
+                    alert("Цей код недійсний або вже був активований кимось іншим!");
+                }
+            });
         }
 
         const prizes = [
