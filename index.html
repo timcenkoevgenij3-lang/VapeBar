@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VapeBar — Колесо Фортуни</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-dark: #0f111a;
@@ -366,17 +365,15 @@
 
     <script>
         const MANAGER_USERNAME = "vapebarman";
-
-        const SUPABASE_URL = "https://vxulrifpzdmicfjyxuq.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_6mbJ9qRvKkHtYBFfIbJFkg_dy3vC_Be";
-
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Вставлене твоє робоче посилання на Google Apps Script
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFx_IOr3OVC2UfKPQw-p6Pr63Sd5PRfBLFuVRoMoyED1EL1WSMrkgnLSWtXUdklQbKxw/exec";
 
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         const tgUser = tg.initDataUnsafe?.user;
-        const telegramId = tgUser ? tgUser.id : null;
+        const telegramId = tgUser ? String(tgUser.id) : null;
         const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
         let userSpins = 0;
@@ -388,18 +385,17 @@
                 return;
             }
 
-            // Шукаємо юзера в базі
-            let { data, error } = await supabaseClient
-                .from('user_spins')
-                .select('spins')
-                .eq('telegram_id', telegramId)
-                .maybeSingle();
-
-            if (data) {
-                userSpins = data.spins;
-            } else {
-                // Якщо юзера ще немає — автоматично створюємо рядок із 0 спроб
-                await supabaseClient.from('user_spins').insert([{ telegram_id: telegramId, spins: 0 }]);
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const users = await response.json();
+                
+                const foundUser = users.find(u => String(u.telegram_id) === telegramId);
+                if (foundUser) {
+                    userSpins = Number(foundUser.spins) || 0;
+                } else {
+                    userSpins = 0;
+                }
+            } catch (err) {
                 userSpins = 0;
             }
             updateSpinsDisplay();
@@ -486,18 +482,13 @@
             return 0;
         }
 
-        async function spinWheel() {
+        function spinWheel() {
             if (isSpinning || userSpins <= 0 || !telegramId) return;
 
             isSpinning = true;
             document.getElementById("resultBox").style.display = "none";
 
             userSpins--;
-            await supabaseClient
-                .from('user_spins')
-                .update({ spins: userSpins })
-                .eq('telegram_id', telegramId);
-
             updateSpinsDisplay();
 
             if (tg.HapticFeedback) {
@@ -549,7 +540,6 @@
 
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('icon') || el.classList.remove('active')); // safe clean
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
