@@ -366,8 +366,8 @@
     <script>
         const MANAGER_USERNAME = "vapebarman";
         
-        // Вставлене твоє робоче посилання на Google Apps Script
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFx_IOr3OVC2UfKPQw-p6Pr63Sd5PRfBLFuVRoMoyED1EL1WSMrkgnLSWtXUdklQbKxw/exec";
+        // ВСТАВ СВОЄ ПОСИЛАННЯ /exec З GOOGLE APPS SCRIPT СЮДИ:
+        const SCRIPT_URL = "СЮДИ_ВСТАВ_ПОСИЛАННЯ_З_GOOGLE_APPS_SCRIPT";
 
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -387,11 +387,15 @@
 
             try {
                 const response = await fetch(SCRIPT_URL);
-                const users = await response.json();
+                const result = await response.json();
                 
-                const foundUser = users.find(u => String(u.telegram_id) === telegramId);
-                if (foundUser) {
-                    userSpins = Number(foundUser.spins) || 0;
+                if (result.status === "success" && Array.isArray(result.users)) {
+                    const foundUser = result.users.find(u => String(u.telegram_id) === telegramId);
+                    if (foundUser) {
+                        userSpins = Number(foundUser.spins) || 0;
+                    } else {
+                        userSpins = 0;
+                    }
                 } else {
                     userSpins = 0;
                 }
