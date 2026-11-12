@@ -235,33 +235,6 @@
         }
 
         /* Адмін-панель */
-        .admin-user-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: left;
-        }
-        .admin-user-info b { display: block; font-size: 15px; color: #fff; }
-        .admin-user-info span { font-size: 12px; color: var(--text-muted); }
-        .admin-controls { display: flex; gap: 8px; align-items: center; }
-        .admin-btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        .admin-btn.minus { background: var(--danger); }
-        
         .add-user-box {
             background: var(--card-bg);
             border: 1px dashed var(--accent);
@@ -384,18 +357,15 @@
     <!-- АДМІН-ПАНЕЛЬ -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Управління спробами гравців</div>
+        <div class="subtitle">Генерація бонусних посилань для гравців</div>
         
         <div class="add-user-box">
-            <b style="font-size: 14px; color: var(--gold);">➕ Додати спроби за ID:</b>
-            <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
-            <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
-            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
-        </div>
-
-        <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Список гравців у базі:</h3>
-        <div id="adminUserList">
-            <p style="color: var(--text-muted);">Завантаження...</p>
+            <b style="font-size: 14px; color: var(--gold);">⚡ Видати спроби клієнту:</b>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 10px 0;">Введи ID і кількість — система створить персональне посилання для нарахування.</p>
+            <input type="text" id="targetId" placeholder="Telegram ID клієнта (напр: 789864522)">
+            <input type="number" id="targetSpins" value="1" min="1" max="50">
+            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="generateBonusLink()">Згенерувати посилання</button>
+            <div id="linkOutput" style="margin-top: 12px; word-break: break-all; font-size: 13px; color: var(--gold);"></div>
         </div>
     </div>
 
@@ -427,22 +397,9 @@
 
         let userSpins = 0;
 
-        // Використовуємо єдиний ключ хмари, який завжди завантажується і синхронізується з адмінським середовищем
-        function loadDatabase(callback) {
-            tg.CloudStorage.getItem("vape_master_db", (err, res) => {
-                let db = {};
-                if (!err && res) {
-                    try { db = JSON.parse(res); } catch (e) { db = {}; }
-                }
-                if (callback) callback(db);
-            });
-        }
-
-        function saveDatabase(db, callback) {
-            tg.CloudStorage.setItem("vape_master_db", JSON.stringify(db), (err) => {
-                if (!err && callback) callback();
-            });
-        }
+        // Перевіряємо посилання на наявність бонусних спроб
+        const urlParams = new URLSearchParams(window.location.search);
+        const bonusSpins = parseInt(urlParams.get('spins')) || 0;
 
         function initApp() {
             if (!telegramId) {
@@ -451,23 +408,25 @@
                 return;
             }
 
-            loadDatabase((db) => {
-                // Якщо юзера ще немає в базі — додаємо з 0 спроб
-                if (!db[telegramId]) {
-                    db[telegramId] = { name: username, spins: 0 };
-                } else {
-                    db[telegramId].name = username; // оновлюємо нік
+            // Кожен юзер працює зі своєю хмарою, але якщо є параметр у посиланні — додаємо їх на його баланс!
+            tg.CloudStorage.getItem("user_balance", (err, res) => {
+                let currentSpins = !err && res ? parseInt(res) : 0;
+
+                if (bonusSpins > 0) {
+                    currentSpins += bonusSpins;
+                    tg.CloudStorage.setItem("user_balance", String(currentSpins), () => {
+                        // Очищаємо URL, щоб бонус не нараховувався двічі при перезаході
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    });
                 }
 
-                saveDatabase(db, () => {
-                    userSpins = Number(db[telegramId].spins) || 0;
-                    updateSpinsDisplay();
-                });
-
-                if (telegramId === ADMIN_ID) {
-                    document.getElementById('adminTabBtn').style.display = "flex";
-                }
+                userSpins = currentSpins;
+                updateSpinsDisplay();
             });
+
+            if (telegramId === ADMIN_ID) {
+                document.getElementById('adminTabBtn').style.display = "flex";
+            }
         }
 
         initApp();
@@ -484,76 +443,16 @@
             }
         }
 
-        function renderAdminPanel() {
-            loadDatabase((db) => {
-                const container = document.getElementById('adminUserList');
-                container.innerHTML = "";
-
-                const keys = Object.keys(db);
-                if (keys.length === 0) {
-                    container.innerHTML = "<p style='color: var(--text-muted);'>База поки порожня.</p>";
-                    return;
-                }
-
-                keys.forEach(id => {
-                    const u = db[id];
-                    const card = document.createElement('div');
-                    card.className = "admin-user-card";
-                    card.innerHTML = `
-                        <div class="admin-user-info">
-                            <b>${u.name || "Гравець"}</b>
-                            <span>ID: ${id} | Спроб: <b>${u.spins}</b></span>
-                        </div>
-                        <div class="admin-controls">
-                            <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">-</button>
-                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins}</span>
-                            <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            });
-        }
-
-        window.changeSpins = function(targetId, delta) {
-            loadDatabase((db) => {
-                if (db[targetId]) {
-                    db[targetId].spins = Math.max(0, (db[targetId].spins || 0) + delta);
-                    saveDatabase(db, () => {
-                        renderAdminPanel();
-                        if (targetId === telegramId) {
-                            userSpins = db[targetId].spins;
-                            updateSpinsDisplay();
-                        }
-                    });
-                }
-            });
-        }
-
-        window.addNewUserSpins = function() {
-            const targetId = document.getElementById('newUserId').value.trim();
-            const count = parseInt(document.getElementById('newUserSpinsCount').value) || 1;
-
-            if (!targetId) {
-                alert("Введи Telegram ID гравця!");
+        function generateBonusLink() {
+            const tId = document.getElementById('targetId').value.trim();
+            const count = document.getElementById('targetSpins').value;
+            if (!tId) {
+                alert("Введи Telegram ID клієнта!");
                 return;
             }
-
-            loadDatabase((db) => {
-                if (!db[targetId]) {
-                    db[targetId] = { name: "Гравець (ручний ввід)", spins: 0 };
-                }
-                db[targetId].spins += count;
-                saveDatabase(db, () => {
-                    renderAdminPanel();
-                    document.getElementById('newUserId').value = "";
-                    alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
-                    if (targetId === telegramId) {
-                        userSpins = db[targetId].spins;
-                        updateSpinsDisplay();
-                    }
-                });
-            });
+            const cleanUrl = window.location.href.split('?')[0];
+            const finalLink = `${cleanUrl}?spins=${count}`;
+            document.getElementById('linkOutput').innerHTML = `<b>Надішли це посилання клієнту:</b><br><a href="${finalLink}" target="_blank" style="color: #00e5ff; text-decoration: underline;">${finalLink}</a>`;
         }
 
         const prizes = [
@@ -631,14 +530,7 @@
 
             userSpins--;
             updateSpinsDisplay();
-
-            // Оновлюємо спроби в загальній базі при прокруті
-            loadDatabase((db) => {
-                if (db[telegramId]) {
-                    db[telegramId].spins = userSpins;
-                    saveDatabase(db);
-                }
-            });
+            tg.CloudStorage.setItem("user_balance", String(userSpins));
 
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
 
@@ -687,10 +579,6 @@
             
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
-
-            if (tabId === 'admin-tab') {
-                renderAdminPanel();
-            }
         }
     </script>
 </body>
