@@ -36,6 +36,20 @@
             align-items: center;
         }
 
+        /* ===== Верхня строка ===== */
+        .top-bar {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 6px 0 14px 0;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #b39ddb;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
         .tab-content {
             display: none;
             width: 100%;
@@ -201,20 +215,39 @@
             width: 100%;
         }
 
-        /* Категорії */
+        /* ===== Асортимент: логотип + кнопки ===== */
+        .shop-logo-wrap {
+            width: 100%;
+            margin-bottom: 22px;
+        }
+
+        .shop-logo {
+            width: 100%;
+            max-width: 280px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 0 40px rgba(124, 77, 255, 0.35);
+            border: 3px solid rgba(124, 77, 255, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .shop-logo:active {
+            transform: scale(0.97);
+        }
+
         .category-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
             width: 100%;
-            margin-top: 10px;
         }
 
         .category-btn {
             background: linear-gradient(145deg, #1e2235, #151828);
-            border: 1px solid rgba(124, 77, 255, 0.4);
+            border: 1px solid rgba(124, 77, 255, 0.45);
             border-radius: 18px;
-            padding: 22px 12px;
+            padding: 20px 12px;
             color: #fff;
             font-size: 15px;
             font-weight: 700;
@@ -233,13 +266,14 @@
             box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        .category-btn .icon { font-size: 32px; }
+        .category-btn .icon { font-size: 30px; }
 
         .category-btn span:last-child {
             background: linear-gradient(90deg, #b388ff, #00e5ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 14px;
+            letter-spacing: 0.3px;
         }
 
         /* Список товарів */
@@ -511,15 +545,12 @@
             padding: 40px 20px;
             font-size: 15px;
         }
-
-        .loading-text {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin: 20px 0;
-        }
     </style>
 </head>
 <body>
+
+    <!-- Верхня строка -->
+    <div class="top-bar">Vape Bar | Shop</div>
 
     <!-- КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
@@ -553,8 +584,11 @@
 
     <!-- АСОРТИМЕНТ -->
     <div id="shop-tab" class="tab-content">
-        <h2>Асортимент</h2>
-        <div class="subtitle">Обери категорію</div>
+        <div class="shop-logo-wrap">
+            <a href="https://t.me/VapeBaarr" target="_blank">
+                <img src="logo.png" alt="Vape Bar" class="shop-logo">
+            </a>
+        </div>
         
         <div class="category-grid">
             <button class="category-btn" onclick="openCategory('liquids')">
@@ -588,12 +622,16 @@
         <div class="products-list" id="liquidsList"></div>
     </div>
 
+    <!-- КАРТРИДЖІ -->
     <div id="cartridges-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
-            <div><h2 style="font-size: 22px; margin: 0;">Картриджі</h2></div>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">Картриджі</h2>
+                <div class="subtitle" style="margin: 0;">Обирай і замовляй</div>
+            </div>
         </div>
-        <div class="empty-state">Незабаром з’являться товари 🔋</div>
+        <div class="products-list" id="cartridgesList"></div>
     </div>
 
     <div id="pods-tab" class="tab-content">
@@ -626,13 +664,13 @@
 
         <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Гравці:</h3>
         <div id="adminUserList">
-            <p class="loading-text">Завантаження...</p>
+            <p style="color: var(--text-muted);">Завантаження...</p>
         </div>
 
         <div class="wins-section">
             <h3 style="font-size: 16px; margin-bottom: 12px; color: #fff;">Останні виграші:</h3>
             <div id="adminWinsList">
-                <p class="loading-text">Завантаження...</p>
+                <p style="color: var(--text-muted);">Завантаження...</p>
             </div>
         </div>
     </div>
@@ -699,6 +737,16 @@
             { id: 12, name: "Blizz 30ml", price: 280, img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg", desc: "Для справжніх гурманів." }
         ];
 
+        const cartridges = [
+            { id: 101, name: "Картридж Xros", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10", desc: "В наявності 3мл 0.6ом, 3мл 0.8ом, 3мл 0.4ом" },
+            { id: 102, name: "Картридж Lost Vape Ursa", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10", desc: "В наявності 0.8ом, 0.6ом" },
+            { id: 103, name: "Картриджі Vopoo Argus", price: 140, img: "https://content2.rozetka.com.ua/goods/images/big/591045284.jpg", desc: "Якісні картриджі для Vopoo Argus. В наявності різні опори." },
+            { id: 104, name: "Картриджі Vopoo Vinci", price: 140, img: "https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg", desc: "Оригінальні картриджі для Vopoo Vinci." },
+            { id: 105, name: "Картриджі Oxva NeXlim", price: 140, img: "https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
+            { id: 106, name: "Картриджі Oxva Xlim", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10", desc: "Картриджі для лінійки Oxva Xlim." },
+            { id: 107, name: "Картриджі GeekVape Q", price: 120, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
+        ];
+
         // ================== РОБОТА З JSONBIN ==================
         async function loadDatabase() {
             try {
@@ -745,7 +793,6 @@
                 db.users[telegramId] = { name: username, spins: 0 };
                 await saveDatabase(db);
             } else {
-                // оновлюємо ім'я
                 db.users[telegramId].name = username;
                 await saveDatabase(db);
             }
@@ -778,7 +825,6 @@
             const container = document.getElementById('adminUserList');
             const winsContainer = document.getElementById('adminWinsList');
 
-            // Користувачі
             container.innerHTML = "";
             const keys = Object.keys(db.users || {});
             if (keys.length === 0) {
@@ -803,9 +849,8 @@
                 });
             }
 
-            // Виграші
             winsContainer.innerHTML = "";
-            const wins = (db.wins || []).slice().reverse().slice(0, 30); // останні 30
+            const wins = (db.wins || []).slice().reverse().slice(0, 30);
             if (wins.length === 0) {
                 winsContainer.innerHTML = "<p style='color: var(--text-muted);'>Виграшів ще немає</p>";
             } else {
@@ -936,7 +981,6 @@
             isSpinning = true;
             document.getElementById("resultBox").style.display = "none";
 
-            // Списуємо спробу одразу
             userSpins--;
             updateSpinsDisplay();
 
@@ -970,7 +1014,6 @@
                 document.getElementById("prizeDesc").innerText = lastWonPrize;
                 document.getElementById("resultBox").style.display = "block";
 
-                // Зберігаємо виграш
                 const db2 = await loadDatabase();
                 if (!db2.wins) db2.wins = [];
                 db2.wins.push({
@@ -979,7 +1022,6 @@
                     prize: lastWonPrize,
                     date: new Date().toISOString()
                 });
-                // залишаємо тільки останні 100 виграшів
                 if (db2.wins.length > 100) db2.wins = db2.wins.slice(-100);
                 await saveDatabase(db2);
 
@@ -1008,9 +1050,10 @@
         function openCategory(cat) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             if (cat === 'liquids') {
-                renderLiquidsList();
+                renderProductsList('liquidsList', liquids);
                 document.getElementById('liquids-tab').classList.add('active');
             } else if (cat === 'cartridges') {
+                renderProductsList('cartridgesList', cartridges);
                 document.getElementById('cartridges-tab').classList.add('active');
             } else if (cat === 'pods') {
                 document.getElementById('pods-tab').classList.add('active');
@@ -1024,10 +1067,10 @@
             document.getElementById('shop-tab').classList.add('active');
         }
 
-        function renderLiquidsList() {
-            const container = document.getElementById('liquidsList');
+        function renderProductsList(containerId, items) {
+            const container = document.getElementById(containerId);
             container.innerHTML = '';
-            liquids.forEach(item => {
+            items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.onclick = () => openProductDetail(item);
