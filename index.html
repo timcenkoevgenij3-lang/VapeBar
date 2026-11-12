@@ -7,10 +7,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0f111a;
-            --card-bg: #1a1d2d;
+            --bg-dark: #0b0d14;
+            --card-bg: #151828;
             --accent: #7c4dff;
-            --accent-glow: rgba(124, 77, 255, 0.4);
+            --accent-gradient: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%);
+            --accent-glow: rgba(124, 77, 255, 0.35);
             --text-main: #ffffff;
             --text-muted: #9ba1b9;
             --gold: #ffd700;
@@ -20,21 +21,25 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(circle at top, #1e2238 0%, var(--bg-dark) 100%);
+            background: var(--bg-dark);
             color: var(--text-main);
             margin: 0;
-            padding: 0;
+            padding: 16px;
             padding-bottom: 90px;
             min-height: 100vh;
             box-sizing: border-box;
             user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .tab-content {
             display: none;
-            padding: 20px 16px;
+            width: 100%;
+            max-width: 400px;
             text-align: center;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.25s ease;
         }
 
         .tab-content.active {
@@ -42,13 +47,14 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            margin: 0 0 6px 0;
-            font-size: 24px;
+            margin: 0 0 4px 0;
+            font-size: 26px;
+            font-weight: 800;
             background: linear-gradient(90deg, #fff, #b39ddb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -57,85 +63,19 @@
         .subtitle {
             color: var(--text-muted);
             font-size: 14px;
-            margin-bottom: 15px;Бля, бачу по скріншоту! Я випадково скопіював шматок пояснення прямо всередину файлу на початку (`Зрозумів, у чому прикол...`), через що зламався весь код, заблокувалося виконання скриптів, пропала кнопка адміна і зависло «Завантаження...». Моя тупість, вибачай.
-
-Ось абсолютно чистий, вилизаний код **без жодних зайвих лівих текстів**. Вкладка «Асортимент» працюватиме, кнопка «Адмін» для твого ID `1249588139` гарантовано з'явиться, а колесо і хмара не будуть зависати.
-
-Повністю заміни вміст свого файлу `index.html` на цей код:
-
-```html
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VapeBar — Колесо Фортуни</title>
-    <script src="[https://telegram.org/js/telegram-web-app.js](https://telegram.org/js/telegram-web-app.js)"></script>
-    <style>
-        :root {
-            --bg-dark: #0f111a;
-            --card-bg: #1a1d2d;
-            --accent: #7c4dff;
-            --accent-glow: rgba(124, 77, 255, 0.4);
-            --text-main: #ffffff;
-            --text-muted: #9ba1b9;
-            --gold: #ffd700;
-            --danger: #ff5252;
-            --success: #00c853;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(circle at top, #1e2238 0%, var(--bg-dark) 100%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 90px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 20px 16px;
-            text-align: center;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            margin: 0 0 6px 0;
-            font-size: 24px;
-            background: linear-gradient(90deg, #fff, #b39ddb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .balance-card {
-            background: rgba(124, 77, 255, 0.15);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 77, 255, 0.3);
+            border-radius: 16px;
+            padding: 14px 18px;
             margin: 0 auto 20px auto;
-            max-width: 300px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
         .balance-info {
@@ -149,7 +89,7 @@
         }
 
         .balance-info b {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--gold);
         }
 
@@ -157,17 +97,20 @@
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 10px 16px;
+            font-size: 14px;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+            transition: transform 0.1s;
         }
+        .btn-pay-spin:active { transform: scale(0.95); }
 
         .wheel-wrapper {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             margin: 0 auto 20px auto;
             display: flex;
             align-items: center;
@@ -176,11 +119,11 @@
 
         .wheel-outer-ring {
             position: absolute;
-            width: 280px;
-            height: 280px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
             background: linear-gradient(135deg, #7c4dff, #00e5ff);
-            box-shadow: 0 0 25px var(--accent-glow);
+            box-shadow: 0 0 30px var(--accent-glow);
             padding: 6px;
             box-sizing: border-box;
         }
@@ -191,12 +134,12 @@
             border-radius: 50%;
             display: block;
             background: #1a1d2d;
-            transition: transform 4.5s cubic-bezier(0.12, 0.85, 0.18, 1);
+            transition: transform 4.5s cubic-bezier(0.15, 0.85, 0.12, 1);
         }
 
         .pointer {
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -210,8 +153,8 @@
 
         .wheel-center {
             position: absolute;
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             background: var(--bg-dark);
             border: 3px solid var(--gold);
             border-radius: 50%;
@@ -219,152 +162,168 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.8);
+            font-size: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #7c4dff 0%, #536dfe 100%);
+            background: var(--accent-gradient);
             color: #fff;
             border: none;
-            padding: 14px 28px;
+            padding: 16px 24px;
             font-size: 16px;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            max-width: 280px;
-            box-shadow: 0 6px 20px var(--accent-glow);
-            transition: transform 0.15s, opacity 0.15s;
+            max-width: 300px;
+            box-shadow: 0 8px 24px var(--accent-glow);
+            transition: transform 0.1s, opacity 0.1s;
         }
 
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
         .result-box {
-            display: none;
+            display: none; /* ЗАВЖДИ ПРИХОВАНО ПОКИ НЕ ВИГРАЄ */
             background: var(--card-bg);
-            border: 1px solid var(--gold);
-            border-radius: 14px;
-            padding: 16px;
-            margin: 18px auto 0 auto;
-            max-width: 280px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px auto 0 auto;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .result-box h3 {
             margin: 0 0 6px 0;
             color: var(--gold);
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .result-box p {
-            margin: 0 0 14px 0;
-            font-size: 14px;
-            color: #e0e0e0;
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
         }
 
         .btn-claim {
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 11px 20px;
+            padding: 12px 20px;
             font-size: 15px;
             font-weight: 700;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
         }
 
         .shop-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 14px;
-            max-width: 400px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 16px;
-            border-radius: 14px;
+            padding: 16px 18px;
+            border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.06);
             text-align: left;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .card-info h3 { margin: 0 0 4px 0; font-size: 17px; }
+        .card-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #fff; }
         .card-info p { margin: 0; font-size: 13px; color: var(--text-muted); }
         .card-price { font-size: 16px; font-weight: 700; color: #00e5ff; margin-top: 6px; }
 
         .btn-buy {
             background: rgba(124, 77, 255, 0.2);
-            color: #b39ddb;
+            color: #d1c4e9;
             border: 1px solid var(--accent);
             padding: 10px 16px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
+            transition: background 0.2s;
         }
+        .btn-buy:active { background: rgba(124, 77, 255, 0.4); }
 
-        /* Стилі адмін-панелі */
+        /* Адмін-панель */
         .admin-user-card {
             background: var(--card-bg);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             text-align: left;
         }
-        .admin-user-info b { display: block; font-size: 15px; color: #fff; }
+        .admin-user-info b { display: block; font-size: 16px; color: #fff; }
         .admin-user-info span { font-size: 12px; color: var(--text-muted); }
-        .admin-controls { display: flex; gap: 6px; align-items: center; }
+        .admin-controls { display: flex; gap: 8px; align-items: center; }
         .admin-btn {
             background: var(--accent);
             color: #fff;
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .admin-btn.minus { background: var(--danger); }
         
         .add-user-box {
             background: var(--card-bg);
             border: 1px dashed var(--accent);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
             text-align: left;
         }
         .add-user-box input {
             width: 100%;
-            padding: 8px;
+            padding: 10px 12px;
             margin-top: 6px;
-            margin-bottom: 8px;
-            background: #0f111a;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.15);
             color: #fff;
-            border-radius: 6px;
+            border-radius: 10px;
             box-sizing: border-box;
+            font-size: 14px;
         }
 
+        /* Навігація */
         .tab-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 64px;
-            background: rgba(20, 23, 36, 0.95);
-            backdrop-filter: blur(10px);
+            height: 70px;
+            background: rgba(15, 17, 26, 0.95);
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -376,17 +335,18 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            padding: 6px 12px;
+            padding: 6px 16px;
+            transition: color 0.2s;
         }
 
-        .tab-btn span.icon { font-size: 20px; }
-        .tab-btn.active { color: #fff; font-weight: 600; }
+        .tab-btn span.icon { font-size: 22px; }
+        .tab-btn.active { color: #fff; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -415,8 +375,8 @@
         <button id="spinBtn" class="btn-primary" onclick="spinWheel()" disabled>Завантаження...</button>
 
         <div id="resultBox" class="result-box">
-            <h3 id="prizeTitle">Вітаємо!</h3>
-            <p id="prizeDesc">Твій виграш готовий.</p>
+            <h3 id="prizeTitle">🎉 Твій виграш:</h3>
+            <p id="prizeDesc">Безкоштовна доставка</p>
             <button class="btn-claim" onclick="claimPrize()">Забрати приз у менеджера</button>
         </div>
     </div>
@@ -459,20 +419,18 @@
     <!-- 3. АДМІН-ПАНЕЛЬ -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Повна база гравців та управління спробами</div>
+        <div class="subtitle">Управління спробами гравців</div>
         
-        <div style="max-width: 450px; margin: 0 auto;">
-            <div class="add-user-box">
-                <b style="font-size: 14px; color: var(--gold);">➕ Надати спроби по ID:</b>
-                <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
-                <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
-                <button class="btn-primary" style="max-width: 100%; padding: 10px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
-            </div>
+        <div class="add-user-box">
+            <b style="font-size: 14px; color: var(--gold);">➕ Додати спроби за ID:</b>
+            <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
+            <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
+            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
+        </div>
 
-            <h3 style="text-align: left; font-size: 16px; margin-bottom: 10px; color: #fff;">Список усіх гравців у базі:</h3>
-            <div id="adminUserList">
-                <p style="color: var(--text-muted);">Завантаження...</p>
-            </div>
+        <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Список гравців у базі:</h3>
+        <div id="adminUserList">
+            <p style="color: var(--text-muted);">Завантаження...</p>
         </div>
     </div>
 
@@ -506,8 +464,9 @@
         let userSpins = 0;
         let allUsersData = {};
 
+        // Завантаження глобальної бази (використовуємо глобальний ключ в хмарі адміністратора або загальний пул)
         function loadDatabase(callback) {
-            tg.CloudStorage.getItem("vape_users_db", (err, res) => {
+            tg.CloudStorage.getItem("vape_global_db", (err, res) => {
                 if (!err && res) {
                     try {
                         allUsersData = JSON.parse(res);
@@ -522,7 +481,7 @@
         }
 
         function saveDatabase(callback) {
-            tg.CloudStorage.setItem("vape_users_db", JSON.stringify(allUsersData), (err) => {
+            tg.CloudStorage.setItem("vape_global_db", JSON.stringify(allUsersData), (err) => {
                 if (!err && callback) callback();
             });
         }
@@ -535,16 +494,19 @@
             }
 
             loadDatabase((db) => {
+                // Перевіряємо, чи є юзер в базі
                 if (!db[telegramId]) {
                     db[telegramId] = { name: username, spins: 0 };
-                    saveDatabase();
+                    saveDatabase(() => {
+                        userSpins = 0;
+                        updateSpinsDisplay();
+                    });
                 } else {
                     db[telegramId].name = username;
                     saveDatabase();
+                    userSpins = Number(db[telegramId].spins) || 0;
+                    updateSpinsDisplay();
                 }
-
-                userSpins = db[telegramId].spins;
-                updateSpinsDisplay();
 
                 if (telegramId === ADMIN_ID) {
                     document.getElementById('adminTabBtn').style.display = "flex";
@@ -588,7 +550,7 @@
                         </div>
                         <div class="admin-controls">
                             <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">-</button>
-                            <span style="font-weight:bold; min-width:20px; text-align:center; color:#fff;">${u.spins}</span>
+                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins}</span>
                             <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
                         </div>
                     `;
@@ -640,6 +602,7 @@
             });
         }
 
+        // Логіка Колеса Фортуни
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -682,14 +645,14 @@
                 ctx.rotate(angle + arcSize / 2);
                 ctx.textAlign = "right";
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 24px -apple-system, sans-serif";
+                ctx.font = "bold 22px -apple-system, sans-serif";
                 ctx.shadowColor = "rgba(0,0,0,0.8)";
                 ctx.shadowBlur = 6;
 
                 const lines = prizes[i].label.split("\n");
                 lines.forEach((line, idx) => {
-                    const yOffset = (idx - (lines.length - 1) / 2) * 28;
-                    ctx.fillText(line, radius - 35, yOffset + 8);
+                    const yOffset = (idx - (lines.length - 1) / 2) * 26;
+                    ctx.fillText(line, radius - 30, yOffset + 6);
                 });
                 ctx.restore();
             }
@@ -749,7 +712,6 @@
                     tg.HapticFeedback.notificationOccurred("success");
                 }
 
-                document.getElementById("prizeTitle").innerText = "🎉 Твій виграш:";
                 document.getElementById("prizeDesc").innerText = lastWonPrize;
                 document.getElementById("resultBox").style.display = "block";
             }, 4600);
@@ -757,17 +719,17 @@
 
         function requestSpin() {
             const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн). Мій профіль: ${username} (ID: ${telegramId})`);
-            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         function claimPrize() {
             const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Я виграв у Колесі Фортуни приз: [ ${lastWonPrize} ]. Ось мій скріншот 👇`);
-            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         function buyItem(itemName) {
             const text = encodeURIComponent(`Привіт! Мій нік: ${username}. Хочу замовити з асортименту: ${itemName}`);
-            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         function switchTab(tabId, btn) {
