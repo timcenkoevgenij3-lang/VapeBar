@@ -3,9 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VapeBar — Колесо Фортуни</title>Зрозумів, у чому прикол. По-перше, кнопки «Асортимент» і «Адмін» не реагували на кліки через невеликий баз у функціоналі перемикання тактів (там був зайвий символ у селекторі). По-друге, щоб ти міг бачити всіх користувачів і керувати їхніми спінами незалежно від того, чи заходили вони щойно з іншого пристрою, адмін-панель тепер підтягує і показує всю базу даних напряму з хмари з можливістю чітко міняти кількість спроб.
+    <title>VapeBar — Колесо Фортуни</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f111a;
+            --card-bg: #1a1d2d;
+            --accent: #7c4dff;
+            --accent-glow: rgba(124, 77, 255, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #9ba1b9;
+            --gold: #ffd700;
+            --danger: #ff5252;
+            --success: #00c853;
+        }
 
-Ось повністю виправлений і готовий код для твого `index.html`. Заміни ним вміст файлу, закоміть на GitHub — і все буде чітко перемикатися й працювати:
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top, #1e2238 0%, var(--bg-dark) 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 90px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 16px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin: 0 0 6px 0;
+            font-size: 24px;
+            background: linear-gradient(90deg, #fff, #b39ddb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;Бля, бачу по скріншоту! Я випадково скопіював шматок пояснення прямо всередину файлу на початку (`Зрозумів, у чому прикол...`), через що зламався весь код, заблокувалося виконання скриптів, пропала кнопка адміна і зависло «Завантаження...». Моя тупість, вибачай.
+
+Ось абсолютно чистий, вилизаний код **без жодних зайвих лівих текстів**. Вкладка «Асортимент» працюватиме, кнопка «Адмін» для твого ID `1249588139` гарантовано з'явиться, а колесо і хмара не будуть зависати.
+
+Повністю заміни вміст свого файлу `index.html` на цей код:
 
 ```html
 <!DOCTYPE html>
@@ -406,10 +462,9 @@
         <div class="subtitle">Повна база гравців та управління спробами</div>
         
         <div style="max-width: 450px; margin: 0 auto;">
-            <!-- Швидке додавання за ID -->
             <div class="add-user-box">
                 <b style="font-size: 14px; color: var(--gold);">➕ Надати спроби по ID:</b>
-                <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця (напр: 1249588139)">
+                <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
                 <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
                 <button class="btn-primary" style="max-width: 100%; padding: 10px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
             </div>
@@ -439,7 +494,7 @@
 
     <script>
         const MANAGER_USERNAME = "vapebarman";
-        const ADMIN_ID = "1249588139"; // Твій ID
+        const ADMIN_ID = "1249588139";
 
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -451,7 +506,6 @@
         let userSpins = 0;
         let allUsersData = {};
 
-        // Завантаження бази з хмари Telegram
         function loadDatabase(callback) {
             tg.CloudStorage.getItem("vape_users_db", (err, res) => {
                 if (!err && res) {
@@ -473,7 +527,6 @@
             });
         }
 
-        // Ініціалізація
         function initApp() {
             if (!telegramId) {
                 document.getElementById('userSpins').innerText = "0";
@@ -482,15 +535,10 @@
             }
 
             loadDatabase((db) => {
-                // Реєструємо поточного юзера, якщо його нема
                 if (!db[telegramId]) {
-                    db[telegramId] = {
-                        name: username,
-                        spins: 0
-                    };
+                    db[telegramId] = { name: username, spins: 0 };
                     saveDatabase();
                 } else {
-                    // Оновлюємо ім'я, якщо змінилося
                     db[telegramId].name = username;
                     saveDatabase();
                 }
@@ -498,7 +546,6 @@
                 userSpins = db[telegramId].spins;
                 updateSpinsDisplay();
 
-                // Якщо це ТИ — відкриваємо кнопку Адміна
                 if (telegramId === ADMIN_ID) {
                     document.getElementById('adminTabBtn').style.display = "flex";
                 }
@@ -519,7 +566,6 @@
             }
         }
 
-        // Рендер адмін-панелі (список усіх гравців)
         function renderAdminPanel() {
             loadDatabase((db) => {
                 const container = document.getElementById('adminUserList');
@@ -551,7 +597,6 @@
             });
         }
 
-        // Зміна спінів кнопками + / - в адмінці
         window.changeSpins = function(targetId, delta) {
             loadDatabase((db) => {
                 if (db[targetId]) {
@@ -568,7 +613,6 @@
             });
         }
 
-        // Додавання спінів за введеним вручну ID
         window.addNewUserSpins = function() {
             const targetId = document.getElementById('newUserId').value.trim();
             const count = parseInt(document.getElementById('newUserSpinsCount').value) || 1;
@@ -596,7 +640,6 @@
             });
         }
 
-        // Логіка Колеса Фортуни
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -727,7 +770,6 @@
             tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
         }
 
-        // Перемикання вкладки
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -735,7 +777,6 @@
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
 
-            // Якщо клікнули на адмін-панель — одразу підтягуємо і рендеримо свіжий список гравців
             if (tabId === 'admin-tab') {
                 renderAdminPanel();
             }
