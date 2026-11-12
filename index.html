@@ -1,10 +1,11 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VapeBar — Колесо Фортуни</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-dark: #0f111a;
@@ -58,7 +59,6 @@
             margin-bottom: 15px;
         }
 
-        /* Блок балансу спроб */
         .balance-card {
             background: rgba(124, 77, 255, 0.15);
             border: 1px solid var(--accent);
@@ -97,7 +97,6 @@
             cursor: pointer;
         }
 
-        /* Контейнер Колеса */
         .wheel-wrapper {
             position: relative;
             width: 280px;
@@ -175,7 +174,6 @@
         .btn-primary:active { transform: scale(0.97); }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
-        /* Картка результату */
         .result-box {
             display: none;
             background: var(--card-bg);
@@ -211,7 +209,6 @@
             width: 100%;
         }
 
-        /* Асортимент */
         .shop-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -245,7 +242,6 @@
             cursor: pointer;
         }
 
-        /* Нижня навігація */
         .tab-bar {
             position: fixed;
             bottom: 0;
@@ -280,16 +276,14 @@
 </head>
 <body>
 
-    <!-- Вкладка 1: Колесо фортуни -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle">Вартість прокруту — 150 грн</div>
 
-        <!-- Баланс спроб -->
         <div class="balance-card">
             <div class="balance-info">
                 <span>Ваші спроби:</span>
-                <b id="userSpins">0</b>
+                <b id="userSpins">...</b>
             </div>
             <button class="btn-pay-spin" onclick="requestSpin()">Купити прокрут</button>
         </div>
@@ -302,7 +296,7 @@
             <div class="wheel-center">🔥</div>
         </div>
 
-        <button id="spinBtn" class="btn-primary" onclick="spinWheel()">Крутити колесо</button>
+        <button id="spinBtn" class="btn-primary" onclick="spinWheel()" disabled>Завантаження...</button>
 
         <div id="resultBox" class="result-box">
             <h3 id="prizeTitle">Вітаємо!</h3>
@@ -311,7 +305,6 @@
         </div>
     </div>
 
-    <!-- Вкладка 2: Асортимент -->
     <div id="shop-tab" class="tab-content">
         <h2>Асортимент рідин</h2>
         <div class="subtitle">Обирай об'єм та замовляй у 1 клік</div>
@@ -346,7 +339,6 @@
         </div>
     </div>
 
-    <!-- Вкладка 3: Міні-ігри -->
     <div id="games-tab" class="tab-content">
         <h2>Бонуси</h2>
         <div class="subtitle">Щоденні акції та розіграші</div>
@@ -357,7 +349,6 @@
         </div>
     </div>
 
-    <!-- Нижня навігація -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
@@ -376,25 +367,43 @@
     <script>
         const MANAGER_USERNAME = "vapebarman";
 
+        const SUPABASE_URL = "https://vxulrifpzdmicfjyxuq.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_6mbJ9qRvKkHtYBFfIbJFkg_dy3vC_Be";
+
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const spinCode = urlParams.get('code');
+        const tgUser = tg.initDataUnsafe?.user;
+        const telegramId = tgUser ? tgUser.id : null;
+        const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
-        if (spinCode) {
-            const usedCodes = JSON.parse(localStorage.getItem('vape_used_codes') || '[]');
-            if (!usedCodes.includes(spinCode)) {
-                let currentSpins = parseInt(localStorage.getItem('vape_user_spins')) || 0;
-                localStorage.setItem('vape_user_spins', currentSpins + 1);
-                usedCodes.push(spinCode);
-                localStorage.setItem('vape_used_codes', JSON.stringify(usedCodes));
+        let userSpins = 0;
+
+        async function loadUserSpins() {
+            if (!telegramId) {
+                document.getElementById('userSpins').innerText = "0";
+                document.getElementById('spinBtn').innerText = "Відкрийте в Telegram";
+                return;
             }
-            window.history.replaceState({}, document.title, window.location.pathname);
+
+            const { data, error } = await supabaseClient
+                .from('user_spins')
+                .select('spins')
+                .eq('telegram_id', telegramId)
+                .single();
+
+            if (data) {
+                userSpins = data.spins;
+            } else {
+                await supabaseClient.from('user_spins').insert([{ telegram_id: telegramId, spins: 0 }]);
+                userSpins = 0;
+            }
+            updateSpinsDisplay();
         }
 
-        let userSpins = parseInt(localStorage.getItem('vape_user_spins')) || 0;
-        updateSpinsDisplay();
+        loadUserSpins();
 
         function updateSpinsDisplay() {
             document.getElementById('userSpins').innerText = userSpins;
@@ -475,16 +484,19 @@
             return 0;
         }
 
-        function spinWheel() {
-            if (isSpinning || userSpins <= 0) return;
-            
-            userSpins--;
-            localStorage.setItem('vape_user_spins', userSpins);
-            updateSpinsDisplay();
+        async function spinWheel() {
+            if (isSpinning || userSpins <= 0 || !telegramId) return;
 
             isSpinning = true;
-            const resultBox = document.getElementById("resultBox");
-            resultBox.style.display = "none";
+            document.getElementById("resultBox").style.display = "none";
+
+            userSpins--;
+            await supabaseClient
+                .from('user_spins')
+                .update({ spins: userSpins })
+                .eq('telegram_id', telegramId);
+
+            updateSpinsDisplay();
 
             if (tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred("medium");
@@ -514,23 +526,21 @@
 
                 document.getElementById("prizeTitle").innerText = "🎉 Твій виграш:";
                 document.getElementById("prizeDesc").innerText = lastWonPrize;
-                resultBox.style.display = "block";
+                document.getElementById("resultBox").style.display = "block";
             }, 4600);
         }
 
         function requestSpin() {
-            const text = encodeURIComponent("Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн). Мій профіль: @" + (tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || "клієнт"));
+            const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн). Мій профіль: ${username} (ID: ${telegramId})`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         function claimPrize() {
-            const username = tg.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : (tg.initDataUnsafe?.user?.first_name || "Клієнт");
-            const text = encodeURIComponent(`Привіт! Мій нік: ${username}. Я виграв у Колесі Фортуни приз: [ ${lastWonPrize} ]. Ось мій скріншот виграшу 👇`);
+            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Я виграв у Колесі Фортуни приз: [ ${lastWonPrize} ]. Ось мій скріншот 👇`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         function buyItem(itemName) {
-            const username = tg.initDataUnsafe?.user?.username ? `@${tg.initDataUnsafe.user.username}` : (tg.initDataUnsafe?.user?.first_name || "Клієнт");
             const text = encodeURIComponent(`Привіт! Мій нік: ${username}. Хочу замовити з асортименту: ${itemName}`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
