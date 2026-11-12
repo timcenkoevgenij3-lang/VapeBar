@@ -17,7 +17,10 @@
             --gold: #ffd700;
             --danger: #ff5252;
             --success: #00c853;
+            --blue: #00e5ff;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -25,9 +28,8 @@
             color: var(--text-main);
             margin: 0;
             padding: 16px;
-            padding-bottom: 95px;
+            padding-bottom: 90px;
             min-height: 100vh;
-            box-sizing: border-box;
             user-select: none;
             display: flex;
             flex-direction: column;
@@ -39,7 +41,7 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            animation: fadeIn 0.2s ease;
+            animation: fadeIn 0.25s ease;
         }
 
         .tab-content.active {
@@ -47,12 +49,12 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
-            margin: 0 0 6px 0;
+            margin: 0 0 4px 0;
             font-size: 26px;
             font-weight: 800;
             background: linear-gradient(90deg, #fff, #b39ddb);
@@ -66,11 +68,12 @@
             margin-bottom: 20px;
         }
 
+        /* ===== Balance & Wheel (без змін) ===== */
         .balance-card {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.3);
             border-radius: 16px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             margin: 0 auto 20px auto;
             display: flex;
             justify-content: space-between;
@@ -78,18 +81,14 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .balance-info {
-            text-align: left;
-        }
-
         .balance-info span {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             display: block;
         }
 
         .balance-info b {
-            font-size: 22px;
+            font-size: 20px;
             color: var(--gold);
         }
 
@@ -97,51 +96,18 @@
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 12px 18px;
+            padding: 10px 16px;
             font-size: 14px;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
         }
 
-        /* Блок активації промокоду для гравців */
-        .promo-box {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 16px;
-            padding: 14px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .promo-box input {
-            width: 100%;
-            padding: 10px 12px;
-            margin-top: 6px;
-            margin-bottom: 10px;
-            background: #0b0d14;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        .btn-promo {
-            background: var(--gold);
-            color: #0b0d14;
-            border: none;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: 800;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-        }
-
         .wheel-wrapper {
             position: relative;
-            width: 310px;
-            height: 310px;
+            width: 300px;
+            height: 300px;
             margin: 0 auto 20px auto;
             display: flex;
             align-items: center;
@@ -150,8 +116,8 @@
 
         .wheel-outer-ring {
             position: absolute;
-            width: 310px;
-            height: 310px;
+            width: 300px;
+            height: 300px;
             border-radius: 50%;
             background: linear-gradient(135deg, #7c4dff, #00e5ff);
             box-shadow: 0 0 30px var(--accent-glow);
@@ -207,7 +173,7 @@
             border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            max-width: 310px;
+            max-width: 300px;
             box-shadow: 0 8px 24px var(--accent-glow);
         }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -219,9 +185,8 @@
             border-radius: 16px;
             padding: 18px;
             margin: 20px auto 0 auto;
-            max-width: 310px;
+            max-width: 300px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            box-sizing: border-box;
         }
 
         .result-box h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 20px; }
@@ -239,35 +204,254 @@
             width: 100%;
         }
 
-        .shop-grid { display: flex; flex-direction: column; gap: 14px; width: 100%; }
-
-        .card {
-            background: var(--card-bg);
-            padding: 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.06);
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* ===== Категорії асортименту ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+            margin-top: 10px;
         }
 
-        .card-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #fff; }
-        .card-info p { margin: 0; font-size: 13px; color: var(--text-muted); }
-        .card-price { font-size: 16px; font-weight: 700; color: #00e5ff; margin-top: 6px; }
+        .category-btn {
+            background: linear-gradient(145deg, #1e2235, #151828);
+            border: 1px solid rgba(124, 77, 255, 0.4);
+            border-radius: 18px;
+            padding: 22px 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
 
-        .btn-buy {
+        .category-btn:active {
+            transform: scale(0.96);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .category-btn .icon {
+            font-size: 32px;
+        }
+
+        .category-btn span:last-child {
+            background: linear-gradient(90deg, #b388ff, #00e5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== Список товарів ===== */
+        .products-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .back-btn {
             background: rgba(124, 77, 255, 0.2);
+            border: 1px solid var(--accent);
+            color: #d1c4e9;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .product-card:active {
+            border-color: var(--accent);
+        }
+
+        .product-card img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #0b0d14;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-info .price {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+
+        .btn-order-small {
+            background: rgba(124, 77, 255, 0.25);
             color: #d1c4e9;
             border: 1px solid var(--accent);
-            padding: 12px 18px;
-            border-radius: 12px;
+            padding: 7px 12px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
         }
 
-        /* Адмін-панель */
+        /* ===== Повна картка товару ===== */
+        .product-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 200;
+            overflow-y: auto;
+            padding: 20px 16px 40px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .product-detail.active {
+            display: block;
+        }
+
+        .detail-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .detail-img {
+            width: 100%;
+            max-width: 320px;
+            height: 280px;
+            object-fit: contain;
+            border-radius: 20px;
+            background: #151828;
+            margin: 30px auto 20px;
+            display: block;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .detail-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            background: linear-gradient(90deg, #fff, #b39ddb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .detail-price {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--blue);
+            margin-bottom: 16px;
+        }
+
+        .detail-desc {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 28px;
+            text-align: left;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-order-big {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 16px 24px;
+            font-size: 17px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        /* ===== Admin ===== */
+        .admin-user-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .admin-user-info b { display: block; font-size: 16px; color: #fff; }
+        .admin-user-info span { font-size: 12px; color: var(--text-muted); }
+        .admin-controls { display: flex; gap: 8px; align-items: center; }
+        .admin-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .admin-btn.minus { background: var(--danger); }
+        
         .add-user-box {
             background: var(--card-bg);
             border: 1px dashed var(--accent);
@@ -285,18 +469,17 @@
             border: 1px solid rgba(255,255,255,0.15);
             color: #fff;
             border-radius: 10px;
-            box-sizing: border-box;
             font-size: 14px;
         }
 
-        /* Нижня навігація */
+        /* ===== Tab bar ===== */
         .tab-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 75px;
-            background: rgba(11, 13, 20, 0.95);
+            height: 70px;
+            background: rgba(15, 17, 26, 0.95);
             backdrop-filter: blur(12px);
             display: flex;
             justify-content: space-around;
@@ -309,21 +492,28 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            padding: 8px 20px;
+            gap: 4px;
+            padding: 6px 16px;
         }
 
-        .tab-btn span.icon { font-size: 24px; }
+        .tab-btn span.icon { font-size: 22px; }
         .tab-btn.active { color: #fff; font-weight: 700; }
+
+        .empty-state {
+            color: var(--text-muted);
+            padding: 40px 20px;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- ==================== КОЛЕСО ==================== -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle">Вартість прокруту — 150 грн</div>
@@ -334,13 +524,6 @@
                 <b id="userSpins">...</b>
             </div>
             <button class="btn-pay-spin" onclick="requestSpin()">Купити прокрут</button>
-        </div>
-
-        <!-- Поле введення секретного коду активації для покупця -->
-        <div class="promo-box">
-            <b style="font-size: 13px; color: var(--gold);">🎟️ Маєш код активації?</b>
-            <input type="text" id="promoInput" placeholder="Введи секретний код тут">
-            <button class="btn-promo" onclick="activatePromo()">Активувати спроби</button>
         </div>
 
         <div class="wheel-wrapper">
@@ -360,53 +543,106 @@
         </div>
     </div>
 
+    <!-- ==================== АСОРТИМЕНТ (категорії) ==================== -->
     <div id="shop-tab" class="tab-content">
-        <h2>Асортимент рідин</h2>
-        <div class="subtitle">Обирай об'єм та замовляй у 1 клік</div>
+        <h2>Асортимент</h2>
+        <div class="subtitle">Обери категорію</div>
         
-        <div class="shop-grid">
-            <div class="card">
-                <div class="card-info">
-                    <h3>Рідина 10 ml</h3>
-                    <p>Компактний флакон на пробу</p>
-                    <div class="card-price">140 грн</div>
-                </div>
-                <button class="btn-buy" onclick="buyItem('Рідина 10 ml — 140 грн')">Замовити</button>
-            </div>
-
-            <div class="card">
-                <div class="card-info">
-                    <h3>Рідина 15 ml</h3>
-                    <p>Оптимальний формат на кожен день</p>
-                    <div class="card-price">170 грн</div>
-                </div>
-                <button class="btn-buy" onclick="buyItem('Рідина 15 ml — 170 грн')">Замовити</button>
-            </div>
-
-            <div class="card">
-                <div class="card-info">
-                    <h3>Рідина 30 ml</h3>
-                    <p>Максимальний запас улюбленого смаку</p>
-                    <div class="card-price">250 грн</div>
-                </div>
-                <button class="btn-buy" onclick="buyItem('Рідина 30 ml — 250 грн')">Замовити</button>
-            </div>
+        <div class="category-grid">
+            <button class="category-btn" onclick="openCategory('liquids')">
+                <span class="icon">💧</span>
+                <span>РІДИНИ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('cartridges')">
+                <span class="icon">🔋</span>
+                <span>КАРТРИДЖІ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('pods')">
+                <span class="icon">📱</span>
+                <span>ПОД СИСТЕМИ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('promo')">
+                <span class="icon">🔥</span>
+                <span>АКЦІЇ</span>
+            </button>
         </div>
     </div>
 
-    <!-- АДМІН-ПАНЕЛЬ -->
+    <!-- ==================== СПИСОК РІДИН ==================== -->
+    <div id="liquids-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToCategories()">←</button>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">Рідини</h2>
+                <div class="subtitle" style="margin: 0;">Обирай і замовляй</div>
+            </div>
+        </div>
+        
+        <div class="products-list" id="liquidsList">
+            <!-- генерується JS -->
+        </div>
+    </div>
+
+    <!-- ==================== ІНШІ КАТЕГОРІЇ (заглушки) ==================== -->
+    <div id="cartridges-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToCategories()">←</button>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">Картриджі</h2>
+            </div>
+        </div>
+        <div class="empty-state">Незабаром з’являться товари 🔋</div>
+    </div>
+
+    <div id="pods-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToCategories()">←</button>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">Под-системи</h2>
+            </div>
+        </div>
+        <div class="empty-state">Незабаром з’являться товари 📱</div>
+    </div>
+
+    <div id="promo-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToCategories()">←</button>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">Акції</h2>
+            </div>
+        </div>
+        <div class="empty-state">Акції скоро будуть 🔥</div>
+    </div>
+
+    <!-- ==================== АДМІН ==================== -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Створення одноразових кодів активації</div>
+        <div class="subtitle">Управління спробами гравців</div>
         
         <div class="add-user-box">
-            <b style="font-size: 14px; color: var(--gold);">⚡ Згенерувати код для клієнта:</b>
-            <input type="number" id="codeSpinsCount" value="1" min="1" max="50" placeholder="Кількість спроб">
-            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="createPromoCode()">Створити одноразовий код</button>
-            <div id="codeOutput" style="margin-top: 14px; font-size: 15px; color: var(--gold); font-weight: bold; word-break: break-all;"></div>
+            <b style="font-size: 14px; color: var(--gold);">➕ Додати спроби за ID:</b>
+            <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
+            <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
+            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
+        </div>
+
+        <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Список гравців у базі:</h3>
+        <div id="adminUserList">
+            <p style="color: var(--text-muted);">Завантаження...</p>
         </div>
     </div>
 
+    <!-- ==================== ПОВНОЕЕКРАННА КАРТКА ТОВАРУ ==================== -->
+    <div id="productDetail" class="product-detail">
+        <button class="detail-close" onclick="closeProductDetail()">×</button>
+        <img id="detailImg" class="detail-img" src="" alt="">
+        <h2 id="detailTitle" class="detail-title"></h2>
+        <div id="detailPrice" class="detail-price"></div>
+        <p id="detailDesc" class="detail-desc"></p>
+        <button class="btn-order-big" onclick="orderCurrentProduct()">Оформити замовлення</button>
+    </div>
+
+    <!-- ==================== TAB BAR ==================== -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
@@ -428,12 +664,119 @@
 
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
         const tgUser = tg.initDataUnsafe?.user;
         const telegramId = tgUser ? String(tgUser.id) : null;
         const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
         let userSpins = 0;
+        let currentProduct = null;
+
+        // ========== ТОВАРИ РІДИН ==========
+        const liquids = [
+            {
+                id: 1,
+                name: "Chaser 10ml",
+                price: 140,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10",
+                desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту."
+            },
+            {
+                id: 2,
+                name: "Chaser Black 30ml",
+                price: 280,
+                img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg",
+                desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!"
+            },
+            {
+                id: 3,
+                name: "Chaser Nova 30ml",
+                price: 260,
+                img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg",
+                desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!"
+            },
+            {
+                id: 4,
+                name: "Chaser For Pods 30ml",
+                price: 280,
+                img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg",
+                desc: "Спеціально для под-систем. Яскравий смак і зручний формат."
+            },
+            {
+                id: 5,
+                name: "Chaser Beat 30ml",
+                price: 300,
+                img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg",
+                desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!"
+            },
+            {
+                id: 6,
+                name: "Hype 30ml",
+                price: 270,
+                img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg",
+                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
+            },
+            {
+                id: 7,
+                name: "Octobar 30ml",
+                price: 270,
+                img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg",
+                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
+            },
+            {
+                id: 8,
+                name: "Monarch 30ml",
+                price: 260,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s",
+                desc: "Бюджетно, але смачно."
+            },
+            {
+                id: 9,
+                name: "Flavorlab FL350",
+                price: 260,
+                img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg",
+                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
+            },
+            {
+                id: 10,
+                name: "Lucky 15ml",
+                price: 170,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10",
+                desc: "Для тих, хто хоче отримати максимум смаку."
+            },
+            {
+                id: 11,
+                name: "Lucky 30ml",
+                price: 290,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10",
+                desc: "Для тих, хто хоче отримати максимум смаку."
+            },
+            {
+                id: 12,
+                name: "Blizz 30ml",
+                price: 280,
+                img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg",
+                desc: "Для справжніх гурманів."
+            }
+        ];
+
+        // ========== БАЗА ДАНИХ ==========
+        function loadDatabase(callback) {
+            tg.CloudStorage.getItem("vape_global_db", (err, res) => {
+                let db = {};
+                if (!err && res) {
+                    try { db = JSON.parse(res); } catch (e) { db = {}; }
+                }
+                if (callback) callback(db);
+            });
+        }
+
+        function saveDatabase(db, callback) {
+            tg.CloudStorage.setItem("vape_global_db", JSON.stringify(db), (err) => {
+                if (!err && callback) callback();
+            });
+        }
 
         function initApp() {
             if (!telegramId) {
@@ -442,18 +785,27 @@
                 return;
             }
 
-            tg.CloudStorage.getItem("user_balance", (err, res) => {
-                userSpins = !err && res ? parseInt(res) : 0;
-                updateSpinsDisplay();
-            });
+            loadDatabase((db) => {
+                if (!db[telegramId]) {
+                    db[telegramId] = { name: username, spins: 0 };
+                } else {
+                    db[telegramId].name = username;
+                }
+                
+                saveDatabase(db, () => {
+                    userSpins = Number(db[telegramId].spins) || 0;
+                    updateSpinsDisplay();
+                });
 
-            if (telegramId === ADMIN_ID) {
-                document.getElementById('adminTabBtn').style.display = "flex";
-            }
+                if (telegramId === ADMIN_ID) {
+                    document.getElementById('adminTabBtn').style.display = "flex";
+                }
+            });
         }
 
         initApp();
 
+        // ========== ВІДОБРАЖЕННЯ СПРОБ ==========
         function updateSpinsDisplay() {
             document.getElementById('userSpins').innerText = userSpins;
             const spinBtn = document.getElementById('spinBtn');
@@ -466,66 +818,80 @@
             }
         }
 
-        // Адмін створює одноразовий код і зберігає його в загальну хмару
-        function createPromoCode() {
-            const count = parseInt(document.getElementById('codeSpinsCount').value) || 1;
-            const randomCode = "VAPE-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "-" + count;
+        // ========== АДМІНКА ==========
+        function renderAdminPanel() {
+            loadDatabase((db) => {
+                const container = document.getElementById('adminUserList');
+                container.innerHTML = "";
 
-            tg.CloudStorage.getItem("active_promo_codes", (err, res) => {
-                let codes = {};
-                if (!err && res) {
-                    try { codes = JSON.parse(res); } catch(e) { codes = {}; }
+                const keys = Object.keys(db);
+                if (keys.length === 0) {
+                    container.innerHTML = "<p style='color: var(--text-muted);'>База поки порожня.</p>";
+                    return;
                 }
 
-                codes[randomCode] = count; // Зберігаємо код і скільки він дає спроб
+                keys.forEach(id => {
+                    const u = db[id];
+                    const card = document.createElement('div');
+                    card.className = "admin-user-card";
+                    card.innerHTML = `
+                        <div class="admin-user-info">
+                            <b>${u.name || "Гравець"}</b>
+                            <span>ID: ${id} | Спроб: <b>${u.spins}</b></span>
+                        </div>
+                        <div class="admin-controls">
+                            <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">−</button>
+                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins}</span>
+                            <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
 
-                tg.CloudStorage.setItem("active_promo_codes", JSON.stringify(codes), (err2) => {
-                    if (!err2) {
-                        document.getElementById('codeOutput').innerHTML = `Готовий код для клієнта:<br><span style="background:#0b0d14; padding:8px 12px; display:inline-block; margin-top:6px; border-radius:8px; border:1px solid var(--gold);">${randomCode}</span>`;
-                    } else {
-                        alert("Помилка збереження коду!");
+        window.changeSpins = function(targetId, delta) {
+            loadDatabase((db) => {
+                if (db[targetId]) {
+                    db[targetId].spins = Math.max(0, (db[targetId].spins || 0) + delta);
+                    saveDatabase(db, () => {
+                        renderAdminPanel();
+                        if (targetId === telegramId) {
+                            userSpins = db[targetId].spins;
+                            updateSpinsDisplay();
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addNewUserSpins = function() {
+            const targetId = document.getElementById('newUserId').value.trim();
+            const count = parseInt(document.getElementById('newUserSpinsCount').value) || 1;
+
+            if (!targetId) {
+                alert("Введи Telegram ID гравця!");
+                return;
+            }
+
+            loadDatabase((db) => {
+                if (!db[targetId]) {
+                    db[targetId] = { name: "Гравець (ручний ввід)", spins: 0 };
+                }
+                db[targetId].spins += count;
+                saveDatabase(db, () => {
+                    renderAdminPanel();
+                    document.getElementById('newUserId').value = "";
+                    alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
+                    if (targetId === telegramId) {
+                        userSpins = db[targetId].spins;
+                        updateSpinsDisplay();
                     }
                 });
             });
         }
 
-        // Гравець вводить код і активує його
-        function activatePromo() {
-            const inputCode = document.getElementById('promoInput').value.trim().toUpperCase();
-            if (!inputCode) {
-                alert("Введи код активації!");
-                return;
-            }
-
-            tg.CloudStorage.getItem("active_promo_codes", (err, res) => {
-                if (err || !res) {
-                    alert("Невірний або вже використаний код!");
-                    return;
-                }
-
-                let codes = {};
-                try { codes = JSON.parse(res); } catch(e) { codes = {}; }
-
-                if (codes[inputCode]) {
-                    const addedSpins = codes[inputCode];
-                    userSpins += addedSpins;
-                    
-                    // Видаляємо код, щоб він став одноразовим і згорів
-                    delete codes[inputCode];
-
-                    tg.CloudStorage.setItem("active_promo_codes", JSON.stringify(codes), () => {
-                        tg.CloudStorage.setItem("user_balance", String(userSpins), () => {
-                            updateSpinsDisplay();
-                            document.getElementById('promoInput').value = "";
-                            alert(`Успішно! Нараховано ${addedSpins} спроб.`);
-                        });
-                    });
-                } else {
-                    alert("Цей код недійсний або вже був активований кимось іншим!");
-                }
-            });
-        }
-
+        // ========== КОЛЕСО ==========
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -560,7 +926,7 @@
                 ctx.fill();
 
                 ctx.lineWidth = 4;
-                ctx.strokeStyle = "#0b0d14";
+                ctx.strokeStyle = "#0f111a";
                 ctx.stroke();
 
                 ctx.save();
@@ -601,9 +967,17 @@
 
             userSpins--;
             updateSpinsDisplay();
-            tg.CloudStorage.setItem("user_balance", String(userSpins));
 
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
+            loadDatabase((db) => {
+                if (db[telegramId]) {
+                    db[telegramId].spins = userSpins;
+                    saveDatabase(db);
+                }
+            });
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred("medium");
+            }
 
             const winningIndex = getWeightedRandomIndex();
             lastWonPrize = prizes[winningIndex].fullText;
@@ -622,7 +996,10 @@
             setTimeout(() => {
                 isSpinning = false;
                 updateSpinsDisplay();
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred("success");
+                }
 
                 document.getElementById("prizeDesc").innerText = lastWonPrize;
                 document.getElementById("resultBox").style.display = "block";
@@ -639,17 +1016,81 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
-        function buyItem(itemName) {
-            const text = encodeURIComponent(`Привіт! Мій нік: ${username}. Хочу замовити з асортименту: ${itemName}`);
-            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
-        }
-
+        // ========== НАВІГАЦІЯ АСОРТИМЕНТУ ==========
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            if (tabId === 'admin-tab') {
+                renderAdminPanel();
+            }
+        }
+
+        function openCategory(cat) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            
+            if (cat === 'liquids') {
+                renderLiquidsList();
+                document.getElementById('liquids-tab').classList.add('active');
+            } else if (cat === 'cartridges') {
+                document.getElementById('cartridges-tab').classList.add('active');
+            } else if (cat === 'pods') {
+                document.getElementById('pods-tab').classList.add('active');
+            } else if (cat === 'promo') {
+                document.getElementById('promo-tab').classList.add('active');
+            }
+        }
+
+        function backToCategories() {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('shop-tab').classList.add('active');
+        }
+
+        function renderLiquidsList() {
+            const container = document.getElementById('liquidsList');
+            container.innerHTML = '';
+
+            liquids.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => openProductDetail(item);
+                card.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}" loading="lazy">
+                    <div class="product-info">
+                        <h3>${item.name}</h3>
+                        <div class="price">${item.price} грн</div>
+                        <button class="btn-order-small" onclick="event.stopPropagation(); orderProduct('${item.name}')">Оформити</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openProductDetail(item) {
+            currentProduct = item;
+            document.getElementById('detailImg').src = item.img;
+            document.getElementById('detailTitle').innerText = item.name;
+            document.getElementById('detailPrice').innerText = item.price + ' грн';
+            document.getElementById('detailDesc').innerText = item.desc;
+            document.getElementById('productDetail').classList.add('active');
+        }
+
+        function closeProductDetail() {
+            document.getElementById('productDetail').classList.remove('active');
+            currentProduct = null;
+        }
+
+        function orderProduct(name) {
+            const text = encodeURIComponent(`доброго дня, хотів/ла зробити замовлення!\n\nТовар: ${name}\nМій нік: ${username}`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+        }
+
+        function orderCurrentProduct() {
+            if (!currentProduct) return;
+            orderProduct(currentProduct.name);
         }
     </script>
 </body>
