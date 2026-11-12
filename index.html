@@ -14,6 +14,8 @@
             --text-main: #ffffff;
             --text-muted: #9ba1b9;
             --gold: #ffd700;
+            --danger: #ff5252;
+            --success: #00c853;
         }
 
         body {
@@ -86,7 +88,7 @@
         }
 
         .btn-pay-spin {
-            background: #00c853;
+            background: var(--success);
             color: #fff;
             border: none;
             padding: 8px 12px;
@@ -197,7 +199,7 @@
         }
 
         .btn-claim {
-            background: #00c853;
+            background: var(--success);
             color: #fff;
             border: none;
             padding: 11px 20px;
@@ -241,6 +243,34 @@
             cursor: pointer;
         }
 
+        /* Адмін-панель стиль */
+        .admin-user-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .admin-user-info b { display: block; font-size: 15px; color: #fff; }
+        .admin-user-info span { font-size: 12px; color: var(--text-muted); }
+        .admin-controls { display: flex; gap: 6px; align-items: center; }
+        .admin-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .admin-btn.minus { background: var(--danger); }
+
         .tab-bar {
             position: fixed;
             bottom: 0;
@@ -275,6 +305,7 @@
 </head>
 <body>
 
+    <!-- ВКЛАДКА: КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle">Вартість прокруту — 150 грн</div>
@@ -304,6 +335,7 @@
         </div>
     </div>
 
+    <!-- ВКЛАДКА: АСОРТИМЕНТ -->
     <div id="shop-tab" class="tab-content">
         <h2>Асортимент рідин</h2>
         <div class="subtitle">Обирай об'єм та замовляй у 1 клік</div>
@@ -338,16 +370,16 @@
         </div>
     </div>
 
-    <div id="games-tab" class="tab-content">
-        <h2>Бонуси</h2>
-        <div class="subtitle">Щоденні акції та розіграші</div>
-        <div class="card" style="justify-content: center; text-align: center; flex-direction: column;">
-            <h3>🎁 Секретний бонус</h3>
-            <p style="margin: 8px 0 14px 0;">Слідкуй за новинами в нашому каналі.</p>
-            <button class="btn-buy" onclick="tg.showAlert('Скоро тут будуть нові ігри!')">Перевірити</button>
+    <!-- ВКЛАДКА: АДМІН-ПАНЕЛЬ (ТІЛЬКИ ДЛЯ ТЕБЕ) -->
+    <div id="admin-tab" class="tab-content">
+        <h2>👑 Адмін-панель</h2>
+        <div class="subtitle">Керування спробами гравців</div>
+        <div id="adminUserList" style="max-width: 450px; margin: 0 auto;">
+            <p style="color: var(--text-muted);">Завантаження списку гравців...</p>
         </div>
     </div>
 
+    <!-- НИЖНЯ ПАНЕЛЬ КНОПОК -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
@@ -357,17 +389,15 @@
             <span class="icon">💧</span>
             <span>Асортимент</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('games-tab', this)">
-            <span class="icon">🎮</span>
-            <span>Ігри</span>
+        <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin-tab', this)" style="display: none;">
+            <span class="icon">👑</span>
+            <span>Адмін</span>
         </button>
     </div>
 
     <script>
         const MANAGER_USERNAME = "vapebarman";
-        
-        // ВСТАВ СВОЄ ПОСИЛАННЯ /exec З GOOGLE APPS SCRIPT СЮДИ:
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuQQWycYQ0iQn5XRmCxcUCULmU6WBjvosVQ_QNoLJkI3geRI9hPvm9azRQe-kxI-xj4A/exec";
+        const ADMIN_ID = "1249588139"; // Твій Telegram ID
 
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -377,35 +407,60 @@
         const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
         let userSpins = 0;
+        let allUsersData = {}; // Зберігатиме базу всіх юзерів
 
-        async function loadUserSpins() {
+        // Робота з CloudStorage (хмара Telegram)
+        function loadDatabase(callback) {
+            tg.CloudStorage.getItem("vape_users_db", (err, res) => {
+                if (!err && res) {
+                    try {
+                        allUsersData = JSON.parse(res);
+                    } catch (e) {
+                        allUsersData = {};
+                    }
+                } else {
+                    allUsersData = {};
+                }
+                callback(allUsersData);
+            });
+        }
+
+        function saveDatabase() {
+            tg.CloudStorage.setItem("vape_users_db", JSON.stringify(allUsersData), (err) => {
+                if (err) console.log("Помилка збереження хмари");
+            });
+        }
+
+        // Ініціалізація користувача при вході
+        function initApp() {
             if (!telegramId) {
                 document.getElementById('userSpins').innerText = "0";
                 document.getElementById('spinBtn').innerText = "Відкрийте в Telegram";
                 return;
             }
 
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const result = await response.json();
-                
-                if (result.status === "success" && Array.isArray(result.users)) {
-                    const foundUser = result.users.find(u => String(u.telegram_id) === telegramId);
-                    if (foundUser) {
-                        userSpins = Number(foundUser.spins) || 0;
-                    } else {
-                        userSpins = 0;
-                    }
-                } else {
-                    userSpins = 0;
+            loadDatabase((db) => {
+                // Якщо юзера ще немає в базі — додаємо з 0 спроб
+                if (!db[telegramId]) {
+                    db[telegramId] = {
+                        name: username,
+                        spins: 0
+                    };
+                    saveDatabase();
                 }
-            } catch (err) {
-                userSpins = 0;
-            }
-            updateSpinsDisplay();
+
+                userSpins = db[telegramId].spins;
+                updateSpinsDisplay();
+
+                // Якщо це ТИ (Адмін) — показуємо кнопку адмінки внизу
+                if (telegramId === ADMIN_ID) {
+                    document.getElementById('adminTabBtn').style.display = "flex";
+                    renderAdminPanel();
+                }
+            });
         }
 
-        loadUserSpins();
+        initApp();
 
         function updateSpinsDisplay() {
             document.getElementById('userSpins').innerText = userSpins;
@@ -419,6 +474,55 @@
             }
         }
 
+        // Рендер адмін-панелі
+        function renderAdminPanel() {
+            const container = document.getElementById('adminUserList');
+            container.innerHTML = "";
+
+            const keys = Object.keys(allUsersData);
+            if (keys.length === 0) {
+                container.innerHTML = "<p style='color: var(--text-muted);'>Ще немає активних гравців у базі.</p>";
+                return;
+            }
+
+            keys.forEach(id => {
+                const u = allUsersData[id];
+                const card = document.createElement('div');
+                card.className = "admin-user-card";
+                card.innerHTML = `
+                    <div class="admin-user-info">
+                        <b>${u.name || "Гравець"}</b>
+                        <span>ID: ${id} | Спроб: <b>${u.spins}</b></span>
+                    </div>
+                    <div class="admin-controls">
+                        <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">-</button>
+                        <span style="font-weight:bold; min-width:20px; text-align:center;">${u.spins}</span>
+                        <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Зміна кількості спроб через адмінку
+        window.changeSpins = function(targetId, delta) {
+            loadDatabase((db) => {
+                if (db[targetId]) {
+                    db[targetId].spins = Math.max(0, (db[targetId].spins || 0) + delta);
+                    saveDatabase();
+                    allUsersData = db;
+                    renderAdminPanel();
+
+                    // Якщо ти міняєш спроби собі — оновлюємо і твій інтерфейс
+                    if (targetId === telegramId) {
+                        userSpins = db[targetId].spins;
+                        updateSpinsDisplay();
+                    }
+                }
+            });
+        }
+
+        // Логіка колеса фортуни
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -492,8 +596,16 @@
             isSpinning = true;
             document.getElementById("resultBox").style.display = "none";
 
+            // Зменшуємо спробу локально і в хмарі
             userSpins--;
             updateSpinsDisplay();
+
+            loadDatabase((db) => {
+                if (db[telegramId]) {
+                    db[telegramId].spins = userSpins;
+                    saveDatabase();
+                }
+            });
 
             if (tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred("medium");
@@ -543,10 +655,17 @@
         }
 
         function switchTab(tabId, btn) {
+            document.querySelectorAll('.`tab-content`').forEach(el => el.classList.remove('active'));
+            // виправлення селектора нижче:
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
+            
+            // Якщо перейшли в адмінку — оновлюємо список
+            if (tabId === 'admin-tab') {
+                loadDatabase(() => renderAdminPanel());
+            }
         }
     </script>
 </body>
