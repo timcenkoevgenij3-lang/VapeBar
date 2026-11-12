@@ -308,7 +308,7 @@
         .product-info { flex: 1; min-width: 0; }
 
         .product-info h3 {
-            margin: 0 0 4px 0;
+            margin: 0 0 6px 0;
             font-size: 16px;
             color: #fff;
             white-space: nowrap;
@@ -316,11 +316,49 @@
             text-overflow: ellipsis;
         }
 
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
         .product-info .price {
             font-size: 17px;
             font-weight: 700;
             color: var(--blue);
-            margin-bottom: 8px;
+        }
+
+        /* Стиль голди зі Standoff 2 */
+        .gold-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(255, 152, 0, 0.25));
+            border: 1px solid rgba(255, 215, 0, 0.55);
+            color: #ffd54f;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+        }
+
+        .gold-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, #ffe082, #ffb300);
+            color: #1a1200;
+            font-size: 10px;
+            font-weight: 900;
+            border-radius: 3px;
+            transform: rotate(-8deg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .btn-order-small {
@@ -391,17 +429,37 @@
         .detail-title {
             font-size: 24px;
             font-weight: 800;
-            margin: 0 0 8px 0;
+            margin: 0 0 10px 0;
             background: linear-gradient(90deg, #fff, #b39ddb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .detail-price-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         .detail-price {
             font-size: 26px;
             font-weight: 800;
             color: var(--blue);
-            margin-bottom: 16px;
+        }
+
+        .detail-price-wrap .gold-badge {
+            font-size: 16px;
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
+        .detail-price-wrap .gold-icon {
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
         }
 
         .detail-desc {
@@ -664,7 +722,7 @@
         <button class="detail-close" onclick="closeProductDetail()">×</button>
         <img id="detailImg" class="detail-img" src="" alt="">
         <h2 id="detailTitle" class="detail-title"></h2>
-        <div id="detailPrice" class="detail-price"></div>
+        <div id="detailPriceWrap" class="detail-price-wrap"></div>
         <p id="detailDesc" class="detail-desc"></p>
         <button class="btn-order-big" onclick="orderCurrentProduct()">Оформити замовлення</button>
     </div>
@@ -706,27 +764,27 @@
 
         // ===== ТОВАРИ =====
         const liquids = [
-            { id: 1, name: "Chaser 10ml", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
-            { id: 2, name: "Chaser Black 30ml", price: 280, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
-            { id: 3, name: "Chaser Nova 30ml", price: 260, img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg", desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!" },
-            { id: 4, name: "Chaser For Pods 30ml", price: 280, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Спеціально для под-систем. Яскравий смак і зручний формат." },
-            { id: 5, name: "Chaser Beat 30ml", price: 300, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!" },
-            { id: 6, name: "Hype 30ml", price: 270, img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 7, name: "Octobar 30ml", price: 270, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 8, name: "Monarch 30ml", price: 260, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s", desc: "Бюджетно, але смачно." },
-            { id: 9, name: "Flavorlab FL350", price: 260, img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 10, name: "Lucky 15ml", price: 170, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
-            { id: 11, name: "Lucky 30ml", price: 290, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
-            { id: 12, name: "Blizz 30ml", price: 280, img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg", desc: "Для справжніх гурманів." }
+            { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
+            { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
+            { id: 3, name: "Chaser Nova 30ml", price: 260, goldPrice: 1000, img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg", desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!" },
+            { id: 4, name: "Chaser For Pods 30ml", price: 280, goldPrice: 1100, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Спеціально для под-систем. Яскравий смак і зручний формат." },
+            { id: 5, name: "Chaser Beat 30ml", price: 300, goldPrice: 1200, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!" },
+            { id: 6, name: "Hype 30ml", price: 270, goldPrice: 1050, img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 7, name: "Octobar 30ml", price: 270, goldPrice: 1050, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 8, name: "Monarch 30ml", price: 260, goldPrice: 1000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s", desc: "Бюджетно, але смачно." },
+            { id: 9, name: "Flavorlab FL350", price: 260, goldPrice: 1000, img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 10, name: "Lucky 15ml", price: 170, goldPrice: 650, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 11, name: "Lucky 30ml", price: 290, goldPrice: 1150, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 12, name: "Blizz 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg", desc: "Для справжніх гурманів." }
         ];
 
         const cartridges = [
-            { id: 101, name: "Картридж Xros", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10", desc: "В наявності 3мл 0.6ом, 3мл 0.8ом, 3мл 0.4ом" },
-            { id: 102, name: "Картридж Lost Vape Ursa", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10", desc: "В наявності 0.8ом, 0.6ом" },
-            { id: 103, name: "Картриджі Vopoo Argus", price: 140, img: "https://content2.rozetka.com.ua/goods/images/big/591045284.jpg", desc: "Якісні картриджі для Vopoo Argus. В наявності різні опори." },
-            { id: 104, name: "Картриджі Vopoo Vinci", price: 140, img: "https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg", desc: "Оригінальні картриджі для Vopoo Vinci." },
-            { id: 105, name: "Картриджі Oxva NeXlim", price: 140, img: "https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
-            { id: 106, name: "Картриджі Oxva Xlim", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10", desc: "Картриджі для лінійки Oxva Xlim." },
+            { id: 101, name: "Картридж Xros", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10", desc: "В наявності 3мл 0.6ом, 3мл 0.8ом, 3мл 0.4ом" },
+            { id: 102, name: "Картридж Lost Vape Ursa", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10", desc: "В наявності 0.8ом, 0.6ом" },
+            { id: 103, name: "Картриджі Vopoo Argus", price: 140, goldPrice: 500, img: "https://content2.rozetka.com.ua/goods/images/big/591045284.jpg", desc: "Якісні картриджі для Vopoo Argus. В наявності різні опори." },
+            { id: 104, name: "Картриджі Vopoo Vinci", price: 140, goldPrice: 500, img: "https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg", desc: "Оригінальні картриджі для Vopoo Vinci." },
+            { id: 105, name: "Картриджі Oxva NeXlim", price: 140, goldPrice: 500, img: "https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
+            { id: 106, name: "Картриджі Oxva Xlim", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10", desc: "Картриджі для лінійки Oxva Xlim." },
             { id: 107, name: "Картриджі GeekVape Q", price: 120, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
         ];
 
@@ -774,6 +832,11 @@
                 desc: "30 ватт\nекранчик\n2000mAh акумулятор\n2 картриджі в комплекті\nметалевий корпус\nрегулювання ват\nрегулювання обдуву" 
             }
         ];
+
+        function formatGoldBadge(goldPrice) {
+            if (!goldPrice) return '';
+            return `<span class="gold-badge"><span class="gold-icon">G</span>${goldPrice}</span>`;
+        }
 
         // ===== JSONBIN =====
         async function loadDatabase() {
@@ -1106,7 +1169,10 @@
                     <img src="${item.img}" alt="${item.name}" loading="lazy">
                     <div class="product-info">
                         <h3>${item.name}</h3>
-                        <div class="price">${item.price} грн</div>
+                        <div class="price-row">
+                            <span class="price">${item.price} грн</span>
+                            ${formatGoldBadge(item.goldPrice)}
+                        </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="btn-chars" onclick="openProductDetailById(${item.id}, '${containerId}')">
                                 Характеристики
@@ -1135,7 +1201,10 @@
             currentProduct = item;
             document.getElementById('detailImg').src = item.img;
             document.getElementById('detailTitle').innerText = item.name;
-            document.getElementById('detailPrice').innerText = item.price + ' грн';
+            document.getElementById('detailPriceWrap').innerHTML = `
+                <span class="detail-price">${item.price} грн</span>
+                ${formatGoldBadge(item.goldPrice)}
+            `;
             document.getElementById('detailDesc').innerText = item.desc;
             document.getElementById('productDetail').classList.add('active');
         }
