@@ -294,10 +294,7 @@
             gap: 14px;
             align-items: center;
             text-align: left;
-            cursor: pointer;
         }
-
-        .product-card:active { border-color: var(--accent); }
 
         .product-card img {
             width: 72px;
@@ -330,6 +327,17 @@
             background: rgba(124, 77, 255, 0.25);
             color: #d1c4e9;
             border: 1px solid var(--accent);
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-chars {
+            background: rgba(0, 229, 255, 0.15);
+            color: #00e5ff;
+            border: 1px solid #00e5ff;
             padding: 7px 12px;
             border-radius: 10px;
             font-weight: 600;
@@ -1094,17 +1102,33 @@
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
-                card.onclick = () => openProductDetail(item);
                 card.innerHTML = `
                     <img src="${item.img}" alt="${item.name}" loading="lazy">
                     <div class="product-info">
                         <h3>${item.name}</h3>
                         <div class="price">${item.price} грн</div>
-                        <button class="btn-order-small" onclick="event.stopPropagation(); orderProduct('${item.name}')">Оформити</button>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn-chars" onclick="openProductDetailById(${item.id}, '${containerId}')">
+                                Характеристики
+                            </button>
+                            <button class="btn-order-small" onclick="orderProduct('${item.name}')">
+                                Оформити
+                            </button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function openProductDetailById(id, listType) {
+            let items = [];
+            if (listType === 'liquidsList') items = liquids;
+            else if (listType === 'cartridgesList') items = cartridges;
+            else if (listType === 'podsList') items = pods;
+
+            const item = items.find(p => p.id === id);
+            if (item) openProductDetail(item);
         }
 
         function openProductDetail(item) {
