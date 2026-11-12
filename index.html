@@ -319,15 +319,665 @@
         .price-row {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 8px;
             flex-wrap: wrap;
         }
 
-        .product-info .price {
+        /* Стилі бейджів ціни (і гривні, і голди) */
+        .price-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.12), rgba(0, 229, 255, 0.2));
+            border: 1px solid rgba(0, 229, 255, 0.45);
+            color: var(--blue);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .gold-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(255, 152, 0, 0.25));
+            border: 1px solid rgba(255, 215, 0, 0.55);
+            color: #ffd54f;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .gold-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, #ffe082, #ffb300);
+            color: #1a1200;
+            font-size: 10px;
+            font-weight: 900;
+            border-radius: 3px;
+            transform: rotate(-8deg);
+        }
+
+        .price-or {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .btn-order-small {
+            background: rgba(124, 77, 255, 0.25);
+            color: #d1c4e9;
+            border: 1px solid var(--accent);
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-chars {
+            background: rgba(0, 229, 255, 0.15);
+            color: #00e5ff;
+            border: 1px solid #00e5ff;
+            padding: 7px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .product-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 200;
+            overflow-y: auto;
+            padding: 20px 16px 40px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .product-detail.active { display: block; }
+
+        .detail-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .detail-img {
+            width: 100%;
+            max-width: 320px;
+            height: 280px;
+            object-fit: contain;
+            border-radius: 20px;
+            background: #151828;
+            margin: 30px auto 20px;
+            display: block;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .detail-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            background: linear-gradient(90deg, #fff, #b39ddb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .detail-price-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .detail-price-wrap .price-badge {
+            font-size: 16px;
+            padding: 4px 12px;
+        }
+
+        .detail-price-wrap .gold-badge {
+            font-size: 16px;
+            padding: 4px 12px;
+        }
+
+        .detail-price-wrap .gold-icon {
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+        }
+
+        .detail-desc {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.55;
+            margin-bottom: 28px;
+            text-align: left;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+            white-space: pre-line;
+        }
+
+        .btn-order-big {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 16px 24px;
             font-size: 17px;
             font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        .admin-user-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .admin-user-info b { display: block; font-size: 16px; color: #fff; }
+        .admin-user-info span { font-size: 12px; color: var(--text-muted); }
+        .admin-controls { display: flex; gap: 8px; align-items: center; }
+        .admin-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .admin-btn.minus { background: var(--danger); }
+        
+        .add-user-box {
+            background: var(--card-bg);
+            border: 1px dashed var(--accent);
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .add-user-box input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .wins-section {
+            margin-top: 28px;
+            text-align: left;
+        }
+
+        .win-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .win-card b { color: var(--gold); }
+
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 17, 26, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 100;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 16px;
+        }
+
+        .tab-btn span.icon { font-size: 22px; }
+        .tab-btn.active { color: #fff; font-weight: 700; }
+
+        .empty-state {
+            color: var(--text-muted);
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">Vape Bar | Shop</div>
+
+    <!-- КОЛЕСО -->
+    <div id="wheel-tab" class="tab-content active">
+        <h2>Колесо Фортуни</h2>
+        <div class="subtitle" style="display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+            <span>Вартість прокруту —</span>
+            <span class="price-badge">150 грн</span>
+            <span class="price-or">або</span>
+            <span class="gold-badge"><span class="gold-icon">G</span>500</span>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-info">
+                <span>Ваші спроби:</span>
+                <b id="userSpins">...</b>
+            </div>
+            <button class="btn-pay-spin" onclick="requestSpin()">Купити прокрут</button>
+        </div>
+
+        <div class="wheel-wrapper">
+            <div class="pointer"></div>
+            <div class="wheel-outer-ring">
+                <canvas id="Вибач, я тебе чудово розумію — на скріншоті чітко видно, що вийшло не те, про що ми домовлялися («АБО» не було, а цінники просто стояли поруч)[cite: 4]. 
+
+Я зробив все саме так, як ти попросив:
+1. Загорнув гривневі цінники в абсолютно такі самі фірмові овальчики в стилі Standoff 2.
+2. Додав між ними чітке слово **«або»**, щоб одразу було зрозуміло — це альтернативна вартість.
+3. Додав такий самий цінник із золотом (**або G500**) на Колесо Фортуни поруч зі 150 грн.
+
+Ось повністю виправлений і готовий файл `index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VapeBar — Колесо Фортуни</title>
+    <script src="[https://telegram.org/js/telegram-web-app.js](https://telegram.org/js/telegram-web-app.js)"></script>
+    <style>
+        :root {
+            --bg-dark: #0b0d14;
+            --card-bg: #151828;
+            --accent: #7c4dff;
+            --accent-gradient: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%);
+            --accent-glow: rgba(124, 77, 255, 0.35);
+            --text-main: #ffffff;
+            --text-muted: #9ba1b9;
+            --gold: #ffd700;
+            --danger: #ff5252;
+            --success: #00c853;
+            --blue: #00e5ff;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 90px;
+            min-height: 100vh;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .top-bar {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 6px 0 14px 0;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #b39ddb;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin: 0 0 4px 0;
+            font-size: 26px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, #b39ddb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .balance-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 77, 255, 0.3);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .balance-info span {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+        }
+
+        .balance-info b {
+            font-size: 20px;
+            color: var(--gold);
+        }
+
+        .btn-pay-spin {
+            background: var(--success);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-outer-ring {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c4dff, #00e5ff);
+            box-shadow: 0 0 30px var(--accent-glow);
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        canvas#wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: block;
+            background: #1a1d2d;
+            transition: transform 4.5s cubic-bezier(0.15, 0.85, 0.12, 1);
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 26px solid var(--gold);
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6));
+            z-index: 10;
+        }
+
+        .wheel-center {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-dark);
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .result-box {
+            display: none;
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px auto 0 auto;
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .result-box h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 20px; }
+        .result-box p { margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #fff; }
+
+        .btn-claim {
+            background: var(--success);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .category-btn {
+            background: linear-gradient(145deg, #1e2235, #151828);
+            border: 1px solid rgba(124, 77, 255, 0.45);
+            border-radius: 18px;
+            padding: 22px 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+        .category-btn:active {
+            transform: scale(0.96);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .category-btn .icon { font-size: 30px; }
+
+        .category-btn span:last-child {
+            background: linear-gradient(90deg, #b388ff, #00e5ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .products-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .back-btn {
+            background: rgba(124, 77, 255, 0.2);
+            border: 1px solid var(--accent);
+            color: #d1c4e9;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            text-align: left;
+        }
+
+        .product-card img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #0b0d14;
+            flex-shrink: 0;
+        }
+
+        .product-info { flex: 1; min-width: 0; }
+
+        .product-info h3 {
+            margin: 0 0 6px 0;
+            font-size: 16px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Стиль овальчика гривень (під стать голді) */
+        .uah-badge {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.12), rgba(0, 180, 216, 0.2));
+            border: 1px solid rgba(0, 229, 255, 0.45);
             color: var(--blue);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .price-or {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         /* Стиль голди зі Standoff 2 */
@@ -439,15 +1089,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
-        .detail-price {
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--blue);
+        .detail-price-wrap .uah-badge {
+            font-size: 16px;
+            padding: 4px 12px;
+            border-radius: 8px;
         }
 
         .detail-price-wrap .gold-badge {
@@ -596,7 +1246,12 @@
     <!-- КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
-        <div class="subtitle">Вартість прокруту — 150 грн</div>
+        <div class="subtitle" style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 16px;">
+            <span>Вартість прокруту:</span>
+            <span class="uah-badge">150 грн</span>
+            <span class="price-or">або</span>
+            <span class="gold-badge"><span class="gold-icon">G</span>500</span>
+        </div>
 
         <div class="balance-card">
             <div class="balance-info">
@@ -712,7 +1367,7 @@
         <div class="wins-section">
             <h3 style="font-size: 16px; margin-bottom: 12px; color: #fff;">Останні виграші:</h3>
             <div id="adminWinsList">
-                <p style="color: var(--text-muted);">Завантаження...</p>
+                <p style="color: var(--text-muted);">Виграшів ще немає</p>
             </div>
         </div>
     </div>
@@ -764,28 +1419,28 @@
 
         // ===== ТОВАРИ =====
         const liquids = [
-            { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
-            { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
-            { id: 3, name: "Chaser Nova 30ml", price: 260, goldPrice: 1000, img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg", desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!" },
-            { id: 4, name: "Chaser For Pods 30ml", price: 280, goldPrice: 1100, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Спеціально для под-систем. Яскравий смак і зручний формат." },
-            { id: 5, name: "Chaser Beat 30ml", price: 300, goldPrice: 1200, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!" },
-            { id: 6, name: "Hype 30ml", price: 270, goldPrice: 1050, img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 7, name: "Octobar 30ml", price: 270, goldPrice: 1050, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 8, name: "Monarch 30ml", price: 260, goldPrice: 1000, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s", desc: "Бюджетно, але смачно." },
-            { id: 9, name: "Flavorlab FL350", price: 260, goldPrice: 1000, img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
-            { id: 10, name: "Lucky 15ml", price: 170, goldPrice: 650, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
-            { id: 11, name: "Lucky 30ml", price: 290, goldPrice: 1150, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
-            { id: 12, name: "Blizz 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg", desc: "Для справжніх гурманів." }
+            { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10)", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
+            { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "[https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg](https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg)", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
+            { id: 3, name: "Chaser Nova 30ml", price: 260, goldPrice: 1000, img: "[https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg](https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg)", desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!" },
+            { id: 4, name: "Chaser For Pods 30ml", price: 280, goldPrice: 1100, img: "[https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg](https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg)", desc: "Спеціально для под-систем. Яскравий смак і зручний формат." },
+            { id: 5, name: "Chaser Beat 30ml", price: 300, goldPrice: 1200, img: "[https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg](https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg)", desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!" },
+            { id: 6, name: "Hype 30ml", price: 270, goldPrice: 1050, img: "[https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg](https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg)", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 7, name: "Octobar 30ml", price: 270, goldPrice: 1050, img: "[https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg](https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg)", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 8, name: "Monarch 30ml", price: 260, goldPrice: 1000, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s)", desc: "Бюджетно, але смачно." },
+            { id: 9, name: "Flavorlab FL350", price: 260, goldPrice: 1000, img: "[https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg](https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg)", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 10, name: "Lucky 15ml", price: 170, goldPrice: 650, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10)", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 11, name: "Lucky 30ml", price: 290, goldPrice: 1150, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10)", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 12, name: "Blizz 30ml", price: 280, goldPrice: 1100, img: "[https://dartvaper.org.ua/files/products/esens1.600x600.jpg](https://dartvaper.org.ua/files/products/esens1.600x600.jpg)", desc: "Для справжніх гурманів." }
         ];
 
         const cartridges = [
-            { id: 101, name: "Картридж Xros", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10", desc: "В наявності 3мл 0.6ом, 3мл 0.8ом, 3мл 0.4ом" },
-            { id: 102, name: "Картридж Lost Vape Ursa", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10", desc: "В наявності 0.8ом, 0.6ом" },
-            { id: 103, name: "Картриджі Vopoo Argus", price: 140, goldPrice: 500, img: "https://content2.rozetka.com.ua/goods/images/big/591045284.jpg", desc: "Якісні картриджі для Vopoo Argus. В наявності різні опори." },
-            { id: 104, name: "Картриджі Vopoo Vinci", price: 140, goldPrice: 500, img: "https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg", desc: "Оригінальні картриджі для Vopoo Vinci." },
-            { id: 105, name: "Картриджі Oxva NeXlim", price: 140, goldPrice: 500, img: "https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
-            { id: 106, name: "Картриджі Oxva Xlim", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10", desc: "Картриджі для лінійки Oxva Xlim." },
-            { id: 107, name: "Картриджі GeekVape Q", price: 120, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
+            { id: 101, name: "Картридж Xros", price: 140, goldPrice: 500, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmFrnGqGK6xgK-XvyZMBQz5Or8754Zqr5B15Y57FG6X9IrCTDntvz_EuQW&s=10)", desc: "В наявності 3мл 0.6ом, 3мл 0.8ом, 3мл 0.4ом" },
+            { id: 102, name: "Картридж Lost Vape Ursa", price: 140, goldPrice: 500, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN1MIGmNAgXnC41AK_7_v9nhHs1MnUB9Yy6V50dpX66Q&s=10)", desc: "В наявності 0.8ом, 0.6ом" },
+            { id: 103, name: "Картриджі Vopoo Argus", price: 140, goldPrice: 500, img: "[https://content2.rozetka.com.ua/goods/images/big/591045284.jpg](https://content2.rozetka.com.ua/goods/images/big/591045284.jpg)", desc: "Якісні картриджі для Vopoo Argus. В наявності різні опори." },
+            { id: 104, name: "Картриджі Vopoo Vinci", price: 140, goldPrice: 500, img: "[https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg](https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg)", desc: "Оригінальні картриджі для Vopoo Vinci." },
+            { id: 105, name: "Картриджі Oxva NeXlim", price: 140, goldPrice: 500, img: "[https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp](https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp)", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
+            { id: 106, name: "Картриджі Oxva Xlim", price: 140, goldPrice: 500, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10)", desc: "Картриджі для лінійки Oxva Xlim." },
+            { id: 107, name: "Картриджі GeekVape Q", price: 120, img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10)", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
         ];
 
         const pods = [
@@ -793,55 +1448,58 @@
                 id: 201, 
                 name: "Xros Mini", 
                 price: 630, 
-                img: "https://getvape.com.ua/image/catalog/vaporesso/vaporesso-xros-mini-black-pod-chorniy-nf-00004790.jpg", 
+                img: "[https://getvape.com.ua/image/catalog/vaporesso/vaporesso-xros-mini-black-pod-chorniy-nf-00004790.jpg](https://getvape.com.ua/image/catalog/vaporesso/vaporesso-xros-mini-black-pod-chorniy-nf-00004790.jpg)", 
                 desc: "16 ватт\n1000mAh акумулятор\n1 картридж в комплекті\nметалевий корпус\nрегулювання обдуву\nсвітлова індикація" 
             },
             { 
                 id: 202, 
                 name: "Deliciu Mate", 
                 price: 590, 
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrsLSjViFoV1RqU7RPiKVSjMX0bJ4Xq7vqgZU7_nD_g&s=10", 
+                img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrsLSjViFoV1RqU7RPiKVSjMX0bJ4Xq7vqgZU7_nD_g&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrsLSjViFoV1RqU7RPiKVSjMX0bJ4Xq7vqgZU7_nD_g&s=10)", 
                 desc: "26 ватт\n800mAh акумулятор\n1 картридж в комплекті\nметалевий корпус\nрегулювання обдуву\nсвітлова індикація" 
             },
             { 
                 id: 203, 
                 name: "Xros 6 Mini", 
                 price: 870, 
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTye-X1Y4lW8HV0rc1IywVbyAl1IR5L1d8VzCwAPBmxYw&s=10", 
+                img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTye-X1Y4lW8HV0rc1IywVbyAl1IR5L1d8VzCwAPBmxYw&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTye-X1Y4lW8HV0rc1IywVbyAl1IR5L1d8VzCwAPBmxYw&s=10)", 
                 desc: "30 ватт\n1600mAh акумулятор\n1 картридж в комплекті\nметалевий корпус\nрегулювання обдуву\nсвітлова індикація" 
             },
             { 
                 id: 204, 
                 name: "Xros 5 Nano", 
                 price: 1099, 
-                img: "https://uvape.com.ua/image/cache/catalog/podsystem/vaporesso/xros_5_nano/xros-5-nano-glav-700x700.jpg", 
+                img: "[https://uvape.com.ua/image/cache/catalog/podsystem/vaporesso/xros_5_nano/xros-5-nano-glav-700x700.jpg](https://uvape.com.ua/image/cache/catalog/podsystem/vaporesso/xros_5_nano/xros-5-nano-glav-700x700.jpg)", 
                 desc: "30 ватт\nСЕНСОРНИЙ екран\n1600mAh акумулятор\n2 картриджі в комплекті\nметалевий корпус\nрегулювання ват\nрегулювання обдуву" 
             },
             { 
                 id: 205, 
                 name: "Xros 6", 
                 price: 1190, 
-                img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/7180/vaporesso-xros-6-cosmic-black-1-600x600.jpg", 
+                img: "[https://hookahcat.com.ua/image/cache/catalog/productphoto/7180/vaporesso-xros-6-cosmic-black-1-600x600.jpg](https://hookahcat.com.ua/image/cache/catalog/productphoto/7180/vaporesso-xros-6-cosmic-black-1-600x600.jpg)", 
                 desc: "30 ватт\nекранчик\n1800mAh акумулятор\n2 картриджі в комплекті\nметалевий корпус\nрегулювання ват\nрегулювання обдуву" 
             },
             { 
                 id: 206, 
                 name: "Xros Pro 2", 
                 price: 1270, 
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", 
+                img: "[https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10)", 
                 desc: "30 ватт\nекранчик\n2000mAh акумулятор\n2 картриджі в комплекті\nметалевий корпус\nрегулювання ват\nрегулювання обдуву" 
             }
         ];
 
-        function formatGoldBadge(goldPrice) {
-            if (!goldPrice) return '';
-            return `<span class="gold-badge"><span class="gold-icon">G</span>${goldPrice}</span>`;
+        function formatPriceBlock(uahPrice, goldPrice) {
+            let html = `<span class="uah-badge">${uahPrice} грн</span>`;
+            if (goldPrice) {
+                html += `<span class="price-or">або</span><span class="gold-badge"><span class="gold-icon">G</span>${goldPrice}</span>`;
+            }
+            return html;
         }
 
         // ===== JSONBIN =====
         async function loadDatabase() {
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                const res = await fetch(`[https://api.jsonbin.io/v3/b/$](https://api.jsonbin.io/v3/b/$){BIN_ID}/latest`, {
                     headers: { "X-Master-Key": MASTER_KEY }
                 });
                 if (!res.ok) throw new Error("Помилка завантаження");
@@ -855,7 +1513,7 @@
 
         async function saveDatabase(db) {
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                const res = await fetch(`[https://api.jsonbin.io/v3/b/$](https://api.jsonbin.io/v3/b/$){BIN_ID}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
@@ -1120,13 +1778,13 @@
         }
 
         function requestSpin() {
-            const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн). Мій профіль: ${username} (ID: ${telegramId})`);
-            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+            const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн / G500). Мій профіль: ${username} (ID: ${telegramId})`);
+            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
         }
 
         function claimPrize() {
             const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Я виграв у Колесі Фортуни приз: [ ${lastWonPrize} ]. Ось мій скріншот 👇`);
-            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
         }
 
         // ===== МАГАЗИН =====
@@ -1170,8 +1828,7 @@
                     <div class="product-info">
                         <h3>${item.name}</h3>
                         <div class="price-row">
-                            <span class="price">${item.price} грн</span>
-                            ${formatGoldBadge(item.goldPrice)}
+                            ${formatPriceBlock(item.price, item.goldPrice)}
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="btn-chars" onclick="openProductDetailById(${item.id}, '${containerId}')">
@@ -1201,10 +1858,13 @@
             currentProduct = item;
             document.getElementById('detailImg').src = item.img;
             document.getElementById('detailTitle').innerText = item.name;
-            document.getElementById('detailPriceWrap').innerHTML = `
-                <span class="detail-price">${item.price} грн</span>
-                ${formatGoldBadge(item.goldPrice)}
-            `;
+            
+            let priceHtml = `<span class="uah-badge">${item.price} грн</span>`;
+            if (item.goldPrice) {
+                priceHtml += `<span class="price-or">або</span><span class="gold-badge"><span class="gold-icon">G</span>${item.goldPrice}</span>`;
+            }
+            document.getElementById('detailPriceWrap').innerHTML = priceHtml;
+            
             document.getElementById('detailDesc').innerText = item.desc;
             document.getElementById('productDetail').classList.add('active');
         }
@@ -1216,7 +1876,7 @@
 
         function orderProduct(name) {
             const text = encodeURIComponent(`доброго дня, хотів/ла зробити замовлення!\n\nТовар: ${name}\nМій нік: ${username}`);
-            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+            tg.openTelegramLink(`[https://t.me/$](https://t.me/$){MANAGER_USERNAME}?text=${text}`);
         }
 
         function orderCurrentProduct() {
