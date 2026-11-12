@@ -44,9 +44,7 @@
             animation: fadeIn 0.25s ease;
         }
 
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
@@ -68,7 +66,6 @@
             margin-bottom: 20px;
         }
 
-        /* ===== Balance & Wheel (без змін) ===== */
         .balance-card {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.3);
@@ -204,7 +201,7 @@
             width: 100%;
         }
 
-        /* ===== Категорії асортименту ===== */
+        /* Категорії */
         .category-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -236,19 +233,16 @@
             box-shadow: 0 0 20px var(--accent-glow);
         }
 
-        .category-btn .icon {
-            font-size: 32px;
-        }
+        .category-btn .icon { font-size: 32px; }
 
         .category-btn span:last-child {
             background: linear-gradient(90deg, #b388ff, #00e5ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-size: 14px;
-            letter-spacing: 0.3px;
         }
 
-        /* ===== Список товарів ===== */
+        /* Список товарів */
         .products-header {
             display: flex;
             align-items: center;
@@ -289,12 +283,9 @@
             align-items: center;
             text-align: left;
             cursor: pointer;
-            transition: border-color 0.2s;
         }
 
-        .product-card:active {
-            border-color: var(--accent);
-        }
+        .product-card:active { border-color: var(--accent); }
 
         .product-card img {
             width: 72px;
@@ -305,10 +296,7 @@
             flex-shrink: 0;
         }
 
-        .product-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .product-info { flex: 1; min-width: 0; }
 
         .product-info h3 {
             margin: 0 0 4px 0;
@@ -337,7 +325,7 @@
             cursor: pointer;
         }
 
-        /* ===== Повна картка товару ===== */
+        /* Повна картка товару */
         .product-detail {
             display: none;
             position: fixed;
@@ -352,9 +340,7 @@
             animation: fadeIn 0.25s ease;
         }
 
-        .product-detail.active {
-            display: block;
-        }
+        .product-detail.active { display: block; }
 
         .detail-close {
             position: absolute;
@@ -424,7 +410,7 @@
             box-shadow: 0 8px 24px var(--accent-glow);
         }
 
-        /* ===== Admin ===== */
+        /* Адмінка */
         .admin-user-card {
             background: var(--card-bg);
             border: 1px solid rgba(255,255,255,0.08);
@@ -472,7 +458,23 @@
             font-size: 14px;
         }
 
-        /* ===== Tab bar ===== */
+        .wins-section {
+            margin-top: 28px;
+            text-align: left;
+        }
+
+        .win-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .win-card b { color: var(--gold); }
+
+        /* Tab bar */
         .tab-bar {
             position: fixed;
             bottom: 0;
@@ -509,11 +511,17 @@
             padding: 40px 20px;
             font-size: 15px;
         }
+
+        .loading-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ==================== КОЛЕСО ==================== -->
+    <!-- КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle">Вартість прокруту — 150 грн</div>
@@ -537,13 +545,13 @@
         <button id="spinBtn" class="btn-primary" onclick="spinWheel()" disabled>Завантаження...</button>
 
         <div id="resultBox" class="result-box">
-            <h3 id="prizeTitle">🎉 Твій виграш:</h3>
+            <h3>🎉 Твій виграш:</h3>
             <p id="prizeDesc">Безкоштовна доставка</p>
             <button class="btn-claim" onclick="claimPrize()">Забрати приз у менеджера</button>
         </div>
     </div>
 
-    <!-- ==================== АСОРТИМЕНТ (категорії) ==================== -->
+    <!-- АСОРТИМЕНТ -->
     <div id="shop-tab" class="tab-content">
         <h2>Асортимент</h2>
         <div class="subtitle">Обери категорію</div>
@@ -568,7 +576,7 @@
         </div>
     </div>
 
-    <!-- ==================== СПИСОК РІДИН ==================== -->
+    <!-- РІДИНИ -->
     <div id="liquids-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
@@ -577,19 +585,13 @@
                 <div class="subtitle" style="margin: 0;">Обирай і замовляй</div>
             </div>
         </div>
-        
-        <div class="products-list" id="liquidsList">
-            <!-- генерується JS -->
-        </div>
+        <div class="products-list" id="liquidsList"></div>
     </div>
 
-    <!-- ==================== ІНШІ КАТЕГОРІЇ (заглушки) ==================== -->
     <div id="cartridges-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
-            <div>
-                <h2 style="font-size: 22px; margin: 0;">Картриджі</h2>
-            </div>
+            <div><h2 style="font-size: 22px; margin: 0;">Картриджі</h2></div>
         </div>
         <div class="empty-state">Незабаром з’являться товари 🔋</div>
     </div>
@@ -597,9 +599,7 @@
     <div id="pods-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
-            <div>
-                <h2 style="font-size: 22px; margin: 0;">Под-системи</h2>
-            </div>
+            <div><h2 style="font-size: 22px; margin: 0;">Под-системи</h2></div>
         </div>
         <div class="empty-state">Незабаром з’являться товари 📱</div>
     </div>
@@ -607,32 +607,37 @@
     <div id="promo-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
-            <div>
-                <h2 style="font-size: 22px; margin: 0;">Акції</h2>
-            </div>
+            <div><h2 style="font-size: 22px; margin: 0;">Акції</h2></div>
         </div>
         <div class="empty-state">Акції скоро будуть 🔥</div>
     </div>
 
-    <!-- ==================== АДМІН ==================== -->
+    <!-- АДМІН -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Управління спробами гравців</div>
+        <div class="subtitle">Управління спробами + історія виграшів</div>
         
         <div class="add-user-box">
-            <b style="font-size: 14px; color: var(--gold);">➕ Додати спроби за ID:</b>
-            <input type="text" id="newUserId" placeholder="Введи Telegram ID гравця">
-            <input type="number" id="newUserSpinsCount" value="1" min="1" max="100">
+            <b style="font-size: 14px; color: var(--gold);">➕ Видати спроби за Telegram ID:</b>
+            <input type="text" id="newUserId" placeholder="Telegram ID гравця">
+            <input type="number" id="newUserSpinsCount" value="1" min="1" max="50">
             <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
         </div>
 
-        <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Список гравців у базі:</h3>
+        <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Гравці:</h3>
         <div id="adminUserList">
-            <p style="color: var(--text-muted);">Завантаження...</p>
+            <p class="loading-text">Завантаження...</p>
+        </div>
+
+        <div class="wins-section">
+            <h3 style="font-size: 16px; margin-bottom: 12px; color: #fff;">Останні виграші:</h3>
+            <div id="adminWinsList">
+                <p class="loading-text">Завантаження...</p>
+            </div>
         </div>
     </div>
 
-    <!-- ==================== ПОВНОЕЕКРАННА КАРТКА ТОВАРУ ==================== -->
+    <!-- ДЕТАЛЬ ТОВАРУ -->
     <div id="productDetail" class="product-detail">
         <button class="detail-close" onclick="closeProductDetail()">×</button>
         <img id="detailImg" class="detail-img" src="" alt="">
@@ -642,7 +647,7 @@
         <button class="btn-order-big" onclick="orderCurrentProduct()">Оформити замовлення</button>
     </div>
 
-    <!-- ==================== TAB BAR ==================== -->
+    <!-- TAB BAR -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
@@ -659,6 +664,9 @@
     </div>
 
     <script>
+        // ================== НАЛАШТУВАННЯ ==================
+        const BIN_ID = "6af5e0dbac6210605a82d58f";
+        const MASTER_KEY = "$2a$10$twVc2NLmNWiYw5sLqyPCw.zpUaV5OLoXxATMPUy/WHSPV3X5yePRq";
         const MANAGER_USERNAME = "vapebarman";
         const ADMIN_ID = "1249588139";
 
@@ -672,140 +680,86 @@
 
         let userSpins = 0;
         let currentProduct = null;
+        let lastWonPrize = "";
+        let isSpinning = false;
 
-        // ========== ТОВАРИ РІДИН ==========
+        // ================== ТОВАРИ ==================
         const liquids = [
-            {
-                id: 1,
-                name: "Chaser 10ml",
-                price: 140,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10",
-                desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту."
-            },
-            {
-                id: 2,
-                name: "Chaser Black 30ml",
-                price: 280,
-                img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg",
-                desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!"
-            },
-            {
-                id: 3,
-                name: "Chaser Nova 30ml",
-                price: 260,
-                img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg",
-                desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!"
-            },
-            {
-                id: 4,
-                name: "Chaser For Pods 30ml",
-                price: 280,
-                img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg",
-                desc: "Спеціально для под-систем. Яскравий смак і зручний формат."
-            },
-            {
-                id: 5,
-                name: "Chaser Beat 30ml",
-                price: 300,
-                img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg",
-                desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!"
-            },
-            {
-                id: 6,
-                name: "Hype 30ml",
-                price: 270,
-                img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg",
-                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
-            },
-            {
-                id: 7,
-                name: "Octobar 30ml",
-                price: 270,
-                img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg",
-                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
-            },
-            {
-                id: 8,
-                name: "Monarch 30ml",
-                price: 260,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s",
-                desc: "Бюджетно, але смачно."
-            },
-            {
-                id: 9,
-                name: "Flavorlab FL350",
-                price: 260,
-                img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg",
-                desc: "Хороша та якісна рідина, ідеально підходить на кожен день."
-            },
-            {
-                id: 10,
-                name: "Lucky 15ml",
-                price: 170,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10",
-                desc: "Для тих, хто хоче отримати максимум смаку."
-            },
-            {
-                id: 11,
-                name: "Lucky 30ml",
-                price: 290,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10",
-                desc: "Для тих, хто хоче отримати максимум смаку."
-            },
-            {
-                id: 12,
-                name: "Blizz 30ml",
-                price: 280,
-                img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg",
-                desc: "Для справжніх гурманів."
-            }
+            { id: 1, name: "Chaser 10ml", price: 140, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
+            { id: 2, name: "Chaser Black 30ml", price: 280, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
+            { id: 3, name: "Chaser Nova 30ml", price: 260, img: "https://bambuk.org/content/uploads/images/catalog/chaser/chaser-nova/chaser-nova.jpg", desc: "Бюджетна лінійка компанії. Низька ціна, але висока якість!" },
+            { id: 4, name: "Chaser For Pods 30ml", price: 280, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Спеціально для под-систем. Яскравий смак і зручний формат." },
+            { id: 5, name: "Chaser Beat 30ml", price: 300, img: "https://drsmoke.org/image/cache/catalog/salt30ml/chaser-for-pods/nabor/new/grape-900x1200.jpg", desc: "Новинка 2026 року! Лімітована серія, лімітовані смаки, лімітована кількість!" },
+            { id: 6, name: "Hype 30ml", price: 270, img: "https://dartvaper.org.ua/files/products/nabor-hype-30-ml.600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 7, name: "Octobar 30ml", price: 270, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/3681/nabor-octobar-lush-ice-2-600x600.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 8, name: "Monarch 30ml", price: 260, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1ojZeUE9EC4xTN8t1pMpR7vqMheCFZYIP66Se7ajBoA&s", desc: "Бюджетно, але смачно." },
+            { id: 9, name: "Flavorlab FL350", price: 260, img: "https://terravapes.com.ua/image/cache/catalog/Dekang/fl350-salt-30ml/fl350-salt-30ml-02-1000x1000.jpg", desc: "Хороша та якісна рідина, ідеально підходить на кожен день." },
+            { id: 10, name: "Lucky 15ml", price: 170, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSaWF2waAZNmznYvpsXk4kzgbTKkPTENr_JN6v7h8D78Q&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 11, name: "Lucky 30ml", price: 290, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeUDK4UvfpnRQgJAb9fhpzZNuFYQYvVaSXN8WTOKj4Gx_MWl0LRo5E38w&s=10", desc: "Для тих, хто хоче отримати максимум смаку." },
+            { id: 12, name: "Blizz 30ml", price: 280, img: "https://dartvaper.org.ua/files/products/esens1.600x600.jpg", desc: "Для справжніх гурманів." }
         ];
 
-        // ========== БАЗА ДАНИХ ==========
-        function loadDatabase(callback) {
-            tg.CloudStorage.getItem("vape_global_db", (err, res) => {
-                let db = {};
-                if (!err && res) {
-                    try { db = JSON.parse(res); } catch (e) { db = {}; }
-                }
-                if (callback) callback(db);
-            });
+        // ================== РОБОТА З JSONBIN ==================
+        async function loadDatabase() {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Master-Key": MASTER_KEY }
+                });
+                if (!res.ok) throw new Error("Помилка завантаження");
+                const data = await res.json();
+                return data.record || { users: {}, wins: [] };
+            } catch (e) {
+                console.error(e);
+                return { users: {}, wins: [] };
+            }
         }
 
-        function saveDatabase(db, callback) {
-            tg.CloudStorage.setItem("vape_global_db", JSON.stringify(db), (err) => {
-                if (!err && callback) callback();
-            });
+        async function saveDatabase(db) {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": MASTER_KEY
+                    },
+                    body: JSON.stringify(db)
+                });
+                return res.ok;
+            } catch (e) {
+                console.error(e);
+                return false;
+            }
         }
 
-        function initApp() {
+        // ================== ІНІЦІАЛІЗАЦІЯ ==================
+        async function initApp() {
             if (!telegramId) {
                 document.getElementById('userSpins').innerText = "0";
                 document.getElementById('spinBtn').innerText = "Відкрийте в Telegram";
                 return;
             }
 
-            loadDatabase((db) => {
-                if (!db[telegramId]) {
-                    db[telegramId] = { name: username, spins: 0 };
-                } else {
-                    db[telegramId].name = username;
-                }
-                
-                saveDatabase(db, () => {
-                    userSpins = Number(db[telegramId].spins) || 0;
-                    updateSpinsDisplay();
-                });
+            const db = await loadDatabase();
 
-                if (telegramId === ADMIN_ID) {
-                    document.getElementById('adminTabBtn').style.display = "flex";
-                }
-            });
+            if (!db.users[telegramId]) {
+                db.users[telegramId] = { name: username, spins: 0 };
+                await saveDatabase(db);
+            } else {
+                // оновлюємо ім'я
+                db.users[telegramId].name = username;
+                await saveDatabase(db);
+            }
+
+            userSpins = Number(db.users[telegramId].spins) || 0;
+            updateSpinsDisplay();
+
+            if (telegramId === ADMIN_ID) {
+                document.getElementById('adminTabBtn').style.display = "flex";
+            }
         }
 
         initApp();
 
-        // ========== ВІДОБРАЖЕННЯ СПРОБ ==========
         function updateSpinsDisplay() {
             document.getElementById('userSpins').innerText = userSpins;
             const spinBtn = document.getElementById('spinBtn');
@@ -818,54 +772,75 @@
             }
         }
 
-        // ========== АДМІНКА ==========
-        function renderAdminPanel() {
-            loadDatabase((db) => {
-                const container = document.getElementById('adminUserList');
-                container.innerHTML = "";
+        // ================== АДМІНКА ==================
+        async function renderAdminPanel() {
+            const db = await loadDatabase();
+            const container = document.getElementById('adminUserList');
+            const winsContainer = document.getElementById('adminWinsList');
 
-                const keys = Object.keys(db);
-                if (keys.length === 0) {
-                    container.innerHTML = "<p style='color: var(--text-muted);'>База поки порожня.</p>";
-                    return;
-                }
-
+            // Користувачі
+            container.innerHTML = "";
+            const keys = Object.keys(db.users || {});
+            if (keys.length === 0) {
+                container.innerHTML = "<p style='color: var(--text-muted);'>База порожня</p>";
+            } else {
                 keys.forEach(id => {
-                    const u = db[id];
+                    const u = db.users[id];
                     const card = document.createElement('div');
                     card.className = "admin-user-card";
                     card.innerHTML = `
                         <div class="admin-user-info">
                             <b>${u.name || "Гравець"}</b>
-                            <span>ID: ${id} | Спроб: <b>${u.spins}</b></span>
+                            <span>ID: ${id} | Спроб: <b>${u.spins || 0}</b></span>
                         </div>
                         <div class="admin-controls">
                             <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">−</button>
-                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins}</span>
+                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins || 0}</span>
                             <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
                         </div>
                     `;
                     container.appendChild(card);
                 });
-            });
+            }
+
+            // Виграші
+            winsContainer.innerHTML = "";
+            const wins = (db.wins || []).slice().reverse().slice(0, 30); // останні 30
+            if (wins.length === 0) {
+                winsContainer.innerHTML = "<p style='color: var(--text-muted);'>Виграшів ще немає</p>";
+            } else {
+                wins.forEach(w => {
+                    const date = w.date ? new Date(w.date).toLocaleString("uk-UA") : "";
+                    const card = document.createElement('div');
+                    card.className = "win-card";
+                    card.innerHTML = `
+                        <div><b>${w.name}</b> (ID: ${w.userId})</div>
+                        <div style="margin-top:4px;">Приз: <b>${w.prize}</b></div>
+                        <div style="color: var(--text-muted); font-size: 11px; margin-top:4px;">${date}</div>
+                    `;
+                    winsContainer.appendChild(card);
+                });
+            }
         }
 
-        window.changeSpins = function(targetId, delta) {
-            loadDatabase((db) => {
-                if (db[targetId]) {
-                    db[targetId].spins = Math.max(0, (db[targetId].spins || 0) + delta);
-                    saveDatabase(db, () => {
-                        renderAdminPanel();
-                        if (targetId === telegramId) {
-                            userSpins = db[targetId].spins;
-                            updateSpinsDisplay();
-                        }
-                    });
+        window.changeSpins = async function(targetId, delta) {
+            const db = await loadDatabase();
+            if (!db.users[targetId]) return;
+
+            db.users[targetId].spins = Math.max(0, (db.users[targetId].spins || 0) + delta);
+            const ok = await saveDatabase(db);
+            if (ok) {
+                renderAdminPanel();
+                if (targetId === telegramId) {
+                    userSpins = db.users[targetId].spins;
+                    updateSpinsDisplay();
                 }
-            });
+            } else {
+                alert("Помилка збереження");
+            }
         }
 
-        window.addNewUserSpins = function() {
+        window.addNewUserSpins = async function() {
             const targetId = document.getElementById('newUserId').value.trim();
             const count = parseInt(document.getElementById('newUserSpinsCount').value) || 1;
 
@@ -874,24 +849,27 @@
                 return;
             }
 
-            loadDatabase((db) => {
-                if (!db[targetId]) {
-                    db[targetId] = { name: "Гравець (ручний ввід)", spins: 0 };
+            const db = await loadDatabase();
+            if (!db.users[targetId]) {
+                db.users[targetId] = { name: "Гравець (ручний)", spins: 0 };
+            }
+            db.users[targetId].spins = (db.users[targetId].spins || 0) + count;
+
+            const ok = await saveDatabase(db);
+            if (ok) {
+                renderAdminPanel();
+                document.getElementById('newUserId').value = "";
+                alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
+                if (targetId === telegramId) {
+                    userSpins = db.users[targetId].spins;
+                    updateSpinsDisplay();
                 }
-                db[targetId].spins += count;
-                saveDatabase(db, () => {
-                    renderAdminPanel();
-                    document.getElementById('newUserId').value = "";
-                    alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
-                    if (targetId === telegramId) {
-                        userSpins = db[targetId].spins;
-                        updateSpinsDisplay();
-                    }
-                });
-            });
+            } else {
+                alert("Помилка збереження");
+            }
         }
 
-        // ========== КОЛЕСО ==========
+        // ================== КОЛЕСО ==================
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -905,26 +883,21 @@
         const numSectors = prizes.length;
         const arcSize = (2 * Math.PI) / numSectors;
         let currentRotation = 0;
-        let isSpinning = false;
-        let lastWonPrize = "";
 
         function drawWheel() {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const radius = canvas.width / 2;
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < numSectors; i++) {
                 const angle = i * arcSize - Math.PI / 2 - arcSize / 2;
-
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, angle, angle + arcSize);
                 ctx.closePath();
                 ctx.fillStyle = prizes[i].color;
                 ctx.fill();
-
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "#0f111a";
                 ctx.stroke();
@@ -937,7 +910,6 @@
                 ctx.font = "bold 22px -apple-system, sans-serif";
                 ctx.shadowColor = "rgba(0,0,0,0.8)";
                 ctx.shadowBlur = 6;
-
                 const lines = prizes[i].label.split("\n");
                 lines.forEach((line, idx) => {
                     const yOffset = (idx - (lines.length - 1) / 2) * 26;
@@ -946,7 +918,6 @@
                 ctx.restore();
             }
         }
-
         drawWheel();
 
         function getWeightedRandomIndex() {
@@ -959,25 +930,23 @@
             return 0;
         }
 
-        function spinWheel() {
+        async function spinWheel() {
             if (isSpinning || userSpins <= 0 || !telegramId) return;
 
             isSpinning = true;
             document.getElementById("resultBox").style.display = "none";
 
+            // Списуємо спробу одразу
             userSpins--;
             updateSpinsDisplay();
 
-            loadDatabase((db) => {
-                if (db[telegramId]) {
-                    db[telegramId].spins = userSpins;
-                    saveDatabase(db);
-                }
-            });
-
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred("medium");
+            const db = await loadDatabase();
+            if (db.users[telegramId]) {
+                db.users[telegramId].spins = userSpins;
+                await saveDatabase(db);
             }
+
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
 
             const winningIndex = getWeightedRandomIndex();
             lastWonPrize = prizes[winningIndex].fullText;
@@ -985,7 +954,6 @@
             const sectorAngleDeg = 360 / numSectors;
             const targetOffset = (360 - (winningIndex * sectorAngleDeg)) % 360;
             const randomJitter = (Math.random() - 0.5) * (sectorAngleDeg * 0.6);
-            
             const currentMod = currentRotation % 360;
             const extraSpins = 360 * 6;
             const delta = extraSpins + ((targetOffset - currentMod + 360) % 360) + randomJitter;
@@ -993,16 +961,28 @@
             currentRotation += delta;
             canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 isSpinning = false;
                 updateSpinsDisplay();
 
-                if (tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred("success");
-                }
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 
                 document.getElementById("prizeDesc").innerText = lastWonPrize;
                 document.getElementById("resultBox").style.display = "block";
+
+                // Зберігаємо виграш
+                const db2 = await loadDatabase();
+                if (!db2.wins) db2.wins = [];
+                db2.wins.push({
+                    userId: telegramId,
+                    name: username,
+                    prize: lastWonPrize,
+                    date: new Date().toISOString()
+                });
+                // залишаємо тільки останні 100 виграшів
+                if (db2.wins.length > 100) db2.wins = db2.wins.slice(-100);
+                await saveDatabase(db2);
+
             }, 4600);
         }
 
@@ -1016,22 +996,17 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
-        // ========== НАВІГАЦІЯ АСОРТИМЕНТУ ==========
+        // ================== МАГАЗИН ==================
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
             document.getElementById(tabId).classList.add('active');
             if (btn) btn.classList.add('active');
-
-            if (tabId === 'admin-tab') {
-                renderAdminPanel();
-            }
+            if (tabId === 'admin-tab') renderAdminPanel();
         }
 
         function openCategory(cat) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            
             if (cat === 'liquids') {
                 renderLiquidsList();
                 document.getElementById('liquids-tab').classList.add('active');
@@ -1052,7 +1027,6 @@
         function renderLiquidsList() {
             const container = document.getElementById('liquidsList');
             container.innerHTML = '';
-
             liquids.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -1089,8 +1063,7 @@
         }
 
         function orderCurrentProduct() {
-            if (!currentProduct) return;
-            orderProduct(currentProduct.name);
+            if (currentProduct) orderProduct(currentProduct.name);
         }
     </script>
 </body>
