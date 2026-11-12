@@ -103,9 +103,7 @@
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
-            transition: transform 0.1s;
         }
-        .btn-pay-spin:active { transform: scale(0.95); }
 
         .wheel-wrapper {
             position: relative;
@@ -178,14 +176,11 @@
             width: 100%;
             max-width: 300px;
             box-shadow: 0 8px 24px var(--accent-glow);
-            transition: transform 0.1s, opacity 0.1s;
         }
-
-        .btn-primary:active { transform: scale(0.97); }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
         .result-box {
-            display: none; /* ЗАВЖДИ ПРИХОВАНО ПОКИ НЕ ВИГРАЄ */
+            display: none;
             background: var(--card-bg);
             border: 2px solid var(--gold);
             border-radius: 16px;
@@ -193,26 +188,10 @@
             margin: 20px auto 0 auto;
             max-width: 300px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .result-box h3 {
-            margin: 0 0 6px 0;
-            color: var(--gold);
-            font-size: 20px;
-        }
-
-        .result-box p {
-            margin: 0 0 16px 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-        }
+        .result-box h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 20px; }
+        .result-box p { margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #fff; }
 
         .btn-claim {
             background: var(--success);
@@ -224,15 +203,9 @@
             border-radius: 12px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
         }
 
-        .shop-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-        }
+        .shop-grid { display: flex; flex-direction: column; gap: 14px; width: 100%; }
 
         .card {
             background: var(--card-bg);
@@ -243,7 +216,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .card-info h3 { margin: 0 0 4px 0; font-size: 18px; color: #fff; }
@@ -259,11 +231,8 @@
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .btn-buy:active { background: rgba(124, 77, 255, 0.4); }
 
-        /* Адмін-панель */
         .admin-user-card {
             background: var(--card-bg);
             border: 1px solid rgba(255,255,255,0.08);
@@ -288,9 +257,6 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .admin-btn.minus { background: var(--danger); }
         
@@ -315,7 +281,6 @@
             font-size: 14px;
         }
 
-        /* Навігація */
         .tab-bar {
             position: fixed;
             bottom: 0;
@@ -342,7 +307,6 @@
             align-items: center;
             gap: 4px;
             padding: 6px 16px;
-            transition: color 0.2s;
         }
 
         .tab-btn span.icon { font-size: 22px; }
@@ -351,7 +315,6 @@
 </head>
 <body>
 
-    <!-- 1. КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle">Вартість прокруту — 150 грн</div>
@@ -381,7 +344,6 @@
         </div>
     </div>
 
-    <!-- 2. АСОРТИМЕНТ -->
     <div id="shop-tab" class="tab-content">
         <h2>Асортимент рідин</h2>
         <div class="subtitle">Обирай об'єм та замовляй у 1 клік</div>
@@ -416,7 +378,6 @@
         </div>
     </div>
 
-    <!-- 3. АДМІН-ПАНЕЛЬ -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
         <div class="subtitle">Управління спробами гравців</div>
@@ -434,7 +395,6 @@
         </div>
     </div>
 
-    <!-- НИЖНЯ ПАНЕЛЬ КНОПОК -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
@@ -462,26 +422,20 @@
         const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
         let userSpins = 0;
-        let allUsersData = {};
 
-        // Завантаження глобальної бази (використовуємо глобальний ключ в хмарі адміністратора або загальний пул)
+        // Зберігаємо базу в єдиному глобальному сховищі адміністратора, до якого при завантаженні звертаються всі
         function loadDatabase(callback) {
             tg.CloudStorage.getItem("vape_global_db", (err, res) => {
+                let db = {};
                 if (!err && res) {
-                    try {
-                        allUsersData = JSON.parse(res);
-                    } catch (e) {
-                        allUsersData = {};
-                    }
-                } else {
-                    allUsersData = {};
+                    try { db = JSON.parse(res); } catch (e) { db = {}; }
                 }
-                if (callback) callback(allUsersData);
+                if (callback) callback(db);
             });
         }
 
-        function saveDatabase(callback) {
-            tg.CloudStorage.setItem("vape_global_db", JSON.stringify(allUsersData), (err) => {
+        function saveDatabase(db, callback) {
+            tg.CloudStorage.setItem("vape_global_db", JSON.stringify(db), (err) => {
                 if (!err && callback) callback();
             });
         }
@@ -494,19 +448,16 @@
             }
 
             loadDatabase((db) => {
-                // Перевіряємо, чи є юзер в базі
                 if (!db[telegramId]) {
                     db[telegramId] = { name: username, spins: 0 };
-                    saveDatabase(() => {
-                        userSpins = 0;
-                        updateSpinsDisplay();
-                    });
                 } else {
                     db[telegramId].name = username;
-                    saveDatabase();
+                }
+                
+                saveDatabase(db, () => {
                     userSpins = Number(db[telegramId].spins) || 0;
                     updateSpinsDisplay();
-                }
+                });
 
                 if (telegramId === ADMIN_ID) {
                     document.getElementById('adminTabBtn').style.display = "flex";
@@ -563,8 +514,7 @@
             loadDatabase((db) => {
                 if (db[targetId]) {
                     db[targetId].spins = Math.max(0, (db[targetId].spins || 0) + delta);
-                    allUsersData = db;
-                    saveDatabase(() => {
+                    saveDatabase(db, () => {
                         renderAdminPanel();
                         if (targetId === telegramId) {
                             userSpins = db[targetId].spins;
@@ -589,8 +539,7 @@
                     db[targetId] = { name: "Гравець (ручний ввід)", spins: 0 };
                 }
                 db[targetId].spins += count;
-                allUsersData = db;
-                saveDatabase(() => {
+                saveDatabase(db, () => {
                     renderAdminPanel();
                     document.getElementById('newUserId').value = "";
                     alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
@@ -602,7 +551,6 @@
             });
         }
 
-        // Логіка Колеса Фортуни
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -682,7 +630,7 @@
             loadDatabase((db) => {
                 if (db[telegramId]) {
                     db[telegramId].spins = userSpins;
-                    saveDatabase();
+                    saveDatabase(db);
                 }
             });
 
