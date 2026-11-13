@@ -57,7 +57,7 @@
         .global-gold-badge {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(255, 152, 0, 0.25));
             border: 1px solid rgba(255, 215, 0, 0.55);
             color: #ffd54f;
@@ -82,6 +82,23 @@
             border-radius: 3px;
             transform: rotate(-8deg);
             box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .btn-add-gold {
+            background: var(--gold);
+            color: #1a1200;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 2px;
+            box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
         }
 
         .tab-content {
@@ -270,10 +287,10 @@
             box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        /* ПРЕМІАЛЬНИЙ АПГРЕЙДЕР ЗІ ЗОВНІШНЬОЮ СТРІЛКОЮ */
+        /* ПОКРАЩЕНИЙ АПГРЕЙДЕР (ПРЕМІАЛЬНИЙ ВИГЛЯД) */
         .upgrader-container {
             background: var(--card-bg);
-            border: 1px solid rgba(124, 77, 255, 0.3);
+            border: 1px solid rgba(124, 77, 255, 0.35);
             border-radius: 20px;
             padding: 20px 16px;
             margin-bottom: 20px;
@@ -284,7 +301,7 @@
             position: relative;
             width: 220px;
             height: 220px;
-            margin: 0 auto 16px auto;
+            margin: 0 auto 18px auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -319,56 +336,113 @@
             text-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
         }
 
-        .upgrader-pickers {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .upgrader-panel-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             gap: 8px;
+            align-items: center;
             margin-bottom: 16px;
         }
 
-        .picker-box {
-            flex: 1;
+        .upgrader-box {
             background: #0b0d14;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(124, 77, 255, 0.25);
             border-radius: 14px;
-            padding: 10px;
+            padding: 12px 10px;
             text-align: center;
+            min-height: 85px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .picker-box label {
+        .upgrader-box label {
             font-size: 10px;
             color: var(--text-muted);
-            display: block;
-            margin-bottom: 4px;
             text-transform: uppercase;
             font-weight: 700;
+            margin-bottom: 4px;
+            display: block;
         }
 
-        .picker-box input, .picker-box select {
+        .upgrader-box select, .upgrader-box input {
             width: 100%;
-            background: none;
-            border: none;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             color: #fff;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             text-align: center;
+            border-radius: 8px;
+            padding: 6px 4px;
             outline: none;
         }
 
-        .picker-box select {
-            padding: 4px 0;
-            cursor: pointer;
-        }
-
-        .picker-box select option {
+        .upgrader-box select option {
             background: var(--bg-dark);
             color: #fff;
         }
 
-        .upgrader-arrow {
-            font-size: 18px;
+        .upgrader-vs {
+            font-size: 14px;
+            font-weight: 800;
             color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* МОДАЛКА ПОПОВНЕННЯ ГОЛДИ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-box h3 { margin: 0 0 8px 0; color: var(--gold); font-size: 20px; }
+        .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .modal-calc-info {
+            background: rgba(255,215,0,0.1);
+            border: 1px dashed rgba(255,215,0,0.4);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #ffd54f;
+            margin-bottom: 16px;
             font-weight: bold;
         }
 
@@ -409,15 +483,16 @@
         }
 
         .btn-inv-action {
-            background: rgba(124, 77, 255, 0.25);
-            color: #d1c4e9;
-            border: 1px solid var(--accent);
-            padding: 6px 8px;
+            background: var(--success);
+            color: #fff;
+            border: none;
+            padding: 7px 8px;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 11px;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 3px 10px rgba(0,200,83,0.3);
         }
 
         .btn-inv-sell {
@@ -794,6 +869,21 @@
         <div class="brand-title">Vape Bar | Mini App</div>
         <div id="globalGoldBadge" class="global-gold-badge">
             <span class="gold-icon">G</span><span id="headerGoldVal">0</span>
+            <button class="btn-add-gold" onclick="openAddGoldModal()">+</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ПОПОВНЕННЯ ГОЛДИ -->
+    <div id="addGoldModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>🪙 Поповнення голди</h3>
+            <p>Курс: <b>100 G = 35 грн</b></p>
+            <input type="number" id="buyGoldInput" value="500" min="50" step="50" placeholder="Скільки голди?" oninput="calcGoldPrice()">
+            <div id="calcPriceResult" class="modal-calc-info">До сплати: 175 грн</div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" style="padding: 10px; font-size: 14px;" onclick="submitBuyGold()">Купити 🚀</button>
+                <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px; font-size: 14px; box-shadow: none;" onclick="closeAddGoldModal()">Скасувати</button>
+            </div>
         </div>
     </div>
 
@@ -838,13 +928,13 @@
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (ПРЕМІАЛЬНИЙ ЗІ ЗОВНІШНЬОЮ СТРІЛКОЮ) -->
+    <!-- АПГРЕЙДЕР (ПОКРАЩЕНИЙ ІНТЕРФЕЙС) -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
-        <div class="subtitle">Покращуй голду та предмети з інвентарю</div>
+        <div class="subtitle">Покращуй голду та предмет з інвентарю</div>
 
         <div class="upgrader-container">
-            <!-- Круговий прогрес та анімована зовн. стрілка -->
+            <!-- Рулетка зі зовнішньою стрілкою -->
             <div class="upgrader-wheel-wrap">
                 <canvas id="upgradeCanvas" width="300" height="300"></canvas>
                 <div class="upgrader-center-text">
@@ -853,10 +943,10 @@
                 </div>
             </div>
 
-            <!-- Вибір ставки (голда або предмет з інвентарю) та цілі -->
-            <div class="upgrader-pickers">
-                <div class="picker-box">
-                    <label>Ваша ставка</label>
+            <!-- Зрозуміліші блоки вибору -->
+            <div class="upgrader-panel-grid">
+                <div class="upgrader-box">
+                    <label>Ставка</label>
                     <select id="upgradeBetSource" onchange="onBetSourceChange()">
                         <option value="gold">Голда (G)</option>
                         <option value="inventory">З інвентарю 📦</option>
@@ -868,11 +958,13 @@
                         <select id="upgradeInvSelect" onchange="calculateUpgradeChance()"></select>
                     </div>
                 </div>
-                <div class="upgrader-arrow">➔</div>
-                <div class="picker-box">
+
+                <div class="upgrader-vs">VS</div>
+
+                <div class="upgrader-box">
                     <label>Цільовий приз</label>
-                    <select id="upgradeTarget" onchange="calculateUpgradeChance()">
-                        <!-- Заповнюється з товарів -->
+                    <select id="upgradeTarget" onchange="calculateUpgradeChance()" style="margin-top: 18px;">
+                        <!-- Заповнюється автоматично -->
                     </select>
                 </div>
             </div>
@@ -881,10 +973,10 @@
         </div>
     </div>
 
-    <!-- ІНВЕНТАР (ОКРЕМА ВКЛАДКА) -->
+    <!-- ІНВЕНТАР -->
     <div id="inventory-tab" class="tab-content">
         <h2>📦 Мій інвентар</h2>
-        <div class="subtitle">Твої виграші з Колеса та Апгрейдера</div>
+        <div class="subtitle">Твої призи з Колеса та Апгрейдера</div>
         <div id="userInventory" class="inventory-grid">
             <div class="empty-state" style="grid-column: span 2;">Інвентар порожній</div>
         </div>
@@ -1086,6 +1178,35 @@
             return html;
         }
 
+        // ===== ЛОГІКА МОДАЛКИ ПОПОВНЕННЯ ГОЛДИ =====
+        function openAddGoldModal() {
+            document.getElementById('addGoldModal').classList.add('active');
+            calcGoldPrice();
+        }
+
+        function closeAddGoldModal() {
+            document.getElementById('addGoldModal').classList.remove('active');
+        }
+
+        function calcGoldPrice() {
+            const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
+            // 100G = 35 грн
+            const uahCost = Math.round((goldVal / 100) * 35);
+            document.getElementById('calcPriceResult').innerText = `До сплати: ${uahCost} грн`;
+        }
+
+        function submitBuyGold() {
+            const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
+            if (goldVal <= 0) {
+                alert("Введіть коректну кількість голди!");
+                return;
+            }
+            const uahCost = Math.round((goldVal / 100) * 35);
+            const text = encodeURIComponent(`Привіт! Хочу купити голду.\nКількість: ${goldVal} G\nСума до сплати: ${uahCost} грн\nМій нік: ${username} (ID: ${telegramId})`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+            closeAddGoldModal();
+        }
+
         // ===== JSONBIN =====
         async function loadDatabase() {
             try {
@@ -1254,7 +1375,6 @@
             }
         }
 
-        // Рендер зовнішньої стрілки рулетки апгрейдера
         function drawUpgradeWheel(chancePercent, needleAngle = 0) {
             const canvas = document.getElementById("upgradeCanvas");
             if (!canvas) return;
@@ -1265,14 +1385,12 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Червоне кільце (програш)
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
             ctx.lineWidth = 14;
             ctx.strokeStyle = "#ff5252";
             ctx.stroke();
 
-            // 2. Зелена виграшна дуга
             if (chancePercent > 0) {
                 const startAngle = -Math.PI / 2;
                 const endAngle = startAngle + (2 * Math.PI * (chancePercent / 100));
@@ -1285,12 +1403,10 @@
                 ctx.stroke();
             }
 
-            // 3. ЗОВНІШНЯ СТРІЛКА, яка бігає по колу
             ctx.save();
             ctx.translate(cx, cy);
             ctx.rotate(needleAngle);
 
-            // Малюємо стрілку ззовні кола (на радіусі + 12px)
             ctx.beginPath();
             ctx.moveTo(0, -radius - 18);
             ctx.lineTo(-6, -radius - 2);
@@ -1315,7 +1431,6 @@
                 return;
             }
 
-            // Шанс з коефіцієнтом 0.8 за твоїм запитом
             let rawChance = (bet / targetPrice) * 100;
             let chance = rawChance * 0.8;
 
@@ -1351,12 +1466,10 @@
             isUpgrading = true;
             document.getElementById('upgradeBtn').disabled = true;
 
-            // Списуємо ставку
-            let invIndexToRemove = -1;
             if (source === 'gold') {
                 userGold -= bet;
             } else {
-                invIndexToRemove = parseInt(document.getElementById('upgradeInvSelect').value);
+                let invIndexToRemove = parseInt(document.getElementById('upgradeInvSelect').value);
                 userInventory.splice(invIndexToRemove, 1);
             }
             updateUIState();
@@ -1415,7 +1528,7 @@
             requestAnimationFrame(animateNeedle);
         }
 
-        // ===== ІНВЕНТАР =====
+        // ===== ІНВЕНТАР ТА ВИВЕДЕННЯ =====
         function renderInventory() {
             const container = document.getElementById('userInventory');
             container.innerHTML = "";
@@ -1431,7 +1544,7 @@
                     <img src="${item.img || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10'}" alt="${item.name}">
                     <b>${item.name}</b>
                     <div class="inventory-actions">
-                        <button class="btn-inv-action" onclick="orderInventoryItem('${item.name}')">Забрати у менеджера</button>
+                        <button class="btn-inv-action" onclick="withdrawInventoryItem('${item.name}')">Вивести товар 🚀</button>
                         <button class="btn-inv-sell" onclick="sellInventoryItem(${index})">Продати (~${item.price} G)</button>
                     </div>
                 `;
@@ -1448,8 +1561,8 @@
             alert(`Предмет [${item.name}] продано за ${item.price} G!`);
         }
 
-        function orderInventoryItem(name) {
-            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Хочу забрати з інвентарю виграш: [ ${name} ] 👇`);
+        function withdrawInventoryItem(name) {
+            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Хочу вивести предмет з інвентарю: [ ${name} ] 👇`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
@@ -1561,7 +1674,6 @@
         }
 
         // ===== КОЛЕСО ФОРТУНИ =====
-        // Безкоштовна доставка має системну вартість 300 G (умовно)
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", price: 300, color: "#2979ff", weight: 35, img: "https://cdn-icons-png.flaticon.com/512/2830/2830305.png" },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", price: 500, color: "#00bfa5", weight: 35, img: liquids[0].img },
@@ -1675,7 +1787,6 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
-        // Закинути приз з Колеса в інвентар
         async function claimPrizeToInventory() {
             if (!lastWonPrizeObj) return;
             userInventory.push({
