@@ -251,7 +251,7 @@
             width: 100%;
         }
 
-        /* АПГРЕЙДЕР (КОЛЕСО АПГРЕЙДУ) */
+        /* АПГРЕЙДЕР (РУЛЕТКА ЗІ СТРІЛКОЮ) */
         .upgrader-container {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.3);
@@ -263,8 +263,8 @@
 
         .upgrader-wheel-wrap {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             margin: 0 auto 16px auto;
             display: flex;
             align-items: center;
@@ -779,13 +779,13 @@
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (РУЛЕТКА ЯК НА СКРІНІ) -->
+    <!-- АПГРЕЙДЕР (РУЛЕТКА ЗІ СТРІЛКОЮ) -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
         <div class="subtitle">Покращуй голду у призи</div>
 
         <div class="upgrader-container">
-            <!-- Круговий прогрес шансу -->
+            <!-- Круговий прогрес шансу та стрілка -->
             <div class="upgrader-wheel-wrap">
                 <canvas id="upgradeCanvas" width="300" height="300"></canvas>
                 <div class="upgrader-center-text">
@@ -794,11 +794,11 @@
                 </div>
             </div>
 
-            <!-- Вибір ставки та цілі -->
+            <!-- Вибір ставки (вільне введення) та цілі -->
             <div class="upgrader-pickers">
                 <div class="picker-box">
                     <label>Ваша ставка (G)</label>
-                    <input type="number" id="upgradeBet" value="50" min="10" oninput="calculateUpgradeChance()">
+                    <input type="number" id="upgradeBet" value="100" min="1" oninput="calculateUpgradeChance()">
                 </div>
                 <div class="upgrader-arrow">➔</div>
                 <div class="picker-box">
@@ -809,7 +809,7 @@
                 </div>
             </div>
 
-            <button class="btn-primary" onclick="startUpgrade()">ПРОКАЧАТИ 🚀</button>
+            <button id="upgradeBtn" class="btn-primary" onclick="startUpgrade()">ПРОКАЧАТИ 🚀</button>
         </div>
 
         <h3 style="text-align: left; font-size: 16px; margin-bottom: 8px; color: #fff;">📦 Твій інвентар:</h3>
@@ -965,8 +965,9 @@
         let currentProduct = null;
         let lastWonPrize = "";
         let isSpinning = false;
+        let isUpgrading = false;
 
-        // ===== ТОВАРИ (Ціни в голді згідно з твоїм списком) =====
+        // ===== ТОВАРИ =====
         const liquids = [
             { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
             { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
@@ -1117,7 +1118,7 @@
             }
         }
 
-        // ===== АПГРЕЙДЕР ЛОГІКА ТА КРУГОВИЙ CANVAS =====
+        // ===== АПГРЕЙДЕР ЛОГІКА З АНІМОВАНОЮ СТРІЛКОЮ =====
         function populateUpgradeSelect() {
             const select = document.getElementById('upgradeTarget');
             select.innerHTML = "";
@@ -1136,33 +1137,61 @@
             calculateUpgradeChance();
         }
 
-        function drawUpgradeWheel(percent) {
+        function drawUpgradeWheel(chancePercent, needleAngle = 0) {
             const canvas = document.getElementById("upgradeCanvas");
             if (!canvas) return;
             const ctx = canvas.getContext("2d");
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const radius = 120;
+            const radius = 110;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Зовнішнє фонове коло
+            // 1. Фонове коло (зона неуспіху)
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-            ctx.lineWidth = 14;
-            ctx.strokeStyle = "#1e2235";
+            ctx.lineWidth = 16;
+            ctx.strokeStyle = "#ff5252"; // Червоний (програш)
             ctx.stroke();
 
-            // Дуга шансу
-            const startAngle = -Math.PI / 2;
-            const endAngle = startAngle + (2 * Math.PI * (percent / 100));
+            // 2. Виграшна зона (зелена дуга, що відповідає шансу)
+            if (chancePercent > 0) {
+                const startAngle = -Math.PI / 2;
+                const endAngle = startAngle + (2 * Math.PI * (chancePercent / 100));
+
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, startAngle, endAngle);
+                ctx.lineWidth = 16;
+                ctx.strokeStyle = "#00c853"; // Зелений (виграш)
+                ctx.lineCap = "round";
+                ctx.stroke();
+            }
+
+            // 3. Анімована стрілка рулетки по центру
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(needleAngle);
 
             ctx.beginPath();
-            ctx.arc(cx, cy, radius, startAngle, endAngle);
-            ctx.lineWidth = 14;
-            ctx.strokeStyle = percent > 50 ? "#00c853" : (percent > 20 ? "#ff9800" : "#ff5252");
-            ctx.lineCap = "round";
+            ctx.moveTo(0, -radius - 6);
+            ctx.lineTo(-7, 10);
+            ctx.lineTo(7, 10);
+            ctx.closePath();
+            ctx.fillStyle = "#ffd700";
+            ctx.shadowColor = "rgba(0,0,0,0.8)";
+            ctx.shadowBlur = 8;
+            ctx.fill();
+
+            // Центральна точка стрілки
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, 2 * Math.PI);
+            ctx.fillStyle = "#151828";
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = "#ffd700";
             ctx.stroke();
+            ctx.fill();
+
+            ctx.restore();
         }
 
         function calculateUpgradeChance() {
@@ -1170,24 +1199,25 @@
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 1;
 
-            if (bet >= targetPrice) {
+            if (bet >= targetPrice || bet <= 0) {
                 document.getElementById('upgradeChanceVal').innerText = "0%";
-                drawUpgradeWheel(0);
+                drawUpgradeWheel(0, 0);
                 return;
             }
 
-            // Чесна формула з комісією будинку
+            // Жорстка і чесна формула (множник 0.75 робить шанси нижчими та збалансованими)
             let rawChance = (bet / targetPrice) * 100;
-            let chance = rawChance * 0.92;
+            let chance = rawChance * 0.75;
 
-            if (chance > 88) chance = 88;
-            if (chance < 0.5) chance = 0.5;
+            if (chance > 85) chance = 85;
+            if (chance < 0.2) chance = 0.2;
 
             document.getElementById('upgradeChanceVal').innerText = chance.toFixed(1) + "%";
-            drawUpgradeWheel(chance);
+            drawUpgradeWheel(chance, 0);
         }
 
         async function startUpgrade() {
+            if (isUpgrading) return;
             const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 0;
@@ -1207,36 +1237,78 @@
                 return;
             }
 
+            isUpgrading = true;
+            document.getElementById('upgradeBtn').disabled = true;
+
             userGold -= bet;
             updateUIState();
 
             let rawChance = (bet / targetPrice) * 100;
-            let chance = rawChance * 0.92;
-            if (chance > 88) chance = 88;
+            let chance = rawChance * 0.75;
+            if (chance > 85) chance = 85;
 
             let roll = Math.random() * 100;
+            let isWin = roll <= chance;
 
-            if (roll <= chance) {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
-                
-                const action = confirm(`🎉 ВІТАЮ! Ти успішно проапгрейдив голду до: ${targetName}!\n\nНатисни OK, щоб забрати в інвентар, або Скасувати, щоб продати його за ${Math.floor(targetPrice * 1.1)} G`);
-                
-                if (action) {
-                    userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
-                    alert("Предмет успішно додано до твого інвентарю!");
-                } else {
-                    let sellPrice = Math.floor(targetPrice * 1.1);
-                    userGold += sellPrice;
-                    alert(`Ти продав предмет за ${sellPrice} G! Баланс оновлено.`);
-                }
+            // Вираховуємо кут зупинки стрілки в залежності від виграшу/програшу
+            let targetAngleDeg;
+            if (isWin) {
+                // Виграшна зелена зона (від 0 до chance %)
+                let randomWinPercent = Math.random() * (chance * 0.9);
+                targetAngleDeg = (randomWinPercent / 100) * 360;
             } else {
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
-                alert("😢 На жаль, апгрейд не вдався. Ставка згоріла!");
+                // Червона зона програшу
+                let randomLosePercent = chance + (Math.random() * (100 - chance));
+                targetAngleDeg = (randomLosePercent / 100) * 360;
             }
 
-            await syncUserToDB();
-            updateUIState();
-            calculateUpgradeChance();
+            // Додаємо повні оберти (5-6 кіл) для красивої анімації
+            let totalRotations = 360 * 6 + targetAngleDeg;
+            let currentAnimAngle = 0;
+            let startTime = null;
+            let duration = 4000; // 4 секунди анімації
+
+            function animateNeedle(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let progress = (timestamp - startTime) / duration;
+                if (progress > 1) progress = 1;
+
+                // cubic-bezier easing
+                let easeOut = 1 - Math.pow(1 - progress, 3);
+                currentAnimAngle = (totalRotations * easeOut) * (Math.PI / 180);
+
+                drawUpgradeWheel(chance, currentAnimAngle);
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateNeedle);
+                } else {
+                    isUpgrading = false;
+                    document.getElementById('upgradeBtn').disabled = false;
+
+                    if (isWin) {
+                        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+                        const action = confirm(`🎉 ВІТАЮ! Ти успішно проапгрейдив голду до: ${targetName}!\n\nНатисни OK, щоб забрати в інвентар, або Скасувати, щоб продати його за ${Math.floor(targetPrice * 1.1)} G`);
+                        
+                        if (action) {
+                            userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
+                            alert("Предмет успішно додано до твого інвентарю!");
+                        } else {
+                            let sellPrice = Math.floor(targetPrice * 1.1);
+                            userGold += sellPrice;
+                            alert(`Ти продав предмет за ${sellPrice} G! Баланс оновлено.`);
+                        }
+                    } else {
+                        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+                        alert("😢 На жаль, апгрейд не вдався. Ставка згоріла!");
+                    }
+
+                    syncUserToDB();
+                    updateUIState();
+                    calculateUpgradeChance();
+                }
+            }
+
+            requestAnimationFrame(animateNeedle);
         }
 
         function renderInventory() {
@@ -1268,7 +1340,7 @@
             alert(`Предмет продано за ${item.price} G!`);
         }
 
-        // ===== РОЗДІЛЕНА АДМІН-ПАНЕЛЬ =====
+        // ===== АДМІН-ПАНЕЛЬ =====
         async function renderAdminPanel() {
             const db = await loadDatabase();
             const container = document.getElementById('adminUserList');
