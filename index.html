@@ -465,13 +465,95 @@
             cursor: pointer;
         }
 
-        /* МОДАЛКИ ГОЛДИ */
+        /* МОНЕТКА (COINFLIP) */
+        .coinflip-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.45);
+            border-radius: 20px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
+        }
+
+        .coin-scene {
+            width: 150px;
+            height: 150px;
+            margin: 15px auto 20px auto;
+            perspective: 1000px;
+        }
+
+        .coin {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.5s cubic-bezier(0.15, 0.85, 0.12, 1);
+        }
+
+        .coin-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border: 4px solid var(--gold);
+            font-weight: 900;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 0 0 20px rgba(255,215,0,0.3);
+        }
+
+        .coin-ct {
+            background: radial-gradient(circle, #2979ff 0%, #0d47a1 100%);
+            color: #fff;
+        }
+
+        .coin-t {
+            background: radial-gradient(circle, #ff5252 0%, #b71c1c 100%);
+            color: #fff;
+            transform: rotateY(180deg);
+        }
+
+        .coin-side-select {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .side-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: #0b0d14;
+            color: #fff;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .side-btn.selected-ct {
+            border-color: #2979ff;
+            background: rgba(41, 121, 255, 0.25);
+            box-shadow: 0 0 15px rgba(41, 121, 255, 0.4);
+        }
+
+        .side-btn.selected-t {
+            border-color: #ff5252;
+            background: rgba(255, 82, 82, 0.25);
+            box-shadow: 0 0 15px rgba(255, 82, 82, 0.4);
+        }
+
+        /* МОДАЛКИ (ГОЛДА ТА ПРАВИЛА) */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.78);
             backdrop-filter: blur(6px);
             z-index: 300;
             align-items: center;
@@ -493,7 +575,7 @@
         }
 
         .modal-box h3 { margin: 0 0 8px 0; color: var(--gold); font-size: 20px; }
-        .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; }
+        .modal-box p { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; line-height: 1.5; text-align: left; }
 
         .modal-box input {
             width: 100%;
@@ -540,9 +622,9 @@
             justify-content: space-between;
         }
         .inventory-item img {
-            width: 64px;
-            height: 64px;
-            object-fit: cover;
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
             border-radius: 10px;
             margin-bottom: 8px;
             background: #0b0d14;
@@ -627,6 +709,11 @@
             box-shadow: 0 0 22px rgba(0, 229, 255, 0.22);
         }
 
+        .category-btn.coin-card {
+            border: 1px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 22px rgba(255, 215, 0, 0.22);
+        }
+
         .products-header {
             display: flex;
             align-items: center;
@@ -671,7 +758,7 @@
         .product-card img {
             width: 72px;
             height: 72px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 12px;
             background: #0b0d14;
             flex-shrink: 0;
@@ -957,7 +1044,7 @@
     <div id="addGoldModal" class="modal-overlay">
         <div class="modal-box">
             <h3>🪙 Купити голду</h3>
-            <p>Курс: <b>100 G = 38 грн</b></p>
+            <p style="text-align: center;">Курс: <b>100 G = 38 грн</b></p>
             <input type="number" id="buyGoldInput" value="500" min="50" step="50" placeholder="Скільки голди?" oninput="calcBuyGoldPrice()">
             <div id="calcBuyResult" class="modal-calc-info">До сплати: 190 грн</div>
             <div style="display: flex; gap: 8px;">
@@ -971,13 +1058,41 @@
     <div id="sellGoldModal" class="modal-overlay">
         <div class="modal-box">
             <h3>💸 Продати голду</h3>
-            <p>Курс: <b>100 G = 22 грн</b></p>
+            <p style="text-align: center;">Курс: <b>100 G = 22 грн</b></p>
             <input type="number" id="sellGoldInput" value="500" min="50" step="50" placeholder="Скільки голди продати?" oninput="calcSellGoldPrice()">
             <div id="calcSellResult" class="modal-calc-info">Ви отримаєте: 110 грн</div>
             <div style="display: flex; gap: 8px;">
                 <button class="btn-primary" style="background: var(--danger); color: #fff; padding: 10px; font-size: 14px;" onclick="submitSellGold()">Продати 🤝</button>
                 <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px; font-size: 14px; box-shadow: none;" onclick="closeSellGoldModal()">Скасувати</button>
             </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ПРАВИЛ КРАШУ -->
+    <div id="crashRulesModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>🚀 Правила гри КРАШ</h3>
+            <p>
+                1. Зробіть ставку (мінімум <b>10 G</b>).<br>
+                2. Ракета починає зліт, а разом з нею росте ігровий множник (ікс).<br>
+                3. Ваша мета — встигнути натиснути кнопку <b>«Забрати»</b> до того, як ракета вибухне.<br>
+                4. Якщо встигнете — виграш зараховується на баланс (Ставка × Множник). Якщо ні — ставка згорає. Удачі! 🔥
+            </p>
+            <button class="btn-primary" style="padding: 12px; font-size: 14px;" onclick="closeCrashRules()">Зрозуміти & Почати 🚀</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ПРАВИЛ МОНЕТКИ -->
+    <div id="coinRulesModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>🪙 Правила гри Монетка</h3>
+            <p>
+                1. Обери сторону: <b>Спецназ (Сині 🔵)</b> або <b>Терористи (Червоні 🔴)</b>.<br>
+                2. Введи суму ставки (мінімум <b>10 G</b>).<br>
+                3. Підкинь монетку та чекай результату обертання в 3D.<br>
+                4. Якщо вгадав сторону — отримуєш подвоєння виграшу з коефіцієнтом <b>x1.98</b>! 💰
+            </p>
+            <button class="btn-primary" style="padding: 12px; font-size: 14px;" onclick="closeCoinRules()">Зрозуміти & Почати 🚀</button>
         </div>
     </div>
 
@@ -1049,7 +1164,7 @@
     <!-- АПГРЕЙДЕР -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
-        <div class="subtitle">Покращуй голду до скінів Standoff 2</div>
+        <div class="subtitle">Покращуй голду до скінів Standoff 2 (мін. ставка 10G)</div>
 
         <div class="upgrader-container">
             <div class="upgrader-wheel-wrap">
@@ -1062,13 +1177,13 @@
 
             <div class="upgrader-panel-grid">
                 <div class="upgrader-box">
-                    <label>Ставка (Лише голда або скіни)</label>
+                    <label>Ставка (мін. 10 G)</label>
                     <select id="upgradeBetSource" onchange="onBetSourceChange()">
                         <option value="gold">Голда (G)</option>
                         <option value="inventory">З інвентарю 📦</option>
                     </select>
                     <div id="betGoldWrap" style="margin-top: 6px;">
-                        <input type="number" id="upgradeBet" value="50" min="1" oninput="calculateUpgradeChance()">
+                        <input type="number" id="upgradeBet" value="50" min="10" oninput="calculateUpgradeChance()">
                     </div>
                     <div id="betInvWrap" style="display:none; margin-top: 6px;">
                         <select id="upgradeInvSelect" onchange="calculateUpgradeChance()"></select>
@@ -1097,9 +1212,9 @@
                 <span class="icon">🚀</span>
                 <span>КРАШ</span>
             </button>
-            <button class="category-btn" style="opacity: 0.45; cursor: default;" onclick="alert('Нова гра вже в розробці 🔥')">
-                <span class="icon">🔒</span>
-                <span>СКОРО</span>
+            <button class="category-btn coin-card" onclick="openGame('coinflip')">
+                <span class="icon">🪙</span>
+                <span>МОНЕТКА</span>
             </button>
         </div>
     </div>
@@ -1108,10 +1223,11 @@
     <div id="crash-game-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToGamesMenu()">←</button>
-            <div>
+            <div style="flex:1;">
                 <h2 style="font-size: 22px; margin: 0;">🚀 КРАШ</h2>
-                <div class="subtitle" style="margin: 0;">Встигни забрати до вибуху!</div>
+                <div class="subtitle" style="margin: 0;">Мін. ставка: 10 G</div>
             </div>
+            <button class="btn-chars" onclick="openCrashRulesModal()">❓ Правила</button>
         </div>
 
         <div class="crash-container">
@@ -1123,7 +1239,7 @@
 
             <div class="crash-controls">
                 <div class="crash-input-row">
-                    <input type="number" id="crashBetInput" value="50" min="1" placeholder="Ставка (G)">
+                    <input type="number" id="crashBetInput" value="50" min="10" placeholder="Ставка (G)">
                     <div class="crash-quick-bets">
                         <button class="quick-bet-btn" onclick="setCrashBet(50)">50</button>
                         <button class="quick-bet-btn" onclick="setCrashBet(100)">100</button>
@@ -1135,10 +1251,54 @@
         </div>
     </div>
 
+    <!-- ГРА МОНЕТКА (COINFLIP) -->
+    <div id="coinflip-game-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToGamesMenu()">←</button>
+            <div style="flex:1;">
+                <h2 style="font-size: 22px; margin: 0;">🪙 МОНЕТКА</h2>
+                <div class="subtitle" style="margin: 0;">Коефіцієнт x1.98 | Мін. 10 G</div>
+            </div>
+            <button class="btn-chars" onclick="openCoinRulesModal()">❓ Правила</button>
+        </div>
+
+        <div class="coinflip-container">
+            <div class="coin-side-select">
+                <button id="sideCtBtn" class="side-btn selected-ct" onclick="selectCoinSide('ct')">🔵 Спецназ (КТ)</button>
+                <button id="sideTBtn" class="side-btn" onclick="selectCoinSide('t')">🔴 Терористи (Т)</button>
+            </div>
+
+            <div class="coin-scene">
+                <div id="coinElement" class="coin">
+                    <div class="coin-face coin-ct">
+                        <span style="font-size: 28px;">🛡️</span>
+                        <span style="font-size: 11px; margin-top: 4px;">СПЕЦНАЗ</span>
+                    </div>
+                    <div class="coin-face coin-t">
+                        <span style="font-size: 28px;">💣</span>
+                        <span style="font-size: 11px; margin-top: 4px;">ТЕРОРИСТИ</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="crash-controls">
+                <div class="crash-input-row">
+                    <input type="number" id="coinBetInput" value="50" min="10" placeholder="Ставка (G)">
+                    <div class="crash-quick-bets">
+                        <button class="quick-bet-btn" onclick="setCoinBet(50)">50</button>
+                        <button class="quick-bet-btn" onclick="setCoinBet(100)">100</button>
+                        <button class="quick-bet-btn" onclick="doubleCoinBet()">x2</button>
+                    </div>
+                </div>
+                <button id="coinActionBtn" class="btn-primary" onclick="flipCoin()" style="background: linear-gradient(135deg, #2979ff 0%, #00e5ff 100%); color: #fff;">ПІДКИНУТИ МОНЕТКУ 🪙</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ІНВЕНТАР -->
     <div id="inventory-tab" class="tab-content">
         <h2>📦 Мій інвентар</h2>
-        <div class="subtitle">Твої виграні скіни</div>
+        <div class="subtitle">Твої виграні скіни Standoff 2</div>
         <div id="userInventory" class="inventory-grid">
             <div class="empty-state" style="grid-column: span 2;">Інвентар порожній</div>
         </div>
@@ -1325,76 +1485,29 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
-        // ===== ГЕНЕРАТОР 210+ СКІНІВ STANDOFF 2 НА РАНДОМНІ СУМИ =====
-        const weaponsList = [
-            "G22", "USP", "P350", "Desert Eagle", "Five-Seven", "TEC-9", "Berettas",
-            "UMP45", "MP7", "P90", "MP5", "MAC-10", "Val",
-            "AKR", "AKR12", "M4", "M4A1", "M16", "FAMAS", "FN FAL", "AUG",
-            "AWM", "M40", "M110",
-            "SM1014", "FABM", "SPAS", "M60"
+        // ===== РЕАЛЬНІ СКІНИ STANDOFF 2 З РЕАЛЬНИМИ ФОТО =====
+        const standoffSkins = [
+            { name: "Sticker | Phoenix", goldPrice: 25, img: "https://standoff2.com/assets/images/stickers/phoenix.png" },
+            { name: "Graffiti | Standoff", goldPrice: 40, img: "https://standoff2.com/assets/images/graffiti/standoff.png" },
+            { name: "Charm | Gold Bullet", goldPrice: 75, img: "https://standoff2.com/assets/images/charms/bullet.png" },
+            { name: "P350 | Neon", goldPrice: 110, img: "https://wiki.standoff2.com/images/thumb/P350_Neon.png/300px-P350_Neon.png" },
+            { name: "G22 | Carbon", goldPrice: 140, img: "https://wiki.standoff2.com/images/thumb/G22_Carbon.png/300px-G22_Carbon.png" },
+            { name: "TEC-9 | Scale", goldPrice: 190, img: "https://wiki.standoff2.com/images/thumb/Tec9_Scale.png/300px-Tec9_Scale.png" },
+            { name: "MP7 | Graffity", goldPrice: 240, img: "https://wiki.standoff2.com/images/thumb/Mp7_Graffiti.png/300px-Mp7_Graffiti.png" },
+            { name: "UMP45 | Beast", goldPrice: 290, img: "https://wiki.standoff2.com/images/thumb/Ump45_Beast.png/300px-Ump45_Beast.png" },
+            { name: "AKR12 | Railgun", goldPrice: 380, img: "https://wiki.standoff2.com/images/thumb/Akr12_Railgun.png/300px-Akr12_Railgun.png" },
+            { name: "M4 | Samurai", goldPrice: 460, img: "https://wiki.standoff2.com/images/thumb/M4_Samurai.png/300px-M4_Samurai.png" },
+            { name: "FAMAS | Tempest", goldPrice: 550, img: "https://wiki.standoff2.com/images/thumb/Famas_Tempest.png/300px-Famas_Tempest.png" },
+            { name: "AWM | Gear", goldPrice: 680, img: "https://wiki.standoff2.com/images/thumb/Awm_Gear.png/300px-Awm_Gear.png" },
+            { name: "Desert Eagle | Predator", goldPrice: 820, img: "https://wiki.standoff2.com/images/thumb/Deagle_Predator.png/300px-Deagle_Predator.png" },
+            { name: "M4A1 | Necromancer", goldPrice: 990, img: "https://wiki.standoff2.com/images/thumb/M4a1_Necromancer.png/300px-M4a1_Necromancer.png" },
+            { name: "AKR | Treasure Hunter", goldPrice: 1250, img: "https://wiki.standoff2.com/images/thumb/Akr_Treasure_Hunter.png/300px-Akr_Treasure_Hunter.png" },
+            { name: "AWM | Dragon Glass", goldPrice: 1650, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" },
+            { name: "Karambit | Claw", goldPrice: 2150, img: "https://wiki.standoff2.com/images/thumb/Karambit_Claw.png/300px-Karambit_Claw.png" },
+            { name: "M9 Bayonet | Universe", goldPrice: 2500, img: "https://wiki.standoff2.com/images/thumb/M9_Universe.png/300px-M9_Universe.png" },
+            { name: "Butterfly | Cold Flame", goldPrice: 2900, img: "https://wiki.standoff2.com/images/thumb/Butterfly_Cold_Flame.png/300px-Butterfly_Cold_Flame.png" },
+            { name: "Kunai | Luxury", goldPrice: 3300, img: "https://wiki.standoff2.com/images/thumb/Kunai_Luxury.png/300px-Kunai_Luxury.png" }
         ];
-        const skinNamesList = [
-            "Carbon", "Relic", "Necromancer", "Dragon", "Treasure Hunter", "Genesis", "Sport",
-            "Samurai", "Scratch", "Gecko", "Phoenix", "Beast", "Cyber", "Venom", "Fury",
-            "Pixel", "Aurora", "Acid", "Nebula", "Railgun", "Predator", "Ghoul", "Gear",
-            "Zombie", "Monster", "Poison", "2 Years", "Scale", "Lizard", "Shark", "Tropic",
-            "Inferno", "Frost", "Vortex", "Shadow", "Gold Trim", "Blaze", "Neon", "Phantom",
-            "Viper", "Scorpion", "Griffin", "Hydra", "Kraken", "Titan", "Mirage", "Eclipse"
-        ];
-
-        const standoffSkins = (() => {
-            const items = [];
-            const usedNames = new Set();
-
-            // Ручні топові позиції
-            const baseSkins = [
-                { name: "Sticker | Dragon Glass", goldPrice: 18 },
-                { name: "Graffiti | Standoff", goldPrice: 27 },
-                { name: "Sticker | Phoenix", goldPrice: 39 },
-                { name: "Charm | Gold Bullet", goldPrice: 64 },
-                { name: "Karambit | Claw", goldPrice: 2150 },
-                { name: "M9 Bayonet | Universe", goldPrice: 2480 },
-                { name: "Butterfly | Cold Flame", goldPrice: 2890 },
-                { name: "Kunai | Luxury", goldPrice: 3250 }
-            ];
-            baseSkins.forEach(b => { items.push(b); usedNames.add(b.name); });
-
-            // Генеруємо 205 скінів на різні нетипові суми від 15 до 1995 G
-            let seed = 42;
-            function pseudoRandom() {
-                seed = (seed * 1664525 + 1013904223) % 4294967296;
-                return seed / 4294967296;
-            }
-
-            while (items.length < 215) {
-                const w = weaponsList[Math.floor(pseudoRandom() * weaponsList.length)];
-                const s = skinNamesList[Math.floor(pseudoRandom() * skinNamesList.length)];
-                const isStatTrack = pseudoRandom() > 0.78;
-                const fullName = `${isStatTrack ? "StatTrack™ " : ""}${w} | ${s}`;
-                if (usedNames.has(fullName)) continue;
-                usedNames.add(fullName);
-
-                // Розподіл цін від 22 до 1995 G з нерівними числами
-                let rawPrice;
-                const tier = pseudoRandom();
-                if (tier < 0.35) {
-                    rawPrice = 22 + Math.floor(pseudoRandom() * 230); // 22 - 252 G
-                } else if (tier < 0.70) {
-                    rawPrice = 255 + Math.floor(pseudoRandom() * 640); // 255 - 895 G
-                } else {
-                    rawPrice = 900 + Math.floor(pseudoRandom() * 1095); // 900 - 1995 G
-                }
-
-                items.push({ name: fullName, goldPrice: rawPrice });
-            }
-
-            return items
-                .sort((a, b) => a.goldPrice - b.goldPrice)
-                .map(s => ({
-                    ...s,
-                    img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png"
-                }));
-        })();
 
         function formatPriceBlock(uahPrice, goldPrice) {
             let html = `<span class="uah-badge">${uahPrice} грн</span>`;
@@ -1404,7 +1517,7 @@
             return html;
         }
 
-        // ===== МОДАЛКИ ГОЛДИ =====
+        // ===== МОДАЛКИ ГОЛДИ ТА ПРАВИЛ =====
         function openAddGoldModal() {
             document.getElementById('addGoldModal').classList.add('active');
             calcBuyGoldPrice();
@@ -1447,6 +1560,12 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
             closeSellGoldModal();
         }
+
+        function openCrashRulesModal() { document.getElementById('crashRulesModal').classList.add('active'); }
+        function closeCrashRules() { document.getElementById('crashRulesModal').classList.remove('active'); }
+
+        function openCoinRulesModal() { document.getElementById('coinRulesModal').classList.add('active'); }
+        function closeCoinRules() { document.getElementById('coinRulesModal').classList.remove('active'); }
 
         // ===== JSONBIN =====
         async function loadDatabase() {
@@ -1661,7 +1780,7 @@
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 1;
 
-            if (bet >= targetPrice || bet <= 0) {
+            if (bet >= targetPrice || bet < 10) {
                 document.getElementById('upgradeChanceVal').innerText = "0%";
                 drawUpgradeWheel(0, 0);
                 return;
@@ -1685,7 +1804,7 @@
             const targetName = targetSelect.options[targetSelect.selectedIndex].dataset.name;
             const targetImg = targetSelect.options[targetSelect.selectedIndex].dataset.img;
 
-            if (bet <= 0) { alert("Вибери або введи коректну ставку!"); return; }
+            if (bet < 10) { alert("Мінімальна ставка в апгрейдері — 10 G!"); return; }
             if (source === 'gold' && userGold < bet) { alert("У тебе немає стільки голди!"); return; }
             if (bet >= targetPrice) { alert("Ставка має бути меншою за вартість цільового скіна!"); return; }
 
@@ -1758,7 +1877,13 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             if (gameName === 'crash') {
                 document.getElementById('crash-game-tab').classList.add('active');
-                setTimeout(() => drawCrashGraph(1.00, false), 50);
+                setTimeout(() => {
+                    drawCrashGraph(1.00, false);
+                    openCrashRulesModal();
+                }, 50);
+            } else if (gameName === 'coinflip') {
+                document.getElementById('coinflip-game-tab').classList.add('active');
+                setTimeout(() => openCoinRulesModal(), 50);
             }
         }
 
@@ -1771,16 +1896,81 @@
             document.getElementById('games-tab').classList.add('active');
         }
 
-        function setCrashBet(val) {
-            if (crashState === 'PLAYING') return;
-            document.getElementById('crashBetInput').value = val;
+        // ===== МІНІ-ІГРА МОНЕТКА (COINFLIP) =====
+        let selectedCoinSide = 'ct'; // 'ct' або 't'
+        let isCoinFlipping = false;
+
+        function selectCoinSide(side) {
+            if (isCoinFlipping) return;
+            selectedCoinSide = side;
+            const ctBtn = document.getElementById('sideCtBtn');
+            const tBtn = document.getElementById('sideTBtn');
+            if (side === 'ct') {
+                ctBtn.className = "side-btn selected-ct";
+                tBtn.className = "side-btn";
+            } else {
+                ctBtn.className = "side-btn";
+                tBtn.className = "side-btn selected-t";
+            }
         }
 
-        function doubleCrashBet() {
-            if (crashState === 'PLAYING') return;
-            const inp = document.getElementById('crashBetInput');
+        function setCoinBet(val) {
+            if (isCoinFlipping) return;
+            document.getElementById('coinBetInput').value = val;
+        }
+
+        function doubleCoinBet() {
+            if (isCoinFlipping) return;
+            const inp = document.getElementById('coinBetInput');
             const cur = parseInt(inp.value) || 10;
             inp.value = Math.min(userGold || cur * 2, cur * 2);
+        }
+
+        async function flipCoin() {
+            if (isCoinFlipping) return;
+            const betVal = parseInt(document.getElementById('coinBetInput').value) || 0;
+            if (betVal < 10) { alert("Мінімальна ставка в монетці — 10 G!"); return; }
+            if (userGold < betVal) { alert("Недостатньо голди на балансі!"); return; }
+
+            isCoinFlipping = true;
+            userGold -= betVal;
+            updateUIState();
+            syncUserToDB();
+
+            const btn = document.getElementById('coinActionBtn');
+            btn.disabled = true;
+            btn.innerText = "МОНЕТКА ЛЕТИТЬ... 🪙";
+
+            const winningSide = Math.random() < 0.5 ? 'ct' : 't';
+            const coinEl = document.getElementById('coinElement');
+
+            // Кількість обертів для красивої анімації
+            const extraSpins = 1800; // 5 повних обертів
+            const targetRot = winningSide === 'ct' ? extraSpins : extraSpins + 180;
+            coinEl.style.transition = "transform 1.6s cubic-bezier(0.15, 0.85, 0.12, 1)";
+            coinEl.style.transform = `rotateY(${targetRot}deg)`;
+
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
+
+            setTimeout(async () => {
+                isCoinFlipping = false;
+                btn.disabled = false;
+                btn.innerText = "ПІДКИНУТИ МОНЕТКУ 🪙";
+
+                const isWin = (selectedCoinSide === winningSide);
+                if (isWin) {
+                    const winAmount = Math.floor(betVal * 1.98);
+                    userGold += winAmount;
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+                    alert(`🎉 ВІТАЮ! Ви виграли ${winAmount} G (x1.98)!`);
+                } else {
+                    if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+                    alert(`😢 На жаль, випали ${winningSide === 'ct' ? 'Спецназ 🔵' : 'Терористи 🔴'}. Ставка згоріла.`);
+                }
+
+                updateUIState();
+                syncUserToDB();
+            }, 1700);
         }
 
         // ===== МІНІ-ІГРА КРАШ (ЗБАЛАНСОВАНІ ШАНСИ) =====
@@ -1793,15 +1983,10 @@
 
         function generateCrashPoint() {
             const r = Math.random();
-            // 5% шанс миттєвого інста-крашу на 1.00x
             if (r < 0.05) return 1.00;
-            // 23% шанс на низький краш 1.02x - 1.25x
             if (r < 0.28) return Number((1.02 + Math.random() * 0.23).toFixed(2));
-            // 37% шанс на робочий діапазон 1.26x - 1.95x
             if (r < 0.65) return Number((1.26 + Math.random() * 0.69).toFixed(2));
-            // 23% шанс на хороший ікс 1.96x - 3.60x
             if (r < 0.88) return Number((1.96 + Math.random() * 1.64).toFixed(2));
-            // 12% шанс на жирний занос 3.61x - 14.00x
             return Number((3.61 + Math.random() * 10.39).toFixed(2));
         }
 
@@ -1820,7 +2005,6 @@
             const w = canvas.width;
             const h = canvas.height;
 
-            // Фонова неонова сітка
             ctx.strokeStyle = "rgba(0, 229, 255, 0.06)";
             ctx.lineWidth = 1;
             for (let gx = 40; gx < w; gx += 40) {
@@ -1834,7 +2018,6 @@
             const currentX = 20 + norm * (w - 50);
             const currentY = (h - 20) - norm * (h - 45);
 
-            // Градієнт під кривою
             const grad = ctx.createLinearGradient(0, currentY, 0, h);
             grad.addColorStop(0, isCrash ? "rgba(255, 82, 82, 0.28)" : "rgba(0, 229, 255, 0.28)");
             grad.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -1847,7 +2030,6 @@
             ctx.fillStyle = grad;
             ctx.fill();
 
-            // Неонова лінія графіка
             ctx.beginPath();
             ctx.moveTo(20, h - 20);
             ctx.quadraticCurveTo(20 + (currentX - 20) * 0.55, h - 20, currentX, currentY);
@@ -1858,7 +2040,6 @@
             ctx.shadowBlur = 14;
             ctx.stroke();
 
-            // Світна точка ракети
             ctx.beginPath();
             ctx.arc(currentX, currentY, 6, 0, 2 * Math.PI);
             ctx.fillStyle = isCrash ? '#ff5252' : '#ffffff';
@@ -1889,7 +2070,7 @@
         function handleCrashAction() {
             if (crashState === 'IDLE' || crashState === 'CASHED' || crashState === 'CRASHED') {
                 const betVal = Math.floor(parseFloat(document.getElementById('crashBetInput').value) || 0);
-                if (betVal <= 0) { alert("Введи коректну ставку!"); return; }
+                if (betVal < 10) { alert("Мінімальна ставка в Краші — 10 G!"); return; }
                 if (userGold < betVal) { alert("Недостатньо голди на балансі!"); return; }
 
                 crashBet = betVal;
@@ -1987,7 +2168,7 @@
                 const div = document.createElement('div');
                 div.className = "inventory-item";
                 div.innerHTML = `
-                    <img src="${item.img || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10'}" alt="${item.name}">
+                    <img src="${item.img || 'https://wiki.standoff2.com/images/thumb/G22_Carbon.png/300px-G22_Carbon.png'}" alt="${item.name}">
                     <b>${item.name}</b>
                     <div class="inventory-actions">
                         <button class="btn-inv-action" onclick="withdrawInventoryItem('${item.name}')">Вивести товар 🚀</button>
