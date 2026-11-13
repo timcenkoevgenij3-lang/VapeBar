@@ -84,19 +84,15 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
-        .btn-add-gold {
+        .btn-gold-action {
             background: var(--gold);
             color: #1a1200;
             border: none;
-            width: 22px;
-            height: 22px;
+            padding: 2px 6px;
             border-radius: 6px;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
             margin-left: 2px;
             box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4);
         }
@@ -391,7 +387,7 @@
             letter-spacing: 1px;
         }
 
-        /* МОДАЛКА ПОПОВНЕННЯ ГОЛДИ */
+        /* МОДАЛКИ (КУПІВЛЯ / ПРОДАЖ ГОЛДИ) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -869,17 +865,18 @@
         <div class="brand-title">Vape Bar | Mini App</div>
         <div id="globalGoldBadge" class="global-gold-badge">
             <span class="gold-icon">G</span><span id="headerGoldVal">0</span>
-            <button class="btn-add-gold" onclick="openAddGoldModal()">+</button>
+            <button class="btn-gold-action" onclick="openAddGoldModal()" title="Купити голду">+</button>
+            <button class="btn-gold-action" style="background: var(--danger); color: #fff;" onclick="openSellGoldModal()" title="Продати голду">-</button>
         </div>
     </div>
 
-    <!-- МОДАЛКА ПОПОВНЕННЯ ГОЛДИ -->
+    <!-- МОДАЛКА КУПІВЛІ ГОЛДИ (38 грн за 100 G) -->
     <div id="addGoldModal" class="modal-overlay">
         <div class="modal-box">
-            <h3>🪙 Поповнення голди</h3>
-            <p>Курс: <b>100 G = 35 грн</b></p>
-            <input type="number" id="buyGoldInput" value="500" min="50" step="50" placeholder="Скільки голди?" oninput="calcGoldPrice()">
-            <div id="calcPriceResult" class="modal-calc-info">До сплати: 175 грн</div>
+            <h3>🪙 Купити голду</h3>
+            <p>Курс: <b>100 G = 38 грн</b></p>
+            <input type="number" id="buyGoldInput" value="500" min="50" step="50" placeholder="Скільки голди?" oninput="calcBuyGoldPrice()">
+            <div id="calcBuyResult" class="modal-calc-info">До сплати: 190 грн</div>
             <div style="display: flex; gap: 8px;">
                 <button class="btn-primary" style="padding: 10px; font-size: 14px;" onclick="submitBuyGold()">Купити 🚀</button>
                 <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px; font-size: 14px; box-shadow: none;" onclick="closeAddGoldModal()">Скасувати</button>
@@ -887,7 +884,21 @@
         </div>
     </div>
 
-    <!-- АСОРТИМЕНТ (ПЕРША ВКЛАДКА ЗА ЗАМОВЧУВАННЯМ) -->
+    <!-- МОДАЛКА ПРОДАЖУ ГОЛДИ (22 грн за 100 G) -->
+    <div id="sellGoldModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>💸 Продати голду</h3>
+            <p>Курс: <b>100 G = 22 грн</b></p>
+            <input type="number" id="sellGoldInput" value="500" min="50" step="50" placeholder="Скільки голди продати?" oninput="calcSellGoldPrice()">
+            <div id="calcSellResult" class="modal-calc-info">Ви отримаєте: 110 грн</div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" style="background: var(--danger); color: #fff; padding: 10px; font-size: 14px;" onclick="submitSellGold()">Продати 🤝</button>
+                <button class="btn-primary" style="background: rgba(255,255,255,0.1); color: #fff; padding: 10px; font-size: 14px; box-shadow: none;" onclick="closeSellGoldModal()">Скасувати</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- АСОРТИМЕНТ (ПЕРША ВКЛАДКА) -->
     <div id="shop-tab" class="tab-content active">
         <h2>Асортимент</h2>
         <div class="subtitle">Обери категорію</div>
@@ -953,7 +964,7 @@
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (ЗІ СКІНАМИ STANDOFF 2) -->
+    <!-- АПГРЕЙДЕР (ЛИШЕ СКІНИ STANDOFF 2) -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
         <div class="subtitle">Покращуй голду до скінів Standoff 2</div>
@@ -969,7 +980,7 @@
 
             <div class="upgrader-panel-grid">
                 <div class="upgrader-box">
-                    <label>Ставка</label>
+                    <label>Ставка (Лише голда або скіни)</label>
                     <select id="upgradeBetSource" onchange="onBetSourceChange()">
                         <option value="gold">Голда (G)</option>
                         <option value="inventory">З інвентарю 📦</option>
@@ -1087,7 +1098,7 @@
         <button class="btn-order-big" onclick="orderCurrentProduct()">Оформити замовлення</button>
     </div>
 
-    <!-- TAB BAR (АСОРТИМЕНТ ПЕРШИЙ) -->
+    <!-- TAB BAR -->
     <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('shop-tab', this)">
             <span class="icon">💧</span>
@@ -1168,18 +1179,24 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
-        // ===== СКІНИ STANDOFF 2 ДЛЯ АПГРЕЙДЕРА =====
+        // ===== БАГАТО СКІНІВ STANDOFF 2 НА РІЗНІ СУМИ =====
         const standoffSkins = [
-            { name: "Sticker | Dragon Glass", goldPrice: 50, img: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FABz7PLfYQJD_9O7kY60n_L1JbDummlD78A_i7vEoN2kjATg-hBsZzunddSWdFRoZwnY81i_x-3rhp_tu8jMn3RjpGB8st4D796V8wE/360fx360f" },
-            { name: "P350 | Carbon", goldPrice: 100, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
-            { name: "TEC-9 | Necromancer", goldPrice: 180, img: "https://wiki.standoff2.com/images/thumb/Tec9_Necromancer.png/300px-Tec9_Necromancer.png" },
-            { name: "MP5 | Northern Camo", goldPrice: 230, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
-            { name: "AKR12 | Carbon", goldPrice: 269, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
-            { name: "M4 | Samurai", goldPrice: 350, img: "https://wiki.standoff2.com/images/thumb/M4_Samurai.png/300px-M4_Samurai.png" },
-            { name: "AWM | Scratch", goldPrice: 500, img: "https://wiki.standoff2.com/images/thumb/Awm_Scratch.png/300px-Awm_Scratch.png" },
-            { name: "USP | Gecko", goldPrice: 750, img: "https://wiki.standoff2.com/images/thumb/Usp_Gecko.png/300px-Usp_Gecko.png" },
-            { name: "AKR | Treasure Hunter", goldPrice: 1200, img: "https://wiki.standoff2.com/images/thumb/Akr_TreasureHunter.png/300px-Akr_TreasureHunter.png" },
-            { name: "AWM | Dragon", goldPrice: 2500, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" }
+            { name: "Sticker | Dragon Glass", goldPrice: 25, img: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FABz7PLfYQJD_9O7kY60n_L1JbDummlD78A_i7vEoN2kjATg-hBsZzunddSWdFRoZwnY81i_x-3rhp_tu8jMn3RjpGB8st4D796V8wE/360fx360f" },
+            { name: "Graffiti | Standoff", goldPrice: 45, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
+            { name: "P350 | Carbon", goldPrice: 85, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
+            { name: "G22 | Relic", goldPrice: 110, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
+            { name: "TEC-9 | Necromancer", goldPrice: 130, img: "https://wiki.standoff2.com/images/thumb/Tec9_Necromancer.png/300px-Tec9_Necromancer.png" },
+            { name: "SM1014 | Carbon", goldPrice: 135, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
+            { name: "MP5 | Northern Camo", goldPrice: 165, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
+            { name: "MAC-10 | Yellow", goldPrice: 187, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
+            { name: "AKR12 | Carbon", goldPrice: 230, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
+            { name: "FABM | Carbon", goldPrice: 269, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
+            { name: "M4 | Samurai", goldPrice: 340, img: "https://wiki.standoff2.com/images/thumb/M4_Samurai.png/300px-M4_Samurai.png" },
+            { name: "AWM | Scratch", goldPrice: 420, img: "https://wiki.standoff2.com/images/thumb/Awm_Scratch.png/300px-Awm_Scratch.png" },
+            { name: "USP | Gecko", goldPrice: 550, img: "https://wiki.standoff2.com/images/thumb/Usp_Gecko.png/300px-Usp_Gecko.png" },
+            { name: "AKR | Treasure Hunter", goldPrice: 890, img: "https://wiki.standoff2.com/images/thumb/Akr_TreasureHunter.png/300px-Akr_TreasureHunter.png" },
+            { name: "AWM | Dragon", goldPrice: 1450, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" },
+            { name: "Karambit | Claw", goldPrice: 3200, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" }
         ];
 
         function formatPriceBlock(uahPrice, goldPrice) {
@@ -1190,32 +1207,50 @@
             return html;
         }
 
-        // ===== ЛОГІКА МОДАЛКИ ПОПОВНЕННЯ ГОЛДИ =====
+        // ===== ЛОГІКА МОДАЛОК ГОЛДИ =====
         function openAddGoldModal() {
             document.getElementById('addGoldModal').classList.add('active');
-            calcGoldPrice();
+            calcBuyGoldPrice();
         }
-
         function closeAddGoldModal() {
             document.getElementById('addGoldModal').classList.remove('active');
         }
-
-        function calcGoldPrice() {
+        function calcBuyGoldPrice() {
             const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
-            const uahCost = Math.round((goldVal / 100) * 35);
-            document.getElementById('calcPriceResult').innerText = `До сплати: ${uahCost} грн`;
+            // 100G = 38 грн
+            const uahCost = Math.round((goldVal / 100) * 38);
+            document.getElementById('calcBuyResult').innerText = `До сплати: ${uahCost} грн`;
         }
-
         function submitBuyGold() {
             const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
-            if (goldVal <= 0) {
-                alert("Введіть коректну кількість голди!");
-                return;
-            }
-            const uahCost = Math.round((goldVal / 100) * 35);
+            if (goldVal <= 0) { alert("Введіть кількість голди!"); return; }
+            const uahCost = Math.round((goldVal / 100) * 38);
             const text = encodeURIComponent(`Привіт! Хочу купити голду.\nКількість: ${goldVal} G\nСума до сплати: ${uahCost} грн\nМій нік: ${username} (ID: ${telegramId})`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
             closeAddGoldModal();
+        }
+
+        function openSellGoldModal() {
+            document.getElementById('sellGoldModal').classList.add('active');
+            calcSellGoldPrice();
+        }
+        function closeSellGoldModal() {
+            document.getElementById('sellGoldModal').classList.remove('active');
+        }
+        function calcSellGoldPrice() {
+            const goldVal = parseInt(document.getElementById('sellGoldInput').value) || 0;
+            // 100G = 22 грн
+            const uahGet = Math.round((goldVal / 100) * 22);
+            document.getElementById('calcSellResult').innerText = `Ви отримаєте: ${uahGet} грн`;
+        }
+        function submitSellGold() {
+            const goldVal = parseInt(document.getElementById('sellGoldInput').value) || 0;
+            if (goldVal <= 0) { alert("Введіть кількість голди для продажу!"); return; }
+            if (userGold < goldVal) { alert("У вас немає стільки голди на балансі!"); return; }
+            const uahGet = Math.round((goldVal / 100) * 22);
+            const text = encodeURIComponent(`Привіт! Хочу ПРОДАТИ голду.\nКількість: ${goldVal} G\nСума до виплати мені: ${uahGet} грн\nМій нік: ${username} (ID: ${telegramId})`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+            closeSellGoldModal();
         }
 
         // ===== JSONBIN =====
@@ -1328,7 +1363,7 @@
             }
         }
 
-        // ===== АПГРЕЙДЕР (СКІНИ STANDOF 2) =====
+        // ===== АПГРЕЙДЕР (СКІНИ STANDOFF 2) =====
         function populateUpgradeSelect() {
             const select = document.getElementById('upgradeTarget');
             select.innerHTML = "";
