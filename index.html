@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VapeBar — Магазин & Апгрейдер</title>
+    <title>VapeBar — Магазин, Апгрейдер & Інвентар</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -237,21 +237,40 @@
         }
 
         .result-box h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 20px; }
-        .result-box p { margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #fff; }
+        .result-box p { margin: 0 0 14px 0; font-size: 15px; font-weight: 600; color: #fff; }
+
+        .result-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
         .btn-claim {
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 12px 20px;
-            font-size: 15px;
+            padding: 10px 16px;
+            font-size: 14px;
             font-weight: 700;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
         }
 
-        /* АПГРЕЙДЕР (РУЛЕТКА ЗІ СТРІЛКОЮ) */
+        .btn-inventory-add {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        /* ПРЕМІАЛЬНИЙ АПГРЕЙДЕР ЗІ ЗОВНІШНЬОЮ СТРІЛКОЮ */
         .upgrader-container {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.3);
@@ -294,7 +313,7 @@
         }
 
         .upgrader-center-text b {
-            font-size: 20px;
+            font-size: 22px;
             color: var(--success);
             font-weight: 900;
             text-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
@@ -357,24 +376,61 @@
         .inventory-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-top: 10px;
         }
         .inventory-item {
             background: var(--card-bg);
-            border: 1px solid rgba(255,215,0,0.3);
-            border-radius: 12px;
-            padding: 10px;
+            border: 1px solid rgba(255,215,0,0.35);
+            border-radius: 16px;
+            padding: 14px 10px;
             text-align: center;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
         }
         .inventory-item img {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 6px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #0b0d14;
         }
-        .inventory-item b { display: block; font-size: 13px; color: #fff; margin-bottom: 6px; }
+        .inventory-item b { display: block; font-size: 13px; color: #fff; margin-bottom: 8px; }
+
+        .inventory-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .btn-inv-action {
+            background: rgba(124, 77, 255, 0.25);
+            color: #d1c4e9;
+            border: 1px solid var(--accent);
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-inv-sell {
+            background: rgba(255, 82, 82, 0.15);
+            color: #ff5252;
+            border: 1px solid rgba(255, 82, 82, 0.4);
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+        }
 
         .category-grid {
             display: grid;
@@ -775,17 +831,20 @@
         <div id="resultBox" class="result-box">
             <h3>🎉 Твій виграш:</h3>
             <p id="prizeDesc">Безкоштовна доставка</p>
-            <button class="btn-claim" onclick="claimPrize()">Забрати приз у менеджера</button>
+            <div class="result-btns">
+                <button class="btn-inventory-add" onclick="claimPrizeToInventory()">Закинути в інвентар 📦</button>
+                <button class="btn-claim" onclick="claimPrizeManager()">Забрати у менеджера</button>
+            </div>
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (РУЛЕТКА ЗІ СТРІЛКОЮ) -->
+    <!-- АПГРЕЙДЕР (ПРЕМІАЛЬНИЙ ЗІ ЗОВНІШНЬОЮ СТРІЛКОЮ) -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
-        <div class="subtitle">Покращуй голду у призи</div>
+        <div class="subtitle">Покращуй голду та предмети з інвентарю</div>
 
         <div class="upgrader-container">
-            <!-- Круговий прогрес шансу та стрілка -->
+            <!-- Круговий прогрес та анімована зовн. стрілка -->
             <div class="upgrader-wheel-wrap">
                 <canvas id="upgradeCanvas" width="300" height="300"></canvas>
                 <div class="upgrader-center-text">
@@ -794,27 +853,40 @@
                 </div>
             </div>
 
-            <!-- Вибір ставки (вільне введення) та цілі -->
+            <!-- Вибір ставки (голда або предмет з інвентарю) та цілі -->
             <div class="upgrader-pickers">
                 <div class="picker-box">
-                    <label>Ваша ставка (G)</label>
-                    <input type="number" id="upgradeBet" value="100" min="1" oninput="calculateUpgradeChance()">
+                    <label>Ваша ставка</label>
+                    <select id="upgradeBetSource" onchange="onBetSourceChange()">
+                        <option value="gold">Голда (G)</option>
+                        <option value="inventory">З інвентарю 📦</option>
+                    </select>
+                    <div id="betGoldWrap" style="margin-top: 6px;">
+                        <input type="number" id="upgradeBet" value="100" min="1" oninput="calculateUpgradeChance()">
+                    </div>
+                    <div id="betInvWrap" style="display:none; margin-top: 6px;">
+                        <select id="upgradeInvSelect" onchange="calculateUpgradeChance()"></select>
+                    </div>
                 </div>
                 <div class="upgrader-arrow">➔</div>
                 <div class="picker-box">
-                    <label>Ціль</label>
+                    <label>Цільовий приз</label>
                     <select id="upgradeTarget" onchange="calculateUpgradeChance()">
-                        <!-- Заповнюється автоматично з товарів -->
+                        <!-- Заповнюється з товарів -->
                     </select>
                 </div>
             </div>
 
             <button id="upgradeBtn" class="btn-primary" onclick="startUpgrade()">ПРОКАЧАТИ 🚀</button>
         </div>
+    </div>
 
-        <h3 style="text-align: left; font-size: 16px; margin-bottom: 8px; color: #fff;">📦 Твій інвентар:</h3>
+    <!-- ІНВЕНТАР (ОКРЕМА ВКЛАДКА) -->
+    <div id="inventory-tab" class="tab-content">
+        <h2>📦 Мій інвентар</h2>
+        <div class="subtitle">Твої виграші з Колеса та Апгрейдера</div>
         <div id="userInventory" class="inventory-grid">
-            <div class="empty-state">Інвентар порожній</div>
+            <div class="empty-state" style="grid-column: span 2;">Інвентар порожній</div>
         </div>
     </div>
 
@@ -890,7 +962,7 @@
     <!-- АДМІН -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Розділене управління спробами та голдою</div>
+        <div class="subtitle">Управління спробами та голдою</div>
         
         <div class="add-user-box">
             <b style="font-size: 14px; color: var(--gold);">➕ Масове нарахування по ID:</b>
@@ -935,6 +1007,10 @@
             <span class="icon">⚡</span>
             <span>Апгрейд</span>
         </button>
+        <button class="tab-btn" onclick="switchTab('inventory-tab', this)">
+            <span class="icon">📦</span>
+            <span>Інвентар</span>
+        </button>
         <button class="tab-btn" onclick="switchTab('shop-tab', this)">
             <span class="icon">💧</span>
             <span>Магазин</span>
@@ -963,7 +1039,7 @@
         let userGold = 0;
         let userInventory = [];
         let currentProduct = null;
-        let lastWonPrize = "";
+        let lastWonPrizeObj = null;
         let isSpinning = false;
         let isUpgrading = false;
 
@@ -1069,6 +1145,7 @@
             
             updateUIState();
             populateUpgradeSelect();
+            populateInventorySelect();
 
             if (telegramId === ADMIN_ID) {
                 document.getElementById('adminTabBtn').style.display = "flex";
@@ -1090,6 +1167,7 @@
                 spinBtn.innerText = `Крутити колесо (${userSpins} ост.)`;
             }
             renderInventory();
+            populateInventorySelect();
         }
 
         async function buySpinWithGold() {
@@ -1118,7 +1196,7 @@
             }
         }
 
-        // ===== АПГРЕЙДЕР ЛОГІКА З АНІМОВАНОЮ СТРІЛКОЮ =====
+        // ===== АПГРЕЙДЕР ТА КЕФ 0.8 =====
         function populateUpgradeSelect() {
             const select = document.getElementById('upgradeTarget');
             select.innerHTML = "";
@@ -1137,65 +1215,97 @@
             calculateUpgradeChance();
         }
 
+        function populateInventorySelect() {
+            const select = document.getElementById('upgradeInvSelect');
+            select.innerHTML = "";
+            if (!userInventory || userInventory.length === 0) {
+                select.innerHTML = `<option value="">Інвентар порожній</option>`;
+                return;
+            }
+            userInventory.forEach((item, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `${item.name} (~${item.price} G)`;
+                select.appendChild(opt);
+            });
+            calculateUpgradeChance();
+        }
+
+        function onBetSourceChange() {
+            const source = document.getElementById('upgradeBetSource').value;
+            if (source === 'gold') {
+                document.getElementById('betGoldWrap').style.display = 'block';
+                document.getElementById('betInvWrap').style.display = 'none';
+            } else {
+                document.getElementById('betGoldWrap').style.display = 'none';
+                document.getElementById('betInvWrap').style.display = 'block';
+            }
+            calculateUpgradeChance();
+        }
+
+        function getBetValue() {
+            const source = document.getElementById('upgradeBetSource').value;
+            if (source === 'gold') {
+                return parseFloat(document.getElementById('upgradeBet').value) || 0;
+            } else {
+                const idx = parseInt(document.getElementById('upgradeInvSelect').value);
+                if (isNaN(idx) || !userInventory[idx]) return 0;
+                return userInventory[idx].price;
+            }
+        }
+
+        // Рендер зовнішньої стрілки рулетки апгрейдера
         function drawUpgradeWheel(chancePercent, needleAngle = 0) {
             const canvas = document.getElementById("upgradeCanvas");
             if (!canvas) return;
             const ctx = canvas.getContext("2d");
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-            const radius = 110;
+            const radius = 100;
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 1. Фонове коло (зона неуспіху)
+            // 1. Червоне кільце (програш)
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-            ctx.lineWidth = 16;
-            ctx.strokeStyle = "#ff5252"; // Червоний (програш)
+            ctx.lineWidth = 14;
+            ctx.strokeStyle = "#ff5252";
             ctx.stroke();
 
-            // 2. Виграшна зона (зелена дуга, що відповідає шансу)
+            // 2. Зелена виграшна дуга
             if (chancePercent > 0) {
                 const startAngle = -Math.PI / 2;
                 const endAngle = startAngle + (2 * Math.PI * (chancePercent / 100));
 
                 ctx.beginPath();
                 ctx.arc(cx, cy, radius, startAngle, endAngle);
-                ctx.lineWidth = 16;
-                ctx.strokeStyle = "#00c853"; // Зелений (виграш)
+                ctx.lineWidth = 14;
+                ctx.strokeStyle = "#00c853";
                 ctx.lineCap = "round";
                 ctx.stroke();
             }
 
-            // 3. Анімована стрілка рулетки по центру
+            // 3. ЗОВНІШНЯ СТРІЛКА, яка бігає по колу
             ctx.save();
             ctx.translate(cx, cy);
             ctx.rotate(needleAngle);
 
+            // Малюємо стрілку ззовні кола (на радіусі + 12px)
             ctx.beginPath();
-            ctx.moveTo(0, -radius - 6);
-            ctx.lineTo(-7, 10);
-            ctx.lineTo(7, 10);
+            ctx.moveTo(0, -radius - 18);
+            ctx.lineTo(-6, -radius - 2);
+            ctx.lineTo(6, -radius - 2);
             ctx.closePath();
             ctx.fillStyle = "#ffd700";
-            ctx.shadowColor = "rgba(0,0,0,0.8)";
-            ctx.shadowBlur = 8;
-            ctx.fill();
-
-            // Центральна точка стрілки
-            ctx.beginPath();
-            ctx.arc(0, 0, 8, 0, 2 * Math.PI);
-            ctx.fillStyle = "#151828";
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "#ffd700";
-            ctx.stroke();
+            ctx.shadowColor = "rgba(0,0,0,0.9)";
+            ctx.shadowBlur = 10;
             ctx.fill();
 
             ctx.restore();
         }
 
         function calculateUpgradeChance() {
-            const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
+            const bet = getBetValue();
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 1;
 
@@ -1205,11 +1315,11 @@
                 return;
             }
 
-            // Жорстка і чесна формула (множник 0.75 робить шанси нижчими та збалансованими)
+            // Шанс з коефіцієнтом 0.8 за твоїм запитом
             let rawChance = (bet / targetPrice) * 100;
-            let chance = rawChance * 0.75;
+            let chance = rawChance * 0.8;
 
-            if (chance > 85) chance = 85;
+            if (chance > 88) chance = 88;
             if (chance < 0.2) chance = 0.2;
 
             document.getElementById('upgradeChanceVal').innerText = chance.toFixed(1) + "%";
@@ -1218,17 +1328,18 @@
 
         async function startUpgrade() {
             if (isUpgrading) return;
-            const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
+            const source = document.getElementById('upgradeBetSource').value;
+            const bet = getBetValue();
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 0;
             const targetName = targetSelect.options[targetSelect.selectedIndex].dataset.name;
             const targetImg = targetSelect.options[targetSelect.selectedIndex].dataset.img;
 
             if (bet <= 0) {
-                alert("Введи коректну ставку голди!");
+                alert("Вибери або введи коректну ставку!");
                 return;
             }
-            if (userGold < bet) {
+            if (source === 'gold' && userGold < bet) {
                 alert("У тебе немає стільки голди!");
                 return;
             }
@@ -1240,42 +1351,43 @@
             isUpgrading = true;
             document.getElementById('upgradeBtn').disabled = true;
 
-            userGold -= bet;
+            // Списуємо ставку
+            let invIndexToRemove = -1;
+            if (source === 'gold') {
+                userGold -= bet;
+            } else {
+                invIndexToRemove = parseInt(document.getElementById('upgradeInvSelect').value);
+                userInventory.splice(invIndexToRemove, 1);
+            }
             updateUIState();
 
             let rawChance = (bet / targetPrice) * 100;
-            let chance = rawChance * 0.75;
-            if (chance > 85) chance = 85;
+            let chance = rawChance * 0.8;
+            if (chance > 88) chance = 88;
 
             let roll = Math.random() * 100;
             let isWin = roll <= chance;
 
-            // Вираховуємо кут зупинки стрілки в залежності від виграшу/програшу
             let targetAngleDeg;
             if (isWin) {
-                // Виграшна зелена зона (від 0 до chance %)
                 let randomWinPercent = Math.random() * (chance * 0.9);
                 targetAngleDeg = (randomWinPercent / 100) * 360;
             } else {
-                // Червона зона програшу
                 let randomLosePercent = chance + (Math.random() * (100 - chance));
                 targetAngleDeg = (randomLosePercent / 100) * 360;
             }
 
-            // Додаємо повні оберти (5-6 кіл) для красивої анімації
             let totalRotations = 360 * 6 + targetAngleDeg;
-            let currentAnimAngle = 0;
             let startTime = null;
-            let duration = 4000; // 4 секунди анімації
+            let duration = 4000;
 
             function animateNeedle(timestamp) {
                 if (!startTime) startTime = timestamp;
                 let progress = (timestamp - startTime) / duration;
                 if (progress > 1) progress = 1;
 
-                // cubic-bezier easing
                 let easeOut = 1 - Math.pow(1 - progress, 3);
-                currentAnimAngle = (totalRotations * easeOut) * (Math.PI / 180);
+                let currentAnimAngle = (totalRotations * easeOut) * (Math.PI / 180);
 
                 drawUpgradeWheel(chance, currentAnimAngle);
 
@@ -1287,16 +1399,8 @@
 
                     if (isWin) {
                         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
-                        const action = confirm(`🎉 ВІТАЮ! Ти успішно проапгрейдив голду до: ${targetName}!\n\nНатисни OK, щоб забрати в інвентар, або Скасувати, щоб продати його за ${Math.floor(targetPrice * 1.1)} G`);
-                        
-                        if (action) {
-                            userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
-                            alert("Предмет успішно додано до твого інвентарю!");
-                        } else {
-                            let sellPrice = Math.floor(targetPrice * 1.1);
-                            userGold += sellPrice;
-                            alert(`Ти продав предмет за ${sellPrice} G! Баланс оновлено.`);
-                        }
+                        userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
+                        alert(`🎉 ВІТАЮ! Апгрейд успішний!\nПредмет [${targetName}] додано до твого Інвентарю 📦!`);
                     } else {
                         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
                         alert("😢 На жаль, апгрейд не вдався. Ставка згоріла!");
@@ -1311,6 +1415,7 @@
             requestAnimationFrame(animateNeedle);
         }
 
+        // ===== ІНВЕНТАР =====
         function renderInventory() {
             const container = document.getElementById('userInventory');
             container.innerHTML = "";
@@ -1323,9 +1428,12 @@
                 const div = document.createElement('div');
                 div.className = "inventory-item";
                 div.innerHTML = `
-                    <img src="${item.img}" alt="${item.name}">
+                    <img src="${item.img || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10'}" alt="${item.name}">
                     <b>${item.name}</b>
-                    <button class="btn-order-small" style="width:100%; padding: 4px;" onclick="sellInventoryItem(${index})">Продати (${item.price} G)</button>
+                    <div class="inventory-actions">
+                        <button class="btn-inv-action" onclick="orderInventoryItem('${item.name}')">Забрати у менеджера</button>
+                        <button class="btn-inv-sell" onclick="sellInventoryItem(${index})">Продати (~${item.price} G)</button>
+                    </div>
                 `;
                 container.appendChild(div);
             });
@@ -1337,7 +1445,12 @@
             userInventory.splice(index, 1);
             updateUIState();
             await syncUserToDB();
-            alert(`Предмет продано за ${item.price} G!`);
+            alert(`Предмет [${item.name}] продано за ${item.price} G!`);
+        }
+
+        function orderInventoryItem(name) {
+            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Хочу забрати з інвентарю виграш: [ ${name} ] 👇`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
         // ===== АДМІН-ПАНЕЛЬ =====
@@ -1448,12 +1561,13 @@
         }
 
         // ===== КОЛЕСО ФОРТУНИ =====
+        // Безкоштовна доставка має системну вартість 300 G (умовно)
         const prizes = [
-            { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
-            { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
-            { label: "Рідина\n15 ml", fullText: "Рідина 15 ml", color: "#7c4dff", weight: 20 },
-            { label: "Рідина\n30 ml", fullText: "Рідина 30 ml", color: "#ff6d00", weight: 8 },
-            { label: "2x 30 ml\nДЖЕКПОТ", fullText: "ДЖЕКПОТ: 2 флакони по 30 ml", color: "#d50000", weight: 2 }
+            { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", price: 300, color: "#2979ff", weight: 35, img: "https://cdn-icons-png.flaticon.com/512/2830/2830305.png" },
+            { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", price: 500, color: "#00bfa5", weight: 35, img: liquids[0].img },
+            { label: "Рідина\n15 ml", fullText: "Рідина 15 ml", price: 650, color: "#7c4dff", weight: 20, img: liquids[9].img },
+            { label: "Рідина\n30 ml", fullText: "Рідина 30 ml", price: 1000, color: "#ff6d00", weight: 8, img: liquids[1].img },
+            { label: "2x 30 ml\nДЖЕКПОТ", fullText: "ДЖЕКПОТ: 2 флакони по 30 ml", price: 2000, color: "#d50000", weight: 2, img: liquids[1].img }
         ];
 
         const canvas = document.getElementById("wheelCanvas");
@@ -1521,7 +1635,7 @@
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
 
             const winningIndex = getWeightedRandomIndex();
-            lastWonPrize = prizes[winningIndex].fullText;
+            lastWonPrizeObj = prizes[winningIndex];
 
             const sectorAngleDeg = 360 / numSectors;
             const targetOffset = (360 - (winningIndex * sectorAngleDeg)) % 360;
@@ -1539,7 +1653,7 @@
 
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 
-                document.getElementById("prizeDesc").innerText = lastWonPrize;
+                document.getElementById("prizeDesc").innerText = lastWonPrizeObj.fullText;
                 document.getElementById("resultBox").style.display = "block";
 
                 const db2 = await loadDatabase();
@@ -1547,7 +1661,7 @@
                 db2.wins.push({
                     userId: telegramId,
                     name: username,
-                    prize: lastWonPrize,
+                    prize: lastWonPrizeObj.fullText,
                     date: new Date().toISOString()
                 });
                 if (db2.wins.length > 100) db2.wins = db2.wins.slice(-100);
@@ -1561,8 +1675,23 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
-        function claimPrize() {
-            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Я виграв у Колесі Фортуни приз: [ ${lastWonPrize} ]. Ось мій скріншот 👇`);
+        // Закинути приз з Колеса в інвентар
+        async function claimPrizeToInventory() {
+            if (!lastWonPrizeObj) return;
+            userInventory.push({
+                name: lastWonPrizeObj.fullText,
+                price: lastWonPrizeObj.price,
+                img: lastWonPrizeObj.img
+            });
+            await syncUserToDB();
+            updateUIState();
+            document.getElementById("resultBox").style.display = "none";
+            alert(`Приз [${lastWonPrizeObj.fullText}] успішно закинуто в твій Інвентар 📦!`);
+        }
+
+        function claimPrizeManager() {
+            if (!lastWonPrizeObj) return;
+            const text = encodeURIComponent(`Привіт! Мій нік: ${username} (ID: ${telegramId}). Я виграв у Колесі Фортуни приз: [ ${lastWonPrizeObj.fullText} ]. Ось мій скріншот 👇`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
