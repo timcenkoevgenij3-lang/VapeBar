@@ -287,7 +287,7 @@
             box-shadow: 0 4px 12px var(--accent-glow);
         }
 
-        /* ПОКРАЩЕНИЙ АПГРЕЙДЕР (ПРЕМІАЛЬНИЙ ВИГЛЯД) */
+        /* АПГРЕЙДЕР */
         .upgrader-container {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.35);
@@ -887,8 +887,33 @@
         </div>
     </div>
 
+    <!-- АСОРТИМЕНТ (ПЕРША ВКЛАДКА ЗА ЗАМОВЧУВАННЯМ) -->
+    <div id="shop-tab" class="tab-content active">
+        <h2>Асортимент</h2>
+        <div class="subtitle">Обери категорію</div>
+        
+        <div class="category-grid">
+            <button class="category-btn" onclick="openCategory('liquids')">
+                <span class="icon">💧</span>
+                <span>РІДИНИ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('cartridges')">
+                <span class="icon">🔋</span>
+                <span>КАРТРИДЖІ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('pods')">
+                <span class="icon">📱</span>
+                <span>ПОД СИСТЕМИ</span>
+            </button>
+            <button class="category-btn" onclick="openCategory('promo')">
+                <span class="icon">🔥</span>
+                <span>АКЦІЇ</span>
+            </button>
+        </div>
+    </div>
+
     <!-- КОЛЕСО -->
-    <div id="wheel-tab" class="tab-content active">
+    <div id="wheel-tab" class="tab-content">
         <h2>Колесо Фортуни</h2>
         <div class="subtitle" style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
             <span>Вартість прокруту:</span>
@@ -928,13 +953,12 @@
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (ПОКРАЩЕНИЙ ІНТЕРФЕЙС) -->
+    <!-- АПГРЕЙДЕР (ЗІ СКІНАМИ STANDOFF 2) -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
-        <div class="subtitle">Покращуй голду та предмет з інвентарю</div>
+        <div class="subtitle">Покращуй голду до скінів Standoff 2</div>
 
         <div class="upgrader-container">
-            <!-- Рулетка зі зовнішньою стрілкою -->
             <div class="upgrader-wheel-wrap">
                 <canvas id="upgradeCanvas" width="300" height="300"></canvas>
                 <div class="upgrader-center-text">
@@ -943,7 +967,6 @@
                 </div>
             </div>
 
-            <!-- Зрозуміліші блоки вибору -->
             <div class="upgrader-panel-grid">
                 <div class="upgrader-box">
                     <label>Ставка</label>
@@ -952,7 +975,7 @@
                         <option value="inventory">З інвентарю 📦</option>
                     </select>
                     <div id="betGoldWrap" style="margin-top: 6px;">
-                        <input type="number" id="upgradeBet" value="100" min="1" oninput="calculateUpgradeChance()">
+                        <input type="number" id="upgradeBet" value="50" min="1" oninput="calculateUpgradeChance()">
                     </div>
                     <div id="betInvWrap" style="display:none; margin-top: 6px;">
                         <select id="upgradeInvSelect" onchange="calculateUpgradeChance()"></select>
@@ -962,9 +985,9 @@
                 <div class="upgrader-vs">VS</div>
 
                 <div class="upgrader-box">
-                    <label>Цільовий приз</label>
+                    <label>СКІН STANDOFF 2</label>
                     <select id="upgradeTarget" onchange="calculateUpgradeChance()" style="margin-top: 18px;">
-                        <!-- Заповнюється автоматично -->
+                        <!-- Заповнюється скінами Standoff 2 -->
                     </select>
                 </div>
             </div>
@@ -976,34 +999,9 @@
     <!-- ІНВЕНТАР -->
     <div id="inventory-tab" class="tab-content">
         <h2>📦 Мій інвентар</h2>
-        <div class="subtitle">Твої призи з Колеса та Апгрейдера</div>
+        <div class="subtitle">Твої скіни та призи</div>
         <div id="userInventory" class="inventory-grid">
             <div class="empty-state" style="grid-column: span 2;">Інвентар порожній</div>
-        </div>
-    </div>
-
-    <!-- АСОРТИМЕНТ -->
-    <div id="shop-tab" class="tab-content">
-        <h2>Асортимент</h2>
-        <div class="subtitle">Обери категорію</div>
-        
-        <div class="category-grid">
-            <button class="category-btn" onclick="openCategory('liquids')">
-                <span class="icon">💧</span>
-                <span>РІДИНИ</span>
-            </button>
-            <button class="category-btn" onclick="openCategory('cartridges')">
-                <span class="icon">🔋</span>
-                <span>КАРТРИДЖІ</span>
-            </button>
-            <button class="category-btn" onclick="openCategory('pods')">
-                <span class="icon">📱</span>
-                <span>ПОД СИСТЕМИ</span>
-            </button>
-            <button class="category-btn" onclick="openCategory('promo')">
-                <span class="icon">🔥</span>
-                <span>АКЦІЇ</span>
-            </button>
         </div>
     </div>
 
@@ -1089,9 +1087,13 @@
         <button class="btn-order-big" onclick="orderCurrentProduct()">Оформити замовлення</button>
     </div>
 
-    <!-- TAB BAR -->
+    <!-- TAB BAR (АСОРТИМЕНТ ПЕРШИЙ) -->
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('wheel-tab', this)">
+        <button class="tab-btn active" onclick="switchTab('shop-tab', this)">
+            <span class="icon">💧</span>
+            <span>Магазин</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('wheel-tab', this)">
             <span class="icon">🎡</span>
             <span>Колесо</span>
         </button>
@@ -1102,10 +1104,6 @@
         <button class="tab-btn" onclick="switchTab('inventory-tab', this)">
             <span class="icon">📦</span>
             <span>Інвентар</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('shop-tab', this)">
-            <span class="icon">💧</span>
-            <span>Магазин</span>
         </button>
         <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin-tab', this)" style="display: none;">
             <span class="icon">👑</span>
@@ -1135,7 +1133,7 @@
         let isSpinning = false;
         let isUpgrading = false;
 
-        // ===== ТОВАРИ =====
+        // ===== ТОВАРИ ДЛЯ МАГАЗИНУ =====
         const liquids = [
             { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
             { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
@@ -1170,6 +1168,20 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
+        // ===== СКІНИ STANDOFF 2 ДЛЯ АПГРЕЙДЕРА =====
+        const standoffSkins = [
+            { name: "Sticker | Dragon Glass", goldPrice: 50, img: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FABz7PLfYQJD_9O7kY60n_L1JbDummlD78A_i7vEoN2kjATg-hBsZzunddSWdFRoZwnY81i_x-3rhp_tu8jMn3RjpGB8st4D796V8wE/360fx360f" },
+            { name: "P350 | Carbon", goldPrice: 100, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
+            { name: "TEC-9 | Necromancer", goldPrice: 180, img: "https://wiki.standoff2.com/images/thumb/Tec9_Necromancer.png/300px-Tec9_Necromancer.png" },
+            { name: "MP5 | Northern Camo", goldPrice: 230, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
+            { name: "AKR12 | Carbon", goldPrice: 269, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
+            { name: "M4 | Samurai", goldPrice: 350, img: "https://wiki.standoff2.com/images/thumb/M4_Samurai.png/300px-M4_Samurai.png" },
+            { name: "AWM | Scratch", goldPrice: 500, img: "https://wiki.standoff2.com/images/thumb/Awm_Scratch.png/300px-Awm_Scratch.png" },
+            { name: "USP | Gecko", goldPrice: 750, img: "https://wiki.standoff2.com/images/thumb/Usp_Gecko.png/300px-Usp_Gecko.png" },
+            { name: "AKR | Treasure Hunter", goldPrice: 1200, img: "https://wiki.standoff2.com/images/thumb/Akr_TreasureHunter.png/300px-Akr_TreasureHunter.png" },
+            { name: "AWM | Dragon", goldPrice: 2500, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" }
+        ];
+
         function formatPriceBlock(uahPrice, goldPrice) {
             let html = `<span class="uah-badge">${uahPrice} грн</span>`;
             if (goldPrice) {
@@ -1190,7 +1202,6 @@
 
         function calcGoldPrice() {
             const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
-            // 100G = 35 грн
             const uahCost = Math.round((goldVal / 100) * 35);
             document.getElementById('calcPriceResult').innerText = `До сплати: ${uahCost} грн`;
         }
@@ -1317,21 +1328,18 @@
             }
         }
 
-        // ===== АПГРЕЙДЕР ТА КЕФ 0.8 =====
+        // ===== АПГРЕЙДЕР (СКІНИ STANDOF 2) =====
         function populateUpgradeSelect() {
             const select = document.getElementById('upgradeTarget');
             select.innerHTML = "";
-            const allItems = [...liquids, ...cartridges, ...pods];
             
-            allItems.forEach(item => {
-                if (item.goldPrice) {
-                    const opt = document.createElement('option');
-                    opt.value = item.goldPrice;
-                    opt.textContent = `${item.name} (${item.goldPrice} G)`;
-                    opt.dataset.name = item.name;
-                    opt.dataset.img = item.img;
-                    select.appendChild(opt);
-                }
+            standoffSkins.forEach(skin => {
+                const opt = document.createElement('option');
+                opt.value = skin.goldPrice;
+                opt.textContent = `${skin.name} — ${skin.goldPrice} G`;
+                opt.dataset.name = skin.name;
+                opt.dataset.img = skin.img;
+                select.appendChild(opt);
             });
             calculateUpgradeChance();
         }
@@ -1459,7 +1467,7 @@
                 return;
             }
             if (bet >= targetPrice) {
-                alert("Ставка має бути меншою за вартість цільового предмета!");
+                alert("Ставка має бути меншою за вартість цільового скіна!");
                 return;
             }
 
@@ -1513,7 +1521,7 @@
                     if (isWin) {
                         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
                         userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
-                        alert(`🎉 ВІТАЮ! Апгрейд успішний!\nПредмет [${targetName}] додано до твого Інвентарю 📦!`);
+                        alert(`🎉 ВІТАЮ! Апгрейд успішний!\nСкін [${targetName}] додано до твого Інвентарю 📦!`);
                     } else {
                         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
                         alert("😢 На жаль, апгрейд не вдався. Ставка згоріла!");
