@@ -235,8 +235,10 @@
             box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            transition: opacity 0.15s ease, transform 0.1s ease;
         }
-        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-primary:active:not(:disabled) { transform: scale(0.98); }
+        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 
         .result-box {
             display: none;
@@ -372,27 +374,27 @@
         /* МІНІ-ІГРА КРАШ (CRASH) */
         .crash-container {
             background: var(--card-bg);
-            border: 1px solid rgba(0, 229, 255, 0.4);
+            border: 1px solid rgba(0, 229, 255, 0.45);
             border-radius: 20px;
             padding: 20px 16px;
             margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.15);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.18);
         }
 
         .crash-screen {
             position: relative;
             width: 100%;
-            height: 200px;
-            background: #0b0d14;
+            height: 210px;
+            background: radial-gradient(circle at 50% 60%, #11182c 0%, #090b12 100%);
             border-radius: 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
             margin-bottom: 16px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.85);
         }
 
         canvas#crashCanvas {
@@ -404,12 +406,12 @@
         }
 
         .crash-multiplier {
-            font-size: 42px;
+            font-size: 46px;
             font-weight: 900;
             color: #00e5ff;
-            text-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+            text-shadow: 0 0 24px rgba(0, 229, 255, 0.75);
             z-index: 5;
-            transition: color 0.2s ease;
+            transition: color 0.15s ease, text-shadow 0.15s ease;
         }
 
         .crash-status {
@@ -437,7 +439,7 @@
         .crash-input-row input {
             flex: 1;
             background: #0b0d14;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(0, 229, 255, 0.25);
             color: #fff;
             padding: 12px;
             border-radius: 12px;
@@ -445,6 +447,22 @@
             font-weight: 700;
             text-align: center;
             outline: none;
+        }
+
+        .crash-quick-bets {
+            display: flex;
+            gap: 6px;
+        }
+
+        .quick-bet-btn {
+            background: rgba(124, 77, 255, 0.2);
+            border: 1px solid rgba(124, 77, 255, 0.45);
+            color: #d1c4e9;
+            padding: 10px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         /* МОДАЛКИ ГОЛДИ */
@@ -602,6 +620,11 @@
             -webkit-text-fill-color: transparent;
             font-size: 14px;
             letter-spacing: 0.3px;
+        }
+
+        .category-btn.crash-card {
+            border: 1px solid rgba(0, 229, 255, 0.6);
+            box-shadow: 0 0 22px rgba(0, 229, 255, 0.22);
         }
 
         .products-header {
@@ -1056,9 +1079,7 @@
 
                 <div class="upgrader-box">
                     <label>СКІН STANDOFF 2</label>
-                    <select id="upgradeTarget" onchange="calculateUpgradeChance()" style="margin-top: 18px;">
-                        <!-- Заповнюється скінами -->
-                    </select>
+                    <select id="upgradeTarget" onchange="calculateUpgradeChance()" style="margin-top: 18px;"></select>
                 </div>
             </div>
 
@@ -1066,10 +1087,32 @@
         </div>
     </div>
 
-    <!-- МІНІ-ІГРИ (КРАШ) -->
+    <!-- МЕНЮ МІНІ-ІГОР (КАТЕГОРІЇ ЯК У АСОРТИМЕНТІ) -->
     <div id="games-tab" class="tab-content">
-        <h2>🚀 Міні-ігри</h2>
-        <div class="subtitle">Злети вище зі швидким Crash!</div>
+        <h2>🎮 Міні-ігри</h2>
+        <div class="subtitle">Обери гру на голду</div>
+
+        <div class="category-grid">
+            <button class="category-btn crash-card" onclick="openGame('crash')">
+                <span class="icon">🚀</span>
+                <span>КРАШ</span>
+            </button>
+            <button class="category-btn" style="opacity: 0.45; cursor: default;" onclick="alert('Нова гра вже в розробці 🔥')">
+                <span class="icon">🔒</span>
+                <span>СКОРО</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ГРА КРАШ (ОКРЕМИЙ ЕКРАН) -->
+    <div id="crash-game-tab" class="tab-content">
+        <div class="products-header">
+            <button class="back-btn" onclick="backToGamesMenu()">←</button>
+            <div>
+                <h2 style="font-size: 22px; margin: 0;">🚀 КРАШ</h2>
+                <div class="subtitle" style="margin: 0;">Встигни забрати до вибуху!</div>
+            </div>
+        </div>
 
         <div class="crash-container">
             <div class="crash-screen">
@@ -1081,6 +1124,11 @@
             <div class="crash-controls">
                 <div class="crash-input-row">
                     <input type="number" id="crashBetInput" value="50" min="1" placeholder="Ставка (G)">
+                    <div class="crash-quick-bets">
+                        <button class="quick-bet-btn" onclick="setCrashBet(50)">50</button>
+                        <button class="quick-bet-btn" onclick="setCrashBet(100)">100</button>
+                        <button class="quick-bet-btn" onclick="doubleCrashBet()">x2</button>
+                    </div>
                 </div>
                 <button id="crashActionBtn" class="btn-primary" onclick="handleCrashAction()">Зробити ставку 🚀</button>
             </div>
@@ -1207,7 +1255,7 @@
             <span>Апгрейд</span>
         </button>
         <button class="tab-btn" onclick="switchTab('games-tab', this)">
-            <span class="icon">🚀</span>
+            <span class="icon">🎮</span>
             <span>Ігри</span>
         </button>
         <button class="tab-btn" onclick="switchTab('inventory-tab', this)">
@@ -1277,22 +1325,59 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
-        // ===== БАЗА СКІНІВ STANDOFF 2 =====
+        // ===== ПОВНА БАЗА СКІНІВ STANDOFF 2 =====
         const standoffSkins = [
             { name: "Sticker | Dragon Glass", goldPrice: 20 },
             { name: "Graffiti | Standoff", goldPrice: 35 },
+            { name: "Sticker | Phoenix", goldPrice: 42 },
             { name: "P350 | Carbon", goldPrice: 55 },
             { name: "G22 | Relic", goldPrice: 68 },
+            { name: "Dual Berettas | Orange", goldPrice: 75 },
             { name: "TEC-9 | Necromancer", goldPrice: 90 },
+            { name: "SM1014 | Carbon", goldPrice: 105 },
+            { name: "P90 | Sand", goldPrice: 115 },
             { name: "MP5 | Northern Camo", goldPrice: 130 },
+            { name: "MAC-10 | Yellow", goldPrice: 145 },
             { name: "AKR12 | Carbon", goldPrice: 165 },
+            { name: "FABM | Carbon", goldPrice: 180 },
+            { name: "UCP | Acid", goldPrice: 195 },
+            { name: "FAMAS | Fury", goldPrice: 210 },
             { name: "M4 | Samurai", goldPrice: 235 },
+            { name: "AUG | Halcyon", goldPrice: 250 },
             { name: "AWM | Scratch", goldPrice: 280 },
             { name: "USP | Gecko", goldPrice: 310 },
+            { name: "P350 | Ranger", goldPrice: 340 },
+            { name: "G22 | Carbon", goldPrice: 375 },
+            { name: "TEC-9 | Crust", goldPrice: 410 },
+            { name: "AKR | 2 Years", goldPrice: 450 },
+            { name: "M4A1 | Pixel", goldPrice: 490 },
             { name: "AKR | Treasure Hunter", goldPrice: 530 },
+            { name: "AWM | Sport", goldPrice: 570 },
+            { name: "USP | Stainless", goldPrice: 620 },
+            { name: "M4 | Nebula", goldPrice: 660 },
+            { name: "AKR12 | Railgun", goldPrice: 710 },
+            { name: "FABM | Venom", goldPrice: 750 },
+            { name: "Desert Eagle | Predator", goldPrice: 800 },
+            { name: "SM1014 | Cyber", goldPrice: 850 },
+            { name: "P90 | Ghoul", goldPrice: 910 },
+            { name: "MP5 | Phoenix", goldPrice: 950 },
+            { name: "AWM | Gear", goldPrice: 990 },
             { name: "AWM | Dragon", goldPrice: 1050 },
+            { name: "AKR | Necromancer", goldPrice: 1120 },
+            { name: "M4A1 | Acid", goldPrice: 1190 },
+            { name: "Desert Eagle | Warm", goldPrice: 1250 },
+            { name: "USP | Cyber", goldPrice: 1320 },
+            { name: "AKR12 | Zombie", goldPrice: 1400 },
+            { name: "FAMAS | Monster", goldPrice: 1480 },
+            { name: "AWM | Scratch Pro", goldPrice: 1550 },
+            { name: "M4 | Samurai Gold", goldPrice: 1650 },
+            { name: "Desert Eagle | Poison", goldPrice: 1750 },
+            { name: "AKR | Carbon Pro", goldPrice: 1850 },
+            { name: "AWM | Phoenix", goldPrice: 1980 },
             { name: "Karambit | Claw", goldPrice: 2200 },
+            { name: "M9 Bayonet | Universe", goldPrice: 2450 },
             { name: "Butterfly | Cold Flame", goldPrice: 2800 },
+            { name: "Kunai | Luxury", goldPrice: 3100 },
             { name: "Stiletto | Scorpion", goldPrice: 3500 }
         ].map(s => ({
             ...s,
@@ -1656,13 +1741,57 @@
             requestAnimationFrame(animateNeedle);
         }
 
-        // ===== МІНІ-ІГРА КРАШ (CRASH) =====
+        // ===== НАВІГАЦІЯ МІНІ-ІГОР =====
+        function openGame(gameName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            if (gameName === 'crash') {
+                document.getElementById('crash-game-tab').classList.add('active');
+                setTimeout(() => drawCrashGraph(1.00, false), 50);
+            }
+        }
+
+        function backToGamesMenu() {
+            if (crashState === 'PLAYING') {
+                alert("Спочатку дограй поточний раунд!");
+                return;
+            }
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('games-tab').classList.add('active');
+        }
+
+        function setCrashBet(val) {
+            if (crashState === 'PLAYING') return;
+            document.getElementById('crashBetInput').value = val;
+        }
+
+        function doubleCrashBet() {
+            if (crashState === 'PLAYING') return;
+            const inp = document.getElementById('crashBetInput');
+            const cur = parseInt(inp.value) || 10;
+            inp.value = Math.min(userGold || cur * 2, cur * 2);
+        }
+
+        // ===== МІНІ-ІГРА КРАШ (CRASH) З ЖОРСТКИМИ 1.00x–1.15x КРАШАМИ =====
         let crashState = 'IDLE'; // IDLE, PLAYING, CASHED, CRASHED
         let crashBet = 0;
         let crashMultiplier = 1.00;
         let crashTarget = 1.00;
         let crashAnimId = null;
-        let crashHistory = [];
+        let crashStartTime = 0;
+
+        function generateCrashPoint() {
+            const r = Math.random();
+            // 12% шанс миттєвого інста-крашу на 1.00x (проти спаму кнопкою)
+            if (r < 0.12) return 1.00;
+            // 43% шанс на ультра-низький краш 1.01x - 1.15x
+            if (r < 0.55) return Number((1.01 + Math.random() * 0.14).toFixed(2));
+            // 25% шанс на 1.16x - 1.65x
+            if (r < 0.80) return Number((1.16 + Math.random() * 0.49).toFixed(2));
+            // 14% шанс на 1.66x - 3.20x
+            if (r < 0.94) return Number((1.66 + Math.random() * 1.54).toFixed(2));
+            // 6% шанс на великий ікс 3.21x - 12.00x
+            return Number((3.21 + Math.random() * 8.79).toFixed(2));
+        }
 
         function drawCrashGraph(progressMultiplier, isCrash = false) {
             const canvas = document.getElementById("crashCanvas");
@@ -1679,35 +1808,76 @@
             const w = canvas.width;
             const h = canvas.height;
 
-            // Лінія графіка
-            ctx.beginPath();
-            ctx.moveTo(0, h);
-            
-            let curveX = w * 0.8;
-            let curveY = h * 0.2;
-            let currentX = Math.min(w, (progressMultiplier / 5) * w);
-            let currentY = h - Math.min(h - 10, ((progressMultiplier - 1) / 4) * (h - 20));
+            // Фонова неонова сітка
+            ctx.strokeStyle = "rgba(0, 229, 255, 0.06)";
+            ctx.lineWidth = 1;
+            for (let gx = 40; gx < w; gx += 40) {
+                ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+            }
+            for (let gy = 40; gy < h; gy += 40) {
+                ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+            }
 
-            ctx.quadraticCurveTo(w * 0.4, h - 10, currentX, currentY);
+            const norm = Math.min(1, (progressMultiplier - 1) / 3.5);
+            const currentX = 20 + norm * (w - 50);
+            const currentY = (h - 20) - norm * (h - 45);
+
+            // Градієнт під кривою
+            const grad = ctx.createLinearGradient(0, currentY, 0, h);
+            grad.addColorStop(0, isCrash ? "rgba(255, 82, 82, 0.28)" : "rgba(0, 229, 255, 0.28)");
+            grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+            ctx.beginPath();
+            ctx.moveTo(20, h - 20);
+            ctx.quadraticCurveTo(20 + (currentX - 20) * 0.55, h - 20, currentX, currentY);
+            ctx.lineTo(currentX, h - 20);
+            ctx.closePath();
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Неонова лінія графіка
+            ctx.beginPath();
+            ctx.moveTo(20, h - 20);
+            ctx.quadraticCurveTo(20 + (currentX - 20) * 0.55, h - 20, currentX, currentY);
             
             ctx.strokeStyle = isCrash ? '#ff5252' : '#00e5ff';
-            ctx.lineWidth = 3;
-            ctx.shadowColor = isCrash ? 'rgba(255, 82, 82, 0.8)' : 'rgba(0, 229, 255, 0.8)';
-            ctx.shadowBlur = 12;
+            ctx.lineWidth = 3.5;
+            ctx.shadowColor = isCrash ? 'rgba(255, 82, 82, 0.9)' : 'rgba(0, 229, 255, 0.9)';
+            ctx.shadowBlur = 14;
             ctx.stroke();
 
-            // Точка ракети
+            // Світна точка ракети
             ctx.beginPath();
             ctx.arc(currentX, currentY, 6, 0, 2 * Math.PI);
             ctx.fillStyle = isCrash ? '#ff5252' : '#ffffff';
             ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        function triggerCrashLoss(finalMult) {
+            crashMultiplier = finalMult;
+            crashState = 'CRASHED';
+
+            const multEl = document.getElementById('crashMultiplier');
+            multEl.innerText = crashMultiplier.toFixed(2) + "x";
+            multEl.style.color = "#ff5252";
+            multEl.style.textShadow = "0 0 24px rgba(255, 82, 82, 0.85)";
+            document.getElementById('crashStatus').innerText = `💥 КРАШ на ${crashMultiplier.toFixed(2)}x! Ставка згоріла`;
+
+            drawCrashGraph(crashMultiplier, true);
+
+            const btn = document.getElementById('crashActionBtn');
+            btn.disabled = false;
+            btn.innerText = "Зробити ставку 🚀";
+            btn.style.background = "linear-gradient(135deg, #ffd700 0%, #ff8f00 100%)";
+            btn.style.color = "#1a1200";
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
         }
 
         function handleCrashAction() {
             if (crashState === 'IDLE' || crashState === 'CASHED' || crashState === 'CRASHED') {
-                // Старт гри
-                const betVal = parseFloat(document.getElementById('crashBetInput').value) || 0;
-                if (betVal <= 0) { alert("Введи ставку!"); return; }
+                const betVal = Math.floor(parseFloat(document.getElementById('crashBetInput').value) || 0);
+                if (betVal <= 0) { alert("Введи коректну ставку!"); return; }
                 if (userGold < betVal) { alert("Недостатньо голди на балансі!"); return; }
 
                 crashBet = betVal;
@@ -1715,48 +1885,53 @@
                 updateUIState();
                 syncUserToDB();
 
-                crashState = 'PLAYING';
+                crashTarget = generateCrashPoint();
                 crashMultiplier = 1.00;
-                
-                // Випадковий момент крашу (від 1.10x до 10x, з великим шансом на ранній краш)
-                let rand = Math.random();
-                if (rand < 0.4) crashTarget = 1.10 + Math.random() * 0.4; // 1.1 - 1.5
-                else if (rand < 0.8) crashTarget = 1.5 + Math.random() * 2.0; // 1.5 - 3.5
-                else crashTarget = 3.5 + Math.random() * 7.0; // 3.5 - 10.5
+
+                // Миттєвий краш на 1.00x
+                if (crashTarget <= 1.00) {
+                    triggerCrashLoss(1.00);
+                    return;
+                }
+
+                crashState = 'PLAYING';
+                crashStartTime = performance.now();
 
                 const btn = document.getElementById('crashActionBtn');
-                btn.innerText = "ЗАБРАТИ (CASH OUT) 💰";
+                // Захист від миттєвого подвійного кліку (250 мс)
+                btn.disabled = true;
+                btn.innerText = "ЗЛІТ... 🚀";
                 btn.style.background = "var(--success)";
-                document.getElementById('crashStatus').innerText = "Летімо! 🚀";
+                btn.style.color = "#fff";
 
-                let startTime = performance.now();
+                setTimeout(() => {
+                    if (crashState === 'PLAYING') {
+                        btn.disabled = false;
+                        btn.innerText = `ЗАБРАТИ (${Math.floor(crashBet * crashMultiplier)} G) 💰`;
+                    }
+                }, 250);
+
+                const multEl = document.getElementById('crashMultiplier');
+                multEl.style.color = "#00e5ff";
+                multEl.style.textShadow = "0 0 24px rgba(0, 229, 255, 0.75)";
+                document.getElementById('crashStatus').innerText = "Летімо! Тисни забрати 🚀";
 
                 function updateCrash(now) {
                     if (crashState !== 'PLAYING') return;
 
-                    let elapsed = (now - startTime) / 1000;
-                    // Експоненціальний ріст множника
-                    crashMultiplier = 1.00 + Math.pow(elapsed * 1.2, 1.8);
+                    let elapsed = (now - crashStartTime) / 1000;
+                    // Плавний старт на низьких іксах, щоб 1.01x-1.15x відчувалися напружено
+                    crashMultiplier = 1.00 + (elapsed * 0.22) + Math.pow(elapsed * 0.55, 2.1);
 
                     if (crashMultiplier >= crashTarget) {
-                        // КРАШ!
-                        crashMultiplier = crashTarget;
-                        crashState = 'CRASHED';
-                        
-                        document.getElementById('crashMultiplier').innerText = crashMultiplier.toFixed(2) + "x";
-                        document.getElementById('crashMultiplier').style.color = "#ff5252";
-                        document.getElementById('crashStatus').innerText = "💥 КРАШ! Ставка згоріла";
-                        
-                        drawCrashGraph(crashMultiplier, true);
-
-                        btn.innerText = "Зробити ставку 🚀";
-                        btn.style.background = "linear-gradient(135deg, #ffd700 0%, #ff8f00 100%)";
-                        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+                        triggerCrashLoss(crashTarget);
                         return;
                     }
 
-                    document.getElementById('crashMultiplier').innerText = crashMultiplier.toFixed(2) + "x";
-                    document.getElementById('crashMultiplier').style.color = "#00e5ff";
+                    multEl.innerText = crashMultiplier.toFixed(2) + "x";
+                    if (!btn.disabled) {
+                        btn.innerText = `ЗАБРАТИ (${Math.floor(crashBet * crashMultiplier)} G) 💰`;
+                    }
                     drawCrashGraph(crashMultiplier, false);
 
                     crashAnimId = requestAnimationFrame(updateCrash);
@@ -1765,7 +1940,9 @@
                 crashAnimId = requestAnimationFrame(updateCrash);
 
             } else if (crashState === 'PLAYING') {
-                // Кешаут (Забрати виграш)
+                // Анти-спам перевірка: мінімум 250 мс польоту
+                if (performance.now() - crashStartTime < 250) return;
+
                 cancelAnimationFrame(crashAnimId);
                 crashState = 'CASHED';
 
@@ -1774,19 +1951,20 @@
                 updateUIState();
                 syncUserToDB();
 
-                document.getElementById('crashMultiplier').style.color = "#00c853";
-                document.getElementById('crashStatus').innerText = `✅ Виграно ${winAmount} G!`;
+                const multEl = document.getElementById('crashMultiplier');
+                multEl.style.color = "#00c853";
+                multEl.style.textShadow = "0 0 24px rgba(0, 200, 83, 0.85)";
+                document.getElementById('crashStatus').innerText = `✅ Забрано на ${crashMultiplier.toFixed(2)}x (+${winAmount} G)`;
 
                 const btn = document.getElementById('crashActionBtn');
+                btn.disabled = false;
                 btn.innerText = "Зробити ставку 🚀";
                 btn.style.background = "linear-gradient(135deg, #ffd700 0%, #ff8f00 100%)";
+                btn.style.color = "#1a1200";
 
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
             }
         }
-
-        // Ініціалізація графа початкового
-        setTimeout(() => drawCrashGraph(1.00, false), 100);
 
         // ===== ІНВЕНТАР =====
         function renderInventory() {
@@ -2045,6 +2223,10 @@
 
         // ===== НАВІГАЦІЯ ТА МАГАЗИН =====
         function switchTab(tabId, btn) {
+            if (crashState === 'PLAYING' && tabId !== 'games-tab') {
+                alert("Спочатку заверши раунд у Краші!");
+                return;
+            }
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
