@@ -210,17 +210,18 @@
         }
 
         .btn-primary {
-            background: var(--accent-gradient);
-            color: #fff;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8f00 100%);
+            color: #1a1200;
             border: none;
             padding: 16px 24px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            max-width: 300px;
-            box-shadow: 0 8px 24px var(--accent-glow);
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -250,41 +251,106 @@
             width: 100%;
         }
 
-        /* АПГРЕЙДЕР СТИЛІ */
-        .upgrade-card {
+        /* АПГРЕЙДЕР (КОЛЕСО АПГРЕЙДУ) */
+        .upgrader-container {
             background: var(--card-bg);
             border: 1px solid rgba(124, 77, 255, 0.3);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            text-align: left;
+            border-radius: 20px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
-        .upgrade-card label {
-            font-size: 12px;
-            color: var(--text-muted);
+
+        .upgrader-wheel-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 16px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas#upgradeCanvas {
+            width: 100%;
+            height: 100%;
             display: block;
-            margin-bottom: 6px;
+        }
+
+        .upgrader-center-text {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .upgrader-center-text span {
+            font-size: 10px;
+            color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 700;
         }
-        .upgrade-card input, .upgrade-card select {
-            width: 100%;
-            padding: 12px;
-            background: #0b0d14;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #fff;
-            border-radius: 10px;
-            font-size: 15px;
-            margin-bottom: 10px;
+
+        .upgrader-center-text b {
+            font-size: 20px;
+            color: var(--success);
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(0, 200, 83, 0.4);
         }
-        .upgrade-stats {
+
+        .upgrader-pickers {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            background: rgba(0,0,0,0.2);
-            padding: 10px 14px;
-            border-radius: 10px;
+            gap: 8px;
             margin-bottom: 16px;
+        }
+
+        .picker-box {
+            flex: 1;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .picker-box label {
+            font-size: 10px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .picker-box input, .picker-box select {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #fff;
             font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+        }
+
+        .picker-box select {
+            padding: 4px 0;
+            cursor: pointer;
+        }
+
+        .picker-box select option {
+            background: var(--bg-dark);
+            color: #fff;
+        }
+
+        .upgrader-arrow {
+            font-size: 18px;
+            color: var(--accent);
+            font-weight: bold;
         }
 
         /* ІНВЕНТАР */
@@ -713,26 +779,37 @@
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР -->
+    <!-- АПГРЕЙДЕР (РУЛЕТКА ЯК НА СКРІНІ) -->
     <div id="upgrade-tab" class="tab-content">
-        <h2>⚡ Апгрейдер</h2>
-        <div class="subtitle">Покращуй свою голду у призи</div>
+        <h2>⚡ Upgrader</h2>
+        <div class="subtitle">Покращуй голду у призи</div>
 
-        <div class="upgrade-card">
-            <label>Скільки голди ставиш (G):</label>
-            <input type="number" id="upgradeBet" value="100" min="10" oninput="calculateUpgradeChance()">
-
-            <label>Обери бажаний приз:</label>
-            <select id="upgradeTarget" onchange="calculateUpgradeChance()">
-                <!-- Динамічно заповнюється з товарів -->
-            </select>
-
-            <div class="upgrade-stats">
-                <span>Шанс виграшу: <b id="upgradeChanceVal" style="color: var(--blue);">0%</b></span>
-                <span>Виграш: <b id="upgradePrizeVal" style="color: var(--gold);">0 G</b></span>
+        <div class="upgrader-container">
+            <!-- Круговий прогрес шансу -->
+            <div class="upgrader-wheel-wrap">
+                <canvas id="upgradeCanvas" width="300" height="300"></canvas>
+                <div class="upgrader-center-text">
+                    <span>Шанс</span>
+                    <b id="upgradeChanceVal">0%</b>
+                </div>
             </div>
 
-            <button class="btn-primary" style="max-width: 100%; padding: 12px;" onclick="startUpgrade()">Крутити апгрейд 🚀</button>
+            <!-- Вибір ставки та цілі -->
+            <div class="upgrader-pickers">
+                <div class="picker-box">
+                    <label>Ваша ставка (G)</label>
+                    <input type="number" id="upgradeBet" value="50" min="10" oninput="calculateUpgradeChance()">
+                </div>
+                <div class="upgrader-arrow">➔</div>
+                <div class="picker-box">
+                    <label>Ціль</label>
+                    <select id="upgradeTarget" onchange="calculateUpgradeChance()">
+                        <!-- Заповнюється автоматично з товарів -->
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startUpgrade()">ПРОКАЧАТИ 🚀</button>
         </div>
 
         <h3 style="text-align: left; font-size: 16px; margin-bottom: 8px; color: #fff;">📦 Твій інвентар:</h3>
@@ -856,7 +933,7 @@
         </button>
         <button class="tab-btn" onclick="switchTab('upgrade-tab', this)">
             <span class="icon">⚡</span>
-            <span>Апгрейдер</span>
+            <span>Апгрейд</span>
         </button>
         <button class="tab-btn" onclick="switchTab('shop-tab', this)">
             <span class="icon">💧</span>
@@ -889,7 +966,7 @@
         let lastWonPrize = "";
         let isSpinning = false;
 
-        // ===== ТОВАРИ =====
+        // ===== ТОВАРИ (Ціни в голді згідно з твоїм списком) =====
         const liquids = [
             { id: 1, name: "Chaser 10ml", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuR9NdbxBu7saLLUgnzP8yEsU1t1ANLJXLTOQc50rpmA&s=10", desc: "Класична лінійка, класичні смаки. 10 мл ідеально для тесту." },
             { id: 2, name: "Chaser Black 30ml", price: 280, goldPrice: 1100, img: "https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg", desc: "Лінійка змішаних смаків — для тих, хто хоче спробувати незвичайний смак!" },
@@ -916,12 +993,12 @@
         ];
 
         const pods = [
-            { id: 201, name: "Xros Mini", price: 630, goldPrice: 2500, img: "https://getvape.com.ua/image/catalog/vaporesso/vaporesso-xros-mini-black-pod-chorniy-nf-00004790.jpg", desc: "16 ватт\n1000mAh акумулятор\n1 картридж в комплекті\nметалевий корпус" },
-            { id: 202, name: "Deliciu Mate", price: 590, goldPrice: 2250, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrsLSjViFoV1RqU7RPiKVSjMX0bJ4Xq7vqgZU7_nD_g&s=10", desc: "26 ватт\n800mAh акумулятор\n1 картридж в комплекті\nметалевий корпус" },
-            { id: 203, name: "Xros 6 Mini", price: 870, goldPrice: 3500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTye-X1Y4lW8HV0rc1IywVbyAl1IR5L1d8VzCwAPBmxYw&s=10", desc: "30 ватт\n1600mAh акумулятор\n1 картридж в комплекті\nметалевий корпус" },
-            { id: 204, name: "Xros 5 Nano", price: 1099, goldPrice: 4500, img: "https://uvape.com.ua/image/cache/catalog/podsystem/vaporesso/xros_5_nano/xros-5-nano-glav-700x700.jpg", desc: "30 ватт\nСЕНСОРНИЙ екран\n1600mAh акумулятор\n2 картриджі в комплекті" },
-            { id: 205, name: "Xros 6", price: 1190, goldPrice: 5000, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/7180/vaporesso-xros-6-cosmic-black-1-600x600.jpg", desc: "30 ватт\nекранчик\n1800mAh акумулятор\n2 картриджі в комплекті" },
-            { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор\n2 картриджі в комплекті" }
+            { id: 201, name: "Deliciu Mate", price: 590, goldPrice: 2250, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYrsLSjViFoV1RqU7RPiKVSjMX0bJ4Xq7vqgZU7_nD_g&s=10", desc: "26 ватт\n800mAh акумулятор\n1 картридж в комплекті" },
+            { id: 202, name: "Xros Mini", price: 630, goldPrice: 2500, img: "https://getvape.com.ua/image/catalog/vaporesso/vaporesso-xros-mini-black-pod-chorniy-nf-00004790.jpg", desc: "16 ватт\n1000mAh акумулятор\n1 картридж в комплекті" },
+            { id: 203, name: "Xros 6 Mini", price: 870, goldPrice: 3500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTye-X1Y4lW8HV0rc1IywVbyAl1IR5L1d8VzCwAPBmxYw&s=10", desc: "30 ватт\n1600mAh акумулятор\n1 картридж в комплекті" },
+            { id: 204, name: "Xros 5 Nano", price: 1099, goldPrice: 4500, img: "https://uvape.com.ua/image/cache/catalog/podsystem/vaporesso/xros_5_nano/xros-5-nano-glav-700x700.jpg", desc: "30 ватт\nСЕНСОРНИЙ екран\n1600mAh акумулятор" },
+            { id: 205, name: "Xros 6", price: 1190, goldPrice: 5000, img: "https://hookahcat.com.ua/image/cache/catalog/productphoto/7180/vaporesso-xros-6-cosmic-black-1-600x600.jpg", desc: "30 ватт\nекранчик\n1800mAh акумулятор" },
+            { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
         function formatPriceBlock(uahPrice, goldPrice) {
@@ -1014,7 +1091,6 @@
             renderInventory();
         }
 
-        // КУПИТИ СПРОБУ ЗА ГОЛДУ (500 G)
         async function buySpinWithGold() {
             if (!telegramId) return;
             if (userGold < 500) {
@@ -1041,7 +1117,7 @@
             }
         }
 
-        // ===== АПГРЕЙДЕР ЛОГІКА (Шанси з комісією) =====
+        // ===== АПГРЕЙДЕР ЛОГІКА ТА КРУГОВИЙ CANVAS =====
         function populateUpgradeSelect() {
             const select = document.getElementById('upgradeTarget');
             select.innerHTML = "";
@@ -1051,7 +1127,7 @@
                 if (item.goldPrice) {
                     const opt = document.createElement('option');
                     opt.value = item.goldPrice;
-                    opt.textContent = `${item.name} — ${item.goldPrice} G`;
+                    opt.textContent = `${item.name} (${item.goldPrice} G)`;
                     opt.dataset.name = item.name;
                     opt.dataset.img = item.img;
                     select.appendChild(opt);
@@ -1060,25 +1136,55 @@
             calculateUpgradeChance();
         }
 
+        function drawUpgradeWheel(percent) {
+            const canvas = document.getElementById("upgradeCanvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = 120;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Зовнішнє фонове коло
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+            ctx.lineWidth = 14;
+            ctx.strokeStyle = "#1e2235";
+            ctx.stroke();
+
+            // Дуга шансу
+            const startAngle = -Math.PI / 2;
+            const endAngle = startAngle + (2 * Math.PI * (percent / 100));
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, startAngle, endAngle);
+            ctx.lineWidth = 14;
+            ctx.strokeStyle = percent > 50 ? "#00c853" : (percent > 20 ? "#ff9800" : "#ff5252");
+            ctx.lineCap = "round";
+            ctx.stroke();
+        }
+
         function calculateUpgradeChance() {
             const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
             const targetSelect = document.getElementById('upgradeTarget');
             const targetPrice = parseFloat(targetSelect.value) || 1;
 
-            document.getElementById('upgradePrizeVal').innerText = targetPrice + " G";
-
             if (bet >= targetPrice) {
-                document.getElementById('upgradeChanceVal').innerText = "Помилка (ставка ≥ ціни)";
+                document.getElementById('upgradeChanceVal').innerText = "0%";
+                drawUpgradeWheel(0);
                 return;
             }
 
+            // Чесна формула з комісією будинку
             let rawChance = (bet / targetPrice) * 100;
-            let chance = rawChance * 0.92; // Комісія будинку (менше за чисту математику)
+            let chance = rawChance * 0.92;
 
             if (chance > 88) chance = 88;
-            if (chance < 1) chance = 1;
+            if (chance < 0.5) chance = 0.5;
 
             document.getElementById('upgradeChanceVal').innerText = chance.toFixed(1) + "%";
+            drawUpgradeWheel(chance);
         }
 
         async function startUpgrade() {
@@ -1130,6 +1236,7 @@
 
             await syncUserToDB();
             updateUIState();
+            calculateUpgradeChance();
         }
 
         function renderInventory() {
@@ -1268,7 +1375,7 @@
             }
         }
 
-        // ===== КОЛЕСО =====
+        // ===== КОЛЕСО ФОРТУНИ =====
         const prizes = [
             { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", color: "#2979ff", weight: 35 },
             { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", color: "#00bfa5", weight: 35 },
@@ -1400,6 +1507,10 @@
                 goldBadge.style.display = "none";
             } else {
                 goldBadge.style.display = "flex";
+            }
+
+            if (tabId === 'upgrade-tab') {
+                calculateUpgradeChance();
             }
 
             if (tabId === 'admin-tab') renderAdminPanel();
