@@ -1087,7 +1087,7 @@
         </div>
     </div>
 
-    <!-- МЕНЮ МІНІ-ІГОР (КАТЕГОРІЇ ЯК У АСОРТИМЕНТІ) -->
+    <!-- МЕНЮ МІНІ-ІГОР -->
     <div id="games-tab" class="tab-content">
         <h2>🎮 Міні-ігри</h2>
         <div class="subtitle">Обери гру на голду</div>
@@ -1104,7 +1104,7 @@
         </div>
     </div>
 
-    <!-- ГРА КРАШ (ОКРЕМИЙ ЕКРАН) -->
+    <!-- ГРА КРАШ -->
     <div id="crash-game-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToGamesMenu()">←</button>
@@ -1325,64 +1325,76 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
-        // ===== ПОВНА БАЗА СКІНІВ STANDOFF 2 =====
-        const standoffSkins = [
-            { name: "Sticker | Dragon Glass", goldPrice: 20 },
-            { name: "Graffiti | Standoff", goldPrice: 35 },
-            { name: "Sticker | Phoenix", goldPrice: 42 },
-            { name: "P350 | Carbon", goldPrice: 55 },
-            { name: "G22 | Relic", goldPrice: 68 },
-            { name: "Dual Berettas | Orange", goldPrice: 75 },
-            { name: "TEC-9 | Necromancer", goldPrice: 90 },
-            { name: "SM1014 | Carbon", goldPrice: 105 },
-            { name: "P90 | Sand", goldPrice: 115 },
-            { name: "MP5 | Northern Camo", goldPrice: 130 },
-            { name: "MAC-10 | Yellow", goldPrice: 145 },
-            { name: "AKR12 | Carbon", goldPrice: 165 },
-            { name: "FABM | Carbon", goldPrice: 180 },
-            { name: "UCP | Acid", goldPrice: 195 },
-            { name: "FAMAS | Fury", goldPrice: 210 },
-            { name: "M4 | Samurai", goldPrice: 235 },
-            { name: "AUG | Halcyon", goldPrice: 250 },
-            { name: "AWM | Scratch", goldPrice: 280 },
-            { name: "USP | Gecko", goldPrice: 310 },
-            { name: "P350 | Ranger", goldPrice: 340 },
-            { name: "G22 | Carbon", goldPrice: 375 },
-            { name: "TEC-9 | Crust", goldPrice: 410 },
-            { name: "AKR | 2 Years", goldPrice: 450 },
-            { name: "M4A1 | Pixel", goldPrice: 490 },
-            { name: "AKR | Treasure Hunter", goldPrice: 530 },
-            { name: "AWM | Sport", goldPrice: 570 },
-            { name: "USP | Stainless", goldPrice: 620 },
-            { name: "M4 | Nebula", goldPrice: 660 },
-            { name: "AKR12 | Railgun", goldPrice: 710 },
-            { name: "FABM | Venom", goldPrice: 750 },
-            { name: "Desert Eagle | Predator", goldPrice: 800 },
-            { name: "SM1014 | Cyber", goldPrice: 850 },
-            { name: "P90 | Ghoul", goldPrice: 910 },
-            { name: "MP5 | Phoenix", goldPrice: 950 },
-            { name: "AWM | Gear", goldPrice: 990 },
-            { name: "AWM | Dragon", goldPrice: 1050 },
-            { name: "AKR | Necromancer", goldPrice: 1120 },
-            { name: "M4A1 | Acid", goldPrice: 1190 },
-            { name: "Desert Eagle | Warm", goldPrice: 1250 },
-            { name: "USP | Cyber", goldPrice: 1320 },
-            { name: "AKR12 | Zombie", goldPrice: 1400 },
-            { name: "FAMAS | Monster", goldPrice: 1480 },
-            { name: "AWM | Scratch Pro", goldPrice: 1550 },
-            { name: "M4 | Samurai Gold", goldPrice: 1650 },
-            { name: "Desert Eagle | Poison", goldPrice: 1750 },
-            { name: "AKR | Carbon Pro", goldPrice: 1850 },
-            { name: "AWM | Phoenix", goldPrice: 1980 },
-            { name: "Karambit | Claw", goldPrice: 2200 },
-            { name: "M9 Bayonet | Universe", goldPrice: 2450 },
-            { name: "Butterfly | Cold Flame", goldPrice: 2800 },
-            { name: "Kunai | Luxury", goldPrice: 3100 },
-            { name: "Stiletto | Scorpion", goldPrice: 3500 }
-        ].map(s => ({
-            ...s,
-            img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png"
-        }));
+        // ===== ГЕНЕРАТОР 210+ СКІНІВ STANDOFF 2 НА РАНДОМНІ СУМИ =====
+        const weaponsList = [
+            "G22", "USP", "P350", "Desert Eagle", "Five-Seven", "TEC-9", "Berettas",
+            "UMP45", "MP7", "P90", "MP5", "MAC-10", "Val",
+            "AKR", "AKR12", "M4", "M4A1", "M16", "FAMAS", "FN FAL", "AUG",
+            "AWM", "M40", "M110",
+            "SM1014", "FABM", "SPAS", "M60"
+        ];
+        const skinNamesList = [
+            "Carbon", "Relic", "Necromancer", "Dragon", "Treasure Hunter", "Genesis", "Sport",
+            "Samurai", "Scratch", "Gecko", "Phoenix", "Beast", "Cyber", "Venom", "Fury",
+            "Pixel", "Aurora", "Acid", "Nebula", "Railgun", "Predator", "Ghoul", "Gear",
+            "Zombie", "Monster", "Poison", "2 Years", "Scale", "Lizard", "Shark", "Tropic",
+            "Inferno", "Frost", "Vortex", "Shadow", "Gold Trim", "Blaze", "Neon", "Phantom",
+            "Viper", "Scorpion", "Griffin", "Hydra", "Kraken", "Titan", "Mirage", "Eclipse"
+        ];
+
+        const standoffSkins = (() => {
+            const items = [];
+            const usedNames = new Set();
+
+            // Ручні топові позиції
+            const baseSkins = [
+                { name: "Sticker | Dragon Glass", goldPrice: 18 },
+                { name: "Graffiti | Standoff", goldPrice: 27 },
+                { name: "Sticker | Phoenix", goldPrice: 39 },
+                { name: "Charm | Gold Bullet", goldPrice: 64 },
+                { name: "Karambit | Claw", goldPrice: 2150 },
+                { name: "M9 Bayonet | Universe", goldPrice: 2480 },
+                { name: "Butterfly | Cold Flame", goldPrice: 2890 },
+                { name: "Kunai | Luxury", goldPrice: 3250 }
+            ];
+            baseSkins.forEach(b => { items.push(b); usedNames.add(b.name); });
+
+            // Генеруємо 205 скінів на різні нетипові суми від 15 до 1995 G
+            let seed = 42;
+            function pseudoRandom() {
+                seed = (seed * 1664525 + 1013904223) % 4294967296;
+                return seed / 4294967296;
+            }
+
+            while (items.length < 215) {
+                const w = weaponsList[Math.floor(pseudoRandom() * weaponsList.length)];
+                const s = skinNamesList[Math.floor(pseudoRandom() * skinNamesList.length)];
+                const isStatTrack = pseudoRandom() > 0.78;
+                const fullName = `${isStatTrack ? "StatTrack™ " : ""}${w} | ${s}`;
+                if (usedNames.has(fullName)) continue;
+                usedNames.add(fullName);
+
+                // Розподіл цін від 22 до 1995 G з нерівними числами
+                let rawPrice;
+                const tier = pseudoRandom();
+                if (tier < 0.35) {
+                    rawPrice = 22 + Math.floor(pseudoRandom() * 230); // 22 - 252 G
+                } else if (tier < 0.70) {
+                    rawPrice = 255 + Math.floor(pseudoRandom() * 640); // 255 - 895 G
+                } else {
+                    rawPrice = 900 + Math.floor(pseudoRandom() * 1095); // 900 - 1995 G
+                }
+
+                items.push({ name: fullName, goldPrice: rawPrice });
+            }
+
+            return items
+                .sort((a, b) => a.goldPrice - b.goldPrice)
+                .map(s => ({
+                    ...s,
+                    img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png"
+                }));
+        })();
 
         function formatPriceBlock(uahPrice, goldPrice) {
             let html = `<span class="uah-badge">${uahPrice} грн</span>`;
@@ -1771,7 +1783,7 @@
             inp.value = Math.min(userGold || cur * 2, cur * 2);
         }
 
-        // ===== МІНІ-ІГРА КРАШ (CRASH) З ЖОРСТКИМИ 1.00x–1.15x КРАШАМИ =====
+        // ===== МІНІ-ІГРА КРАШ (ЗБАЛАНСОВАНІ ШАНСИ) =====
         let crashState = 'IDLE'; // IDLE, PLAYING, CASHED, CRASHED
         let crashBet = 0;
         let crashMultiplier = 1.00;
@@ -1781,16 +1793,16 @@
 
         function generateCrashPoint() {
             const r = Math.random();
-            // 12% шанс миттєвого інста-крашу на 1.00x (проти спаму кнопкою)
-            if (r < 0.12) return 1.00;
-            // 43% шанс на ультра-низький краш 1.01x - 1.15x
-            if (r < 0.55) return Number((1.01 + Math.random() * 0.14).toFixed(2));
-            // 25% шанс на 1.16x - 1.65x
-            if (r < 0.80) return Number((1.16 + Math.random() * 0.49).toFixed(2));
-            // 14% шанс на 1.66x - 3.20x
-            if (r < 0.94) return Number((1.66 + Math.random() * 1.54).toFixed(2));
-            // 6% шанс на великий ікс 3.21x - 12.00x
-            return Number((3.21 + Math.random() * 8.79).toFixed(2));
+            // 5% шанс миттєвого інста-крашу на 1.00x
+            if (r < 0.05) return 1.00;
+            // 23% шанс на низький краш 1.02x - 1.25x
+            if (r < 0.28) return Number((1.02 + Math.random() * 0.23).toFixed(2));
+            // 37% шанс на робочий діапазон 1.26x - 1.95x
+            if (r < 0.65) return Number((1.26 + Math.random() * 0.69).toFixed(2));
+            // 23% шанс на хороший ікс 1.96x - 3.60x
+            if (r < 0.88) return Number((1.96 + Math.random() * 1.64).toFixed(2));
+            // 12% шанс на жирний занос 3.61x - 14.00x
+            return Number((3.61 + Math.random() * 10.39).toFixed(2));
         }
 
         function drawCrashGraph(progressMultiplier, isCrash = false) {
@@ -1888,7 +1900,6 @@
                 crashTarget = generateCrashPoint();
                 crashMultiplier = 1.00;
 
-                // Миттєвий краш на 1.00x
                 if (crashTarget <= 1.00) {
                     triggerCrashLoss(1.00);
                     return;
@@ -1898,7 +1909,6 @@
                 crashStartTime = performance.now();
 
                 const btn = document.getElementById('crashActionBtn');
-                // Захист від миттєвого подвійного кліку (250 мс)
                 btn.disabled = true;
                 btn.innerText = "ЗЛІТ... 🚀";
                 btn.style.background = "var(--success)";
@@ -1909,7 +1919,7 @@
                         btn.disabled = false;
                         btn.innerText = `ЗАБРАТИ (${Math.floor(crashBet * crashMultiplier)} G) 💰`;
                     }
-                }, 250);
+                }, 220);
 
                 const multEl = document.getElementById('crashMultiplier');
                 multEl.style.color = "#00e5ff";
@@ -1920,8 +1930,7 @@
                     if (crashState !== 'PLAYING') return;
 
                     let elapsed = (now - crashStartTime) / 1000;
-                    // Плавний старт на низьких іксах, щоб 1.01x-1.15x відчувалися напружено
-                    crashMultiplier = 1.00 + (elapsed * 0.22) + Math.pow(elapsed * 0.55, 2.1);
+                    crashMultiplier = 1.00 + (elapsed * 0.25) + Math.pow(elapsed * 0.58, 2.0);
 
                     if (crashMultiplier >= crashTarget) {
                         triggerCrashLoss(crashTarget);
@@ -1940,8 +1949,7 @@
                 crashAnimId = requestAnimationFrame(updateCrash);
 
             } else if (crashState === 'PLAYING') {
-                // Анти-спам перевірка: мінімум 250 мс польоту
-                if (performance.now() - crashStartTime < 250) return;
+                if (performance.now() - crashStartTime < 220) return;
 
                 cancelAnimationFrame(crashAnimId);
                 crashState = 'CASHED';
