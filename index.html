@@ -252,35 +252,17 @@
         .result-box h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 20px; }
         .result-box p { margin: 0 0 14px 0; font-size: 15px; font-weight: 600; color: #fff; }
 
-        .result-btns {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
         .btn-claim {
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 10px 16px;
+            padding: 12px 16px;
             font-size: 14px;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
-        }
-
-        .btn-inventory-add {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 4px 12px var(--accent-glow);
+            box-shadow: 0 4px 12px rgba(0, 200, 83, 0.3);
         }
 
         /* АПГРЕЙДЕР */
@@ -387,7 +369,7 @@
             letter-spacing: 1px;
         }
 
-        /* МОДАЛКИ (КУПІВЛЯ / ПРОДАЖ ГОЛДИ) */
+        /* МОДАЛКИ ГОЛДИ */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -870,7 +852,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА КУПІВЛІ ГОЛДИ (38 грн за 100 G) -->
+    <!-- МОДАЛКА КУПІВЛІ ГОЛДИ -->
     <div id="addGoldModal" class="modal-overlay">
         <div class="modal-box">
             <h3>🪙 Купити голду</h3>
@@ -884,7 +866,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПРОДАЖУ ГОЛДИ (22 грн за 100 G) -->
+    <!-- МОДАЛКА ПРОДАЖУ ГОЛДИ -->
     <div id="sellGoldModal" class="modal-overlay">
         <div class="modal-box">
             <h3>💸 Продати голду</h3>
@@ -958,13 +940,12 @@
             <h3>🎉 Твій виграш:</h3>
             <p id="prizeDesc">Безкоштовна доставка</p>
             <div class="result-btns">
-                <button class="btn-inventory-add" onclick="claimPrizeToInventory()">Закинути в інвентар 📦</button>
-                <button class="btn-claim" onclick="claimPrizeManager()">Забрати у менеджера</button>
+                <button class="btn-claim" onclick="claimPrizeManager()">Забрати у менеджера 🚀</button>
             </div>
         </div>
     </div>
 
-    <!-- АПГРЕЙДЕР (ЛИШЕ СКІНИ STANDOFF 2) -->
+    <!-- АПГРЕЙДЕР -->
     <div id="upgrade-tab" class="tab-content">
         <h2>⚡ Upgrader</h2>
         <div class="subtitle">Покращуй голду до скінів Standoff 2</div>
@@ -998,7 +979,7 @@
                 <div class="upgrader-box">
                     <label>СКІН STANDOFF 2</label>
                     <select id="upgradeTarget" onchange="calculateUpgradeChance()" style="margin-top: 18px;">
-                        <!-- Заповнюється скінами Standoff 2 -->
+                        <!-- Заповнюється масивом скінів -->
                     </select>
                 </div>
             </div>
@@ -1010,7 +991,7 @@
     <!-- ІНВЕНТАР -->
     <div id="inventory-tab" class="tab-content">
         <h2>📦 Мій інвентар</h2>
-        <div class="subtitle">Твої скіни та призи</div>
+        <div class="subtitle">Твої виграні скіни</div>
         <div id="userInventory" class="inventory-grid">
             <div class="empty-state" style="grid-column: span 2;">Інвентар порожній</div>
         </div>
@@ -1052,12 +1033,26 @@
         <div class="products-list" id="podsList"></div>
     </div>
 
+    <!-- АКЦІЇ -->
     <div id="promo-tab" class="tab-content">
         <div class="products-header">
             <button class="back-btn" onclick="backToCategories()">←</button>
             <div><h2 style="font-size: 22px; margin: 0;">Акції</h2></div>
         </div>
-        <div class="empty-state">Акції скоро будуть 🔥</div>
+        <div class="products-list">
+            <div class="product-card">
+                <img src="https://dartvaper.org.ua/files/products/photo_2025-10-31_16-35-34.600x600.jpg" alt="Акція 3 банки">
+                <div class="product-info">
+                    <h3>🔥 МЕГА АКЦІЯ: 3 банки 30мл</h3>
+                    <div class="price-row">
+                        <span class="uah-badge">750 грн</span>
+                        <span class="price-or">або</span>
+                        <span class="gold-badge"><span class="gold-icon">G</span>2500</span>
+                    </div>
+                    <button class="btn-order-small" onclick="orderPromoBundle()">Замовити акцію</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- АДМІН -->
@@ -1179,25 +1174,73 @@
             { id: 206, name: "Xros Pro 2", price: 1270, goldPrice: 5350, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCpxoIVaMdUATqydee8lSf3iMELYKc-Zd9X4H3LYOCkQ&s=10", desc: "30 ватт\nекранчик\n2000mAh акумулятор" }
         ];
 
-        // ===== БАГАТО СКІНІВ STANDOFF 2 НА РІЗНІ СУМИ =====
+        // ===== БЕЗУМНА БАЗА СКІНІВ STANDOFF 2 (ПОВНА МАСА ДО 2000+ G) =====
         const standoffSkins = [
-            { name: "Sticker | Dragon Glass", goldPrice: 25, img: "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FABz7PLfYQJD_9O7kY60n_L1JbDummlD78A_i7vEoN2kjATg-hBsZzunddSWdFRoZwnY81i_x-3rhp_tu8jMn3RjpGB8st4D796V8wE/360fx360f" },
-            { name: "Graffiti | Standoff", goldPrice: 45, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
-            { name: "P350 | Carbon", goldPrice: 85, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
-            { name: "G22 | Relic", goldPrice: 110, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
-            { name: "TEC-9 | Necromancer", goldPrice: 130, img: "https://wiki.standoff2.com/images/thumb/Tec9_Necromancer.png/300px-Tec9_Necromancer.png" },
-            { name: "SM1014 | Carbon", goldPrice: 135, img: "https://wiki.standoff2.com/images/thumb/P350_Carbon.png/300px-P350_Carbon.png" },
-            { name: "MP5 | Northern Camo", goldPrice: 165, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
-            { name: "MAC-10 | Yellow", goldPrice: 187, img: "https://wiki.standoff2.com/images/thumb/Mp5_NorthernCamo.png/300px-Mp5_NorthernCamo.png" },
-            { name: "AKR12 | Carbon", goldPrice: 230, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
-            { name: "FABM | Carbon", goldPrice: 269, img: "https://wiki.standoff2.com/images/thumb/Akr12_Carbon.png/300px-Akr12_Carbon.png" },
-            { name: "M4 | Samurai", goldPrice: 340, img: "https://wiki.standoff2.com/images/thumb/M4_Samurai.png/300px-M4_Samurai.png" },
-            { name: "AWM | Scratch", goldPrice: 420, img: "https://wiki.standoff2.com/images/thumb/Awm_Scratch.png/300px-Awm_Scratch.png" },
-            { name: "USP | Gecko", goldPrice: 550, img: "https://wiki.standoff2.com/images/thumb/Usp_Gecko.png/300px-Usp_Gecko.png" },
-            { name: "AKR | Treasure Hunter", goldPrice: 890, img: "https://wiki.standoff2.com/images/thumb/Akr_TreasureHunter.png/300px-Akr_TreasureHunter.png" },
-            { name: "AWM | Dragon", goldPrice: 1450, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" },
-            { name: "Karambit | Claw", goldPrice: 3200, img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png" }
-        ];
+            // Дешеві (20 - 150 G)
+            { name: "Sticker | Dragon Glass", goldPrice: 20 },
+            { name: "Graffiti | Standoff", goldPrice: 35 },
+            { name: "Sticker | Phoenix", goldPrice: 42 },
+            { name: "P350 | Carbon", goldPrice: 55 },
+            { name: "G22 | Relic", goldPrice: 68 },
+            { name: "Dual Berettas | Orange", goldPrice: 75 },
+            { name: "TEC-9 | Necromancer", goldPrice: 90 },
+            { name: "SM1014 | Carbon", goldPrice: 105 },
+            { name: "P90 | Sand", goldPrice: 115 },
+            { name: "MP5 | Northern Camo", goldPrice: 130 },
+            { name: "MAC-10 | Yellow", goldPrice: 145 },
+            
+            // Середній сегмент (150 - 500 G)
+            { name: "AKR12 | Carbon", goldPrice: 165 },
+            { name: "FABM | Carbon", goldPrice: 180 },
+            { name: "UCP | Acid", goldPrice: 195 },
+            { name: "FAMAS | Fury", goldPrice: 210 },
+            { name: "M4 | Samurai", goldPrice: 235 },
+            { name: "AUG | Halcyon", goldPrice: 250 },
+            { name: "AWM | Scratch", goldPrice: 280 },
+            { name: "USP | Gecko", goldPrice: 310 },
+            { name: "P350 | Ranger", goldPrice: 340 },
+            { name: "G22 | Carbon", goldPrice: 375 },
+            { name: "TEC-9 | Crust", goldPrice: 410 },
+            { name: "AKR | 2 Years", goldPrice: 450 },
+            { name: "M4A1 | Pixel", goldPrice: 490 },
+
+            // Сегмент 500 - 1000 G (Багато жирних скінів)
+            { name: "AKR | Treasure Hunter", goldPrice: 530 },
+            { name: "AWM | Sport", goldPrice: 570 },
+            { name: "USP | Stainless", goldPrice: 620 },
+            { name: "M4 | Nebula", goldPrice: 660 },
+            { name: "AKR12 | Railgun", goldPrice: 710 },
+            { name: "FABM | Venom", goldPrice: 750 },
+            { name: "Desert Eagle | Predator", goldPrice: 800 },
+            { name: "SM1014 | Cyber", goldPrice: 850 },
+            { name: "P90 | Ghoul", goldPrice: 910 },
+            { name: "MP5 | Phoenix", goldPrice: 950 },
+            { name: "AWM | Gear", goldPrice: 990 },
+
+            // Сегмент 1000 - 2000 G (Топові скіни)
+            { name: "AWM | Dragon", goldPrice: 1050 },
+            { name: "AKR | Necromancer", goldPrice: 1120 },
+            { name: "M4A1 | Acid", goldPrice: 1190 },
+            { name: "Desert Eagle | Warm", goldPrice: 1250 },
+            { name: "USP | Cyber", goldPrice: 1320 },
+            { name: "AKR12 | Zombie", goldPrice: 1400 },
+            { name: "FAMAS | Monster", goldPrice: 1480 },
+            { name: "AWM | Scratch Pro", goldPrice: 1550 },
+            { name: "M4 | Samurai Gold", goldPrice: 1650 },
+            { name: "Desert Eagle | Poison", goldPrice: 1750 },
+            { name: "AKR | Carbon Pro", goldPrice: 1850 },
+            { name: "AWM | Phoenix", goldPrice: 1980 },
+
+            // Елітні ножі та ультра-преміум (2000 - 4000+ G)
+            { name: "Karambit | Claw", goldPrice: 2200 },
+            { name: "M9 Bayonet | Universe", goldPrice: 2450 },
+            { name: "Butterfly | Cold Flame", goldPrice: 2800 },
+            { name: "Kunai | Luxury", goldPrice: 3100 },
+            { name: "Stiletto | Scorpion", goldPrice: 3500 }
+        ].map(s => ({
+            ...s,
+            img: "https://wiki.standoff2.com/images/thumb/Awm_Dragon.png/300px-Awm_Dragon.png"
+        }));
 
         function formatPriceBlock(uahPrice, goldPrice) {
             let html = `<span class="uah-badge">${uahPrice} грн</span>`;
@@ -1207,7 +1250,7 @@
             return html;
         }
 
-        // ===== ЛОГІКА МОДАЛОК ГОЛДИ =====
+        // ===== МОДАЛКИ ГОЛДИ =====
         function openAddGoldModal() {
             document.getElementById('addGoldModal').classList.add('active');
             calcBuyGoldPrice();
@@ -1217,7 +1260,6 @@
         }
         function calcBuyGoldPrice() {
             const goldVal = parseInt(document.getElementById('buyGoldInput').value) || 0;
-            // 100G = 38 грн
             const uahCost = Math.round((goldVal / 100) * 38);
             document.getElementById('calcBuyResult').innerText = `До сплати: ${uahCost} грн`;
         }
@@ -1239,7 +1281,6 @@
         }
         function calcSellGoldPrice() {
             const goldVal = parseInt(document.getElementById('sellGoldInput').value) || 0;
-            // 100G = 22 грн
             const uahGet = Math.round((goldVal / 100) * 22);
             document.getElementById('calcSellResult').innerText = `Ви отримаєте: ${uahGet} грн`;
         }
@@ -1718,11 +1759,11 @@
 
         // ===== КОЛЕСО ФОРТУНИ =====
         const prizes = [
-            { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", price: 300, color: "#2979ff", weight: 35, img: "https://cdn-icons-png.flaticon.com/512/2830/2830305.png" },
-            { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", price: 500, color: "#00bfa5", weight: 35, img: liquids[0].img },
-            { label: "Рідина\n15 ml", fullText: "Рідина 15 ml", price: 650, color: "#7c4dff", weight: 20, img: liquids[9].img },
-            { label: "Рідина\n30 ml", fullText: "Рідина 30 ml", price: 1000, color: "#ff6d00", weight: 8, img: liquids[1].img },
-            { label: "2x 30 ml\nДЖЕКПОТ", fullText: "ДЖЕКПОТ: 2 флакони по 30 ml", price: 2000, color: "#d50000", weight: 2, img: liquids[1].img }
+            { label: "Безкоштовна\nдоставка", fullText: "Безкоштовна доставка", price: 300, color: "#2979ff", weight: 35 },
+            { label: "Рідина\n10 ml", fullText: "Рідина 10 ml", price: 500, color: "#00bfa5", weight: 35 },
+            { label: "Рідина\n15 ml", fullText: "Рідина 15 ml", price: 650, color: "#7c4dff", weight: 20 },
+            { label: "Рідина\n30 ml", fullText: "Рідина 30 ml", price: 1000, color: "#ff6d00", weight: 8 },
+            { label: "2x 30 ml\nДЖЕКПОТ", fullText: "ДЖЕКПОТ: 2 флакони по 30 ml", price: 2000, color: "#d50000", weight: 2 }
         ];
 
         const canvas = document.getElementById("wheelCanvas");
@@ -1828,19 +1869,6 @@
         function requestSpin() {
             const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни за грн (150 грн). Мій профіль: ${username} (ID: ${telegramId})`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
-        }
-
-        async function claimPrizeToInventory() {
-            if (!lastWonPrizeObj) return;
-            userInventory.push({
-                name: lastWonPrizeObj.fullText,
-                price: lastWonPrizeObj.price,
-                img: lastWonPrizeObj.img
-            });
-            await syncUserToDB();
-            updateUIState();
-            document.getElementById("resultBox").style.display = "none";
-            alert(`Приз [${lastWonPrizeObj.fullText}] успішно закинуто в твій Інвентар 📦!`);
         }
 
         function claimPrizeManager() {
@@ -1954,6 +1982,11 @@
 
         function orderProduct(name) {
             const text = encodeURIComponent(`Доброго дня, хотів/ла зробити замовлення!\n\nТовар: ${name}\nМій нік: ${username}`);
+            tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
+        }
+
+        function orderPromoBundle() {
+            const text = encodeURIComponent(`Привіт! Хочу замовити акцію: [ 3 банки 30мл за 750 грн / 2500 голди ]. Мій нік: ${username} (ID: ${telegramId})`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
