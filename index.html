@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VapeBar — Колесо Фортуни</title>
+    <title>VapeBar — Магазин & Апгрейдер</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -39,14 +39,49 @@
         .top-bar {
             width: 100%;
             max-width: 400px;
-            text-align: center;
-            padding: 6px 0 14px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 4px 14px 4px;
+        }
+
+        .brand-title {
             font-size: 13px;
             font-weight: 600;
             letter-spacing: 1.5px;
             color: #b39ddb;
             text-transform: uppercase;
             opacity: 0.9;
+        }
+
+        .global-gold-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.18), rgba(255, 152, 0, 0.25));
+            border: 1px solid rgba(255, 215, 0, 0.55);
+            color: #ffd54f;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .gold-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, #ffe082, #ffb300);
+            color: #1a1200;
+            font-size: 10px;
+            font-weight: 900;
+            border-radius: 3px;
+            transform: rotate(-8deg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
 
         .tab-content {
@@ -84,7 +119,7 @@
             border: 1px solid rgba(124, 77, 255, 0.3);
             border-radius: 16px;
             padding: 14px 18px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 16px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -95,10 +130,11 @@
             font-size: 12px;
             color: var(--text-muted);
             display: block;
+            text-align: left;
         }
 
         .balance-info b {
-            font-size: 20px;
+            font-size: 18px;
             color: var(--gold);
         }
 
@@ -106,8 +142,8 @@
             background: var(--success);
             color: #fff;
             border: none;
-            padding: 10px 16px;
-            font-size: 14px;
+            padding: 10px 14px;
+            font-size: 13px;
             font-weight: 700;
             border-radius: 10px;
             cursor: pointer;
@@ -213,6 +249,66 @@
             cursor: pointer;
             width: 100%;
         }
+
+        /* АПГРЕЙДЕР СТИЛІ */
+        .upgrade-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 77, 255, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .upgrade-card label {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .upgrade-card input, .upgrade-card select {
+            width: 100%;
+            padding: 12px;
+            background: #0b0d14;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .upgrade-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        /* ІНВЕНТАР */
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .inventory-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+        }
+        .inventory-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .inventory-item b { display: block; font-size: 13px; color: #fff; margin-bottom: 6px; }
 
         .category-grid {
             display: grid;
@@ -359,22 +455,7 @@
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
         }
 
-        .gold-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 15px;
-            height: 15px;
-            background: linear-gradient(135deg, #ffe082, #ffb300);
-            color: #1a1200;
-            font-size: 10px;
-            font-weight: 900;
-            border-radius: 3px;
-            transform: rotate(-8deg);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-        }
-
-        .btn-order-small {
+        .btn-order-small, .btn-chars {
             background: rgba(124, 77, 255, 0.25);
             color: #d1c4e9;
             border: 1px solid var(--accent);
@@ -384,16 +465,10 @@
             font-size: 13px;
             cursor: pointer;
         }
-
         .btn-chars {
             background: rgba(0, 229, 255, 0.15);
             color: #00e5ff;
             border: 1px solid #00e5ff;
-            padding: 7px 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
         }
 
         .product-detail {
@@ -457,24 +532,6 @@
             flex-wrap: wrap;
         }
 
-        .detail-price-wrap .uah-badge {
-            font-size: 16px;
-            padding: 4px 12px;
-            border-radius: 8px;
-        }
-
-        .detail-price-wrap .gold-badge {
-            font-size: 16px;
-            padding: 4px 12px;
-            border-radius: 8px;
-        }
-
-        .detail-price-wrap .gold-icon {
-            width: 18px;
-            height: 18px;
-            font-size: 12px;
-        }
-
         .detail-desc {
             color: var(--text-muted);
             font-size: 15px;
@@ -507,24 +564,31 @@
             border-radius: 14px;
             padding: 14px;
             margin-bottom: 12px;
+            text-align: left;
+        }
+        .admin-user-info b { display: block; font-size: 15px; color: #fff; }
+        .admin-user-info span { font-size: 12px; color: var(--text-muted); display: block; margin-top: 2px; }
+        
+        .admin-controls-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-align: left;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            gap: 6px;
+            font-size: 13px;
         }
-        .admin-user-info b { display: block; font-size: 16px; color: #fff; }
-        .admin-user-info span { font-size: 12px; color: var(--text-muted); }
-        .admin-controls { display: flex; gap: 8px; align-items: center; }
+        .admin-controls { display: flex; gap: 4px; align-items: center; }
         .admin-btn {
             background: var(--accent);
             color: #fff;
             border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            padding: 4px 8px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 12px;
         }
         .admin-btn.minus { background: var(--danger); }
         
@@ -561,7 +625,6 @@
             margin-bottom: 10px;
             font-size: 13px;
         }
-
         .win-card b { color: var(--gold); }
 
         .tab-bar {
@@ -583,28 +646,34 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            padding: 6px 16px;
+            padding: 6px 10px;
         }
 
-        .tab-btn span.icon { font-size: 22px; }
+        .tab-btn span.icon { font-size: 20px; }
         .tab-btn.active { color: #fff; font-weight: 700; }
 
         .empty-state {
             color: var(--text-muted);
-            padding: 40px 20px;
-            font-size: 15px;
+            padding: 30px 20px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">Vape Bar | Shop</div>
+    <!-- ВЕРХНЯ ПАНЕЛЬ -->
+    <div class="top-bar">
+        <div class="brand-title">Vape Bar | Mini App</div>
+        <div id="globalGoldBadge" class="global-gold-badge">
+            <span class="gold-icon">G</span><span id="headerGoldVal">0</span>
+        </div>
+    </div>
 
     <!-- КОЛЕСО -->
     <div id="wheel-tab" class="tab-content active">
@@ -621,7 +690,10 @@
                 <span>Ваші спроби:</span>
                 <b id="userSpins">...</b>
             </div>
-            <button class="btn-pay-spin" onclick="requestSpin()">Купити прокрут</button>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-pay-spin" style="background: var(--gold); color: #1a1200;" onclick="buySpinWithGold()">Купити за 500 G</button>
+                <button class="btn-pay-spin" onclick="requestSpin()">Купити за грн</button>
+            </div>
         </div>
 
         <div class="wheel-wrapper">
@@ -638,6 +710,34 @@
             <h3>🎉 Твій виграш:</h3>
             <p id="prizeDesc">Безкоштовна доставка</p>
             <button class="btn-claim" onclick="claimPrize()">Забрати приз у менеджера</button>
+        </div>
+    </div>
+
+    <!-- АПГРЕЙДЕР -->
+    <div id="upgrade-tab" class="tab-content">
+        <h2>⚡ Апгрейдер</h2>
+        <div class="subtitle">Покращуй свою голду у призи</div>
+
+        <div class="upgrade-card">
+            <label>Скільки голди ставиш (G):</label>
+            <input type="number" id="upgradeBet" value="100" min="10" oninput="calculateUpgradeChance()">
+
+            <label>Обери бажаний приз:</label>
+            <select id="upgradeTarget" onchange="calculateUpgradeChance()">
+                <!-- Динамічно заповнюється з товарів -->
+            </select>
+
+            <div class="upgrade-stats">
+                <span>Шанс виграшу: <b id="upgradeChanceVal" style="color: var(--blue);">0%</b></span>
+                <span>Виграш: <b id="upgradePrizeVal" style="color: var(--gold);">0 G</b></span>
+            </div>
+
+            <button class="btn-primary" style="max-width: 100%; padding: 12px;" onclick="startUpgrade()">Крутити апгрейд 🚀</button>
+        </div>
+
+        <h3 style="text-align: left; font-size: 16px; margin-bottom: 8px; color: #fff;">📦 Твій інвентар:</h3>
+        <div id="userInventory" class="inventory-grid">
+            <div class="empty-state">Інвентар порожній</div>
         </div>
     </div>
 
@@ -713,13 +813,16 @@
     <!-- АДМІН -->
     <div id="admin-tab" class="tab-content">
         <h2>👑 Адмін-панель</h2>
-        <div class="subtitle">Управління спробами + історія виграшів</div>
+        <div class="subtitle">Розділене управління спробами та голдою</div>
         
         <div class="add-user-box">
-            <b style="font-size: 14px; color: var(--gold);">➕ Видати спроби за Telegram ID:</b>
+            <b style="font-size: 14px; color: var(--gold);">➕ Масове нарахування по ID:</b>
             <input type="text" id="newUserId" placeholder="Telegram ID гравця">
-            <input type="number" id="newUserSpinsCount" value="1" min="1" max="50">
-            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserSpins()">Зарахувати спроби</button>
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <input type="number" id="newUserSpinsCount" value="1" min="0" placeholder="+ Спроби" style="margin:0;">
+                <input type="number" id="newUserGoldCount" value="500" min="0" placeholder="+ Голда (G)" style="margin:0;">
+            </div>
+            <button class="btn-primary" style="max-width: 100%; padding: 12px; font-size: 14px;" onclick="addNewUserRewards()">Нарахувати гравцю</button>
         </div>
 
         <h3 style="text-align: left; font-size: 16px; margin-bottom: 12px; color: #fff;">Гравці:</h3>
@@ -751,9 +854,13 @@
             <span class="icon">🎡</span>
             <span>Колесо</span>
         </button>
+        <button class="tab-btn" onclick="switchTab('upgrade-tab', this)">
+            <span class="icon">⚡</span>
+            <span>Апгрейдер</span>
+        </button>
         <button class="tab-btn" onclick="switchTab('shop-tab', this)">
             <span class="icon">💧</span>
-            <span>Асортимент</span>
+            <span>Магазин</span>
         </button>
         <button id="adminTabBtn" class="tab-btn" onclick="switchTab('admin-tab', this)" style="display: none;">
             <span class="icon">👑</span>
@@ -776,6 +883,8 @@
         const username = tgUser?.username ? `@${tgUser.username}` : (tgUser?.first_name || "Клієнт");
 
         let userSpins = 0;
+        let userGold = 0;
+        let userInventory = [];
         let currentProduct = null;
         let lastWonPrize = "";
         let isSpinning = false;
@@ -803,7 +912,7 @@
             { id: 104, name: "Картриджі Vopoo Vinci", price: 140, goldPrice: 500, img: "https://getvape.com.ua/image/cache/catalog/voopoo/voopoo-vinci-cartridge-08ohm-2ml-3-nf-00003328-1000x1000.jpg", desc: "Оригінальні картриджі для Vopoo Vinci." },
             { id: 105, name: "Картриджі Oxva NeXlim", price: 140, goldPrice: 500, img: "https://dymok.net.ua/images/stories/virtuemart/product/oxva_nexlim_cartridge4ml_1.webp", desc: "Картриджі для Oxva NeXlim. Об’єм 4 мл." },
             { id: 106, name: "Картриджі Oxva Xlim", price: 140, goldPrice: 500, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbeF-_wnJbpNg0eROeNTXxuhJkmi3_2_gaUTQovpYohD4BCLHvKjzL4mg&s=10", desc: "Картриджі для лінійки Oxva Xlim." },
-            { id: 107, name: "Картриджі GeekVape Q", price: 120, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
+            { id: 107, name: "Картриджі GeekVape Q", price: 120, goldPrice: 450, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJjU54yUxwlqA1dDrsBpz9BRnUt9eYq0WPsGA2w3iavg&s=10", desc: "Картриджі GeekVape Q. Хороша ціна і якість." }
         ];
 
         const pods = [
@@ -859,6 +968,7 @@
         async function initApp() {
             if (!telegramId) {
                 document.getElementById('userSpins').innerText = "0";
+                document.getElementById('headerGoldVal').innerText = "0";
                 document.getElementById('spinBtn').innerText = "Відкрийте в Telegram";
                 return;
             }
@@ -866,15 +976,21 @@
             const db = await loadDatabase();
 
             if (!db.users[telegramId]) {
-                db.users[telegramId] = { name: username, spins: 0 };
+                db.users[telegramId] = { name: username, spins: 0, gold: 0, inventory: [] };
                 await saveDatabase(db);
             } else {
                 db.users[telegramId].name = username;
+                if (db.users[telegramId].gold === undefined) db.users[telegramId].gold = 0;
+                if (!db.users[telegramId].inventory) db.users[telegramId].inventory = [];
                 await saveDatabase(db);
             }
 
             userSpins = Number(db.users[telegramId].spins) || 0;
-            updateSpinsDisplay();
+            userGold = Number(db.users[telegramId].gold) || 0;
+            userInventory = db.users[telegramId].inventory || [];
+            
+            updateUIState();
+            populateUpgradeSelect();
 
             if (telegramId === ADMIN_ID) {
                 document.getElementById('adminTabBtn').style.display = "flex";
@@ -883,19 +999,169 @@
 
         initApp();
 
-        function updateSpinsDisplay() {
+        function updateUIState() {
             document.getElementById('userSpins').innerText = userSpins;
+            document.getElementById('headerGoldVal').innerText = userGold;
+
             const spinBtn = document.getElementById('spinBtn');
             if (userSpins <= 0) {
                 spinBtn.disabled = true;
-                spinBtn.innerText = "Потрібна спроба (купити прокрут)";
+                spinBtn.innerText = "Немає спроб (потрібно купити)";
             } else {
                 spinBtn.disabled = false;
                 spinBtn.innerText = `Крутити колесо (${userSpins} ост.)`;
             }
+            renderInventory();
         }
 
-        // ===== ADMIN =====
+        // КУПИТИ СПРОБУ ЗА ГОЛДУ (500 G)
+        async function buySpinWithGold() {
+            if (!telegramId) return;
+            if (userGold < 500) {
+                alert("Недостатньо голди на балансі! Потрібно 500 G.");
+                return;
+            }
+
+            userGold -= 500;
+            userSpins += 1;
+            updateUIState();
+            await syncUserToDB();
+
+            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+            alert("Успішно! Ви купили 1 спробу за 500 G 🎉");
+        }
+
+        async function syncUserToDB() {
+            const db = await loadDatabase();
+            if (db.users[telegramId]) {
+                db.users[telegramId].gold = userGold;
+                db.users[telegramId].spins = userSpins;
+                db.users[telegramId].inventory = userInventory;
+                await saveDatabase(db);
+            }
+        }
+
+        // ===== АПГРЕЙДЕР ЛОГІКА (Шанси з комісією) =====
+        function populateUpgradeSelect() {
+            const select = document.getElementById('upgradeTarget');
+            select.innerHTML = "";
+            const allItems = [...liquids, ...cartridges, ...pods];
+            
+            allItems.forEach(item => {
+                if (item.goldPrice) {
+                    const opt = document.createElement('option');
+                    opt.value = item.goldPrice;
+                    opt.textContent = `${item.name} — ${item.goldPrice} G`;
+                    opt.dataset.name = item.name;
+                    opt.dataset.img = item.img;
+                    select.appendChild(opt);
+                }
+            });
+            calculateUpgradeChance();
+        }
+
+        function calculateUpgradeChance() {
+            const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
+            const targetSelect = document.getElementById('upgradeTarget');
+            const targetPrice = parseFloat(targetSelect.value) || 1;
+
+            document.getElementById('upgradePrizeVal').innerText = targetPrice + " G";
+
+            if (bet >= targetPrice) {
+                document.getElementById('upgradeChanceVal').innerText = "Помилка (ставка ≥ ціни)";
+                return;
+            }
+
+            let rawChance = (bet / targetPrice) * 100;
+            let chance = rawChance * 0.92; // Комісія будинку (менше за чисту математику)
+
+            if (chance > 88) chance = 88;
+            if (chance < 1) chance = 1;
+
+            document.getElementById('upgradeChanceVal').innerText = chance.toFixed(1) + "%";
+        }
+
+        async function startUpgrade() {
+            const bet = parseFloat(document.getElementById('upgradeBet').value) || 0;
+            const targetSelect = document.getElementById('upgradeTarget');
+            const targetPrice = parseFloat(targetSelect.value) || 0;
+            const targetName = targetSelect.options[targetSelect.selectedIndex].dataset.name;
+            const targetImg = targetSelect.options[targetSelect.selectedIndex].dataset.img;
+
+            if (bet <= 0) {
+                alert("Введи коректну ставку голди!");
+                return;
+            }
+            if (userGold < bet) {
+                alert("У тебе немає стільки голди!");
+                return;
+            }
+            if (bet >= targetPrice) {
+                alert("Ставка має бути меншою за вартість цільового предмета!");
+                return;
+            }
+
+            userGold -= bet;
+            updateUIState();
+
+            let rawChance = (bet / targetPrice) * 100;
+            let chance = rawChance * 0.92;
+            if (chance > 88) chance = 88;
+
+            let roll = Math.random() * 100;
+
+            if (roll <= chance) {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+                
+                const action = confirm(`🎉 ВІТАЮ! Ти успішно проапгрейдив голду до: ${targetName}!\n\nНатисни OK, щоб забрати в інвентар, або Скасувати, щоб продати його за ${Math.floor(targetPrice * 1.1)} G`);
+                
+                if (action) {
+                    userInventory.push({ name: targetName, price: targetPrice, img: targetImg });
+                    alert("Предмет успішно додано до твого інвентарю!");
+                } else {
+                    let sellPrice = Math.floor(targetPrice * 1.1);
+                    userGold += sellPrice;
+                    alert(`Ти продав предмет за ${sellPrice} G! Баланс оновлено.`);
+                }
+            } else {
+                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("error");
+                alert("😢 На жаль, апгрейд не вдався. Ставка згоріла!");
+            }
+
+            await syncUserToDB();
+            updateUIState();
+        }
+
+        function renderInventory() {
+            const container = document.getElementById('userInventory');
+            container.innerHTML = "";
+            if (!userInventory || userInventory.length === 0) {
+                container.innerHTML = "<div class='empty-state' style='grid-column: span 2;'>Інвентар порожній</div>";
+                return;
+            }
+
+            userInventory.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = "inventory-item";
+                div.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <b>${item.name}</b>
+                    <button class="btn-order-small" style="width:100%; padding: 4px;" onclick="sellInventoryItem(${index})">Продати (${item.price} G)</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        async function sellInventoryItem(index) {
+            const item = userInventory[index];
+            userGold += item.price;
+            userInventory.splice(index, 1);
+            updateUIState();
+            await syncUserToDB();
+            alert(`Предмет продано за ${item.price} G!`);
+        }
+
+        // ===== РОЗДІЛЕНА АДМІН-ПАНЕЛЬ =====
         async function renderAdminPanel() {
             const db = await loadDatabase();
             const container = document.getElementById('adminUserList');
@@ -913,12 +1179,20 @@
                     card.innerHTML = `
                         <div class="admin-user-info">
                             <b>${u.name || "Гравець"}</b>
-                            <span>ID: ${id} | Спроб: <b>${u.spins || 0}</b></span>
+                            <span>ID: ${id}</span>
+                            <span>Спроби колеса: <b>${u.spins || 0}</b> | Голда: <b style="color:var(--gold);">${u.gold || 0} G</b></span>
                         </div>
-                        <div class="admin-controls">
-                            <button class="admin-btn minus" onclick="changeSpins('${id}', -1)">−</button>
-                            <span style="font-weight:bold; min-width:24px; text-align:center; color:#fff;">${u.spins || 0}</span>
-                            <button class="admin-btn" onclick="changeSpins('${id}', 1)">+</button>
+                        <div class="admin-controls-row">
+                            <span style="font-size:12px; color:var(--text-muted);">Колесо:</span>
+                            <div class="admin-controls">
+                                <button class="admin-btn minus" onclick="changeUserValue('${id}', 'spins', -1)">-1 спр</button>
+                                <button class="admin-btn" onclick="changeUserValue('${id}', 'spins', 1)">+1 спр</button>
+                            </div>
+                            <span style="font-size:12px; color:var(--text-muted); margin-left: 6px;">Голда:</span>
+                            <div class="admin-controls">
+                                <button class="admin-btn minus" onclick="changeUserValue('${id}', 'gold', -100)">-100G</button>
+                                <button class="admin-btn" onclick="changeUserValue('${id}', 'gold', 100)">+100G</button>
+                            </div>
                         </div>
                     `;
                     container.appendChild(card);
@@ -944,26 +1218,28 @@
             }
         }
 
-        window.changeSpins = async function(targetId, delta) {
+        window.changeUserValue = async function(targetId, field, delta) {
             const db = await loadDatabase();
             if (!db.users[targetId]) return;
 
-            db.users[targetId].spins = Math.max(0, (db.users[targetId].spins || 0) + delta);
+            db.users[targetId][field] = Math.max(0, (db.users[targetId][field] || 0) + delta);
             const ok = await saveDatabase(db);
             if (ok) {
                 renderAdminPanel();
                 if (targetId === telegramId) {
                     userSpins = db.users[targetId].spins;
-                    updateSpinsDisplay();
+                    userGold = db.users[targetId].gold;
+                    updateUIState();
                 }
             } else {
                 alert("Помилка збереження");
             }
         }
 
-        window.addNewUserSpins = async function() {
+        window.addNewUserRewards = async function() {
             const targetId = document.getElementById('newUserId').value.trim();
-            const count = parseInt(document.getElementById('newUserSpinsCount').value) || 1;
+            const spinsCount = parseInt(document.getElementById('newUserSpinsCount').value) || 0;
+            const goldCount = parseInt(document.getElementById('newUserGoldCount').value) || 0;
 
             if (!targetId) {
                 alert("Введи Telegram ID гравця!");
@@ -972,18 +1248,20 @@
 
             const db = await loadDatabase();
             if (!db.users[targetId]) {
-                db.users[targetId] = { name: "Гравець (ручний)", spins: 0 };
+                db.users[targetId] = { name: "Гравець (ручний)", spins: 0, gold: 0, inventory: [] };
             }
-            db.users[targetId].spins = (db.users[targetId].spins || 0) + count;
+            db.users[targetId].spins = (db.users[targetId].spins || 0) + spinsCount;
+            db.users[targetId].gold = (db.users[targetId].gold || 0) + goldCount;
 
             const ok = await saveDatabase(db);
             if (ok) {
                 renderAdminPanel();
                 document.getElementById('newUserId').value = "";
-                alert(`Успішно додано ${count} спроб для ID: ${targetId}`);
+                alert(`Успішно нараховано для ID: ${targetId} (+${spinsCount} спроб, +${goldCount} G)`);
                 if (targetId === telegramId) {
                     userSpins = db.users[targetId].spins;
-                    updateSpinsDisplay();
+                    userGold = db.users[targetId].gold;
+                    updateUIState();
                 }
             } else {
                 alert("Помилка збереження");
@@ -1058,13 +1336,8 @@
             document.getElementById("resultBox").style.display = "none";
 
             userSpins--;
-            updateSpinsDisplay();
-
-            const db = await loadDatabase();
-            if (db.users[telegramId]) {
-                db.users[telegramId].spins = userSpins;
-                await saveDatabase(db);
-            }
+            updateUIState();
+            await syncUserToDB();
 
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
 
@@ -1083,7 +1356,7 @@
 
             setTimeout(async () => {
                 isSpinning = false;
-                updateSpinsDisplay();
+                updateUIState();
 
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 
@@ -1105,7 +1378,7 @@
         }
 
         function requestSpin() {
-            const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни (150 грн / G500). Мій профіль: ${username} (ID: ${telegramId})`);
+            const text = encodeURIComponent(`Привіт! Хочу купити 1 прокрут Колеса Фортуни за грн (150 грн). Мій профіль: ${username} (ID: ${telegramId})`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
@@ -1114,17 +1387,28 @@
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
-        // ===== МАГАЗИН =====
+        // ===== НАВІГАЦІЯ ТА МАГАЗИН =====
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (btn) btn.classList.add('active');
+
+            const goldBadge = document.getElementById('globalGoldBadge');
+            const hiddenTabs = ['liquids-tab', 'cartridges-tab', 'pods-tab', 'promo-tab'];
+            if (hiddenTabs.includes(tabId)) {
+                goldBadge.style.display = "none";
+            } else {
+                goldBadge.style.display = "flex";
+            }
+
             if (tabId === 'admin-tab') renderAdminPanel();
         }
 
         function openCategory(cat) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('globalGoldBadge').style.display = "none";
+
             if (cat === 'liquids') {
                 renderProductsList('liquidsList', liquids);
                 document.getElementById('liquids-tab').classList.add('active');
@@ -1142,6 +1426,7 @@
         function backToCategories() {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('shop-tab').classList.add('active');
+            document.getElementById('globalGoldBadge').style.display = "flex";
         }
 
         function renderProductsList(containerId, items) {
@@ -1202,7 +1487,7 @@
         }
 
         function orderProduct(name) {
-            const text = encodeURIComponent(`доброго дня, хотів/ла зробити замовлення!\n\nТовар: ${name}\nМій нік: ${username}`);
+            const text = encodeURIComponent(`Доброго дня, хотів/ла зробити замовлення!\n\nТовар: ${name}\nМій нік: ${username}`);
             tg.openTelegramLink(`https://t.me/${MANAGER_USERNAME}?text=${text}`);
         }
 
